@@ -22,7 +22,6 @@ export class Request {
 
     // request can be overload only for testing
     this.r = opts.r || request;
-    this.supportStaffWalletId = opts.supportStaffWalletId;
 
     this.session = null;
     this.credentials = null;

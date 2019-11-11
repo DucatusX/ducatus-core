@@ -1,8 +1,8 @@
 import { BchDeriver } from './bch';
 import { BtcDeriver } from './btc';
+import { DucDeriver } from './duc';
 import { EthDeriver } from './eth';
 import { Paths } from './paths';
-import { XrpDeriver } from './xrp';
 
 export interface Key {
   address: string;
@@ -19,8 +19,8 @@ export interface IDeriver {
 const derivers: { [chain: string]: IDeriver } = {
   BTC: new BtcDeriver(),
   BCH: new BchDeriver(),
-  ETH: new EthDeriver(),
-  XRP: new XrpDeriver()
+  DUC: new DucDeriver(),
+  ETH: new EthDeriver()
 };
 
 export class DeriverProxy {

@@ -7,12 +7,14 @@ module.exports = {
     btc: 10000 * 1000, // 10k sat/b
     bch: 10000 * 1000, // 10k sat/b
     eth: 50000000000, // 50 Gwei,
-    xrp: 50000000000
+    xrp: 50000000000,
+    duc: 10000 * 1000 // 10k sat/b
   },
 
   MIN_TX_FEE: {
     btc: 0,
     bch: 0,
+    duc: 0,
     eth: 0,
     xrp: 0
   },
@@ -20,6 +22,8 @@ module.exports = {
   MAX_TX_FEE: {
     btc: 0.05 * 1e8,
     bch: 0.05 * 1e8,
+    duc: 0.05 * 1e8,
+    eth: 1 * 1e18,  // 1 eth
     eth: 1 * 1e18, // 1 eth
     xrp: 1 * 1e6 // 1 xrp
   },
@@ -27,6 +31,7 @@ module.exports = {
   MAX_TX_SIZE_IN_KB: {
     btc: 100,
     bch: 100,
+    duc: 100,
     eth: 500,
     xrp: 1000
   },
@@ -56,6 +61,34 @@ module.exports = {
 
   FEE_LEVELS: {
     btc: [
+      {
+        name: 'urgent',
+        nbBlocks: 2,
+        multiplier: 1.5,
+        defaultValue: 75000
+      },
+      {
+        name: 'priority',
+        nbBlocks: 2,
+        defaultValue: 50000
+      },
+      {
+        name: 'normal',
+        nbBlocks: 3,
+        defaultValue: 30000
+      },
+      {
+        name: 'economy',
+        nbBlocks: 6,
+        defaultValue: 25000
+      },
+      {
+        name: 'superEconomy',
+        nbBlocks: 24,
+        defaultValue: 10000
+      }
+    ],
+    duc: [
       {
         name: 'urgent',
         nbBlocks: 2,

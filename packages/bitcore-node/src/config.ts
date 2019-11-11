@@ -62,7 +62,7 @@ const Config = function(): ConfigType {
     dbPass: process.env.DB_PASS || '',
     numWorkers: cpus().length,
     chains: {},
-    modules: ['./bitcoin', './bitcoin-cash', './ethereum'],
+    modules: ['./bitcoin', './bitcoin-cash', './ethereum', './ducatus'],
     services: {
       api: {
         rateLimiter: {
@@ -99,6 +99,18 @@ const Config = function(): ConfigType {
             port: 8332,
             username: 'bitcoin',
             password: 'bitcoin'
+          }
+        }
+      },
+      DUC: {
+        mainnet: {
+          chainSource: 'p2p',
+          trustedPeers: [{ host: '127.0.0.1', port: 9691 }],
+          rpc: {
+            host: '127.0.0.1',
+            port: 9690,
+            username: 'username',
+            password: 'password'
           }
         }
       }

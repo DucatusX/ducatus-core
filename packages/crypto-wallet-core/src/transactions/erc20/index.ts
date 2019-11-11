@@ -15,7 +15,6 @@ export class ERC20TxProvider extends ETHTxProvider {
     data: string;
     gasLimit: number;
     tokenAddress: string;
-    network: string;
     chainId?: number;
   }) {
     const { tokenAddress } = params;

@@ -45,7 +45,8 @@ const Bitcore_ = {
   btc: Bitcore,
   bch: require('bitcore-lib-cash'),
   eth: Bitcore,
-  xrp: Bitcore
+  xrp: Bitcore,
+  duc: require('ducatuscore-lib')
 };
 
 const Common = require('./common');

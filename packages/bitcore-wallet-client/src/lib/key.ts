@@ -279,6 +279,8 @@ export class Key {
       }
     } else if (opts.coin == 'btc') {
       coinCode = '0';
+    } else if (opts.coin == 'duc') {
+      coinCode = '1025';
     } else if (opts.coin == 'eth') {
       coinCode = '60';
     } else if (opts.coin == 'xrp') {

@@ -39,7 +39,8 @@ export class Address {
 
   static Bitcore = {
     btc: require('bitcore-lib'),
-    bch: require('bitcore-lib-cash')
+    bch: require('bitcore-lib-cash'),
+    duc: require('ducatuscore-lib')
   };
 
   static create(opts) {

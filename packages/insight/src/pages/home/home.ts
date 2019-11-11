@@ -105,6 +105,43 @@ export class HomePage {
           }
         }
       },
+      duc: {
+        name: 'Ducatus',
+        historicalRates: [],
+        dailyTransactionCounts: [],
+        currentPrice: 0,
+        averagePrice: 0,
+        lastNumberOfTransactionsConfirmed: 0,
+        backgroundColor: 'rgba(69,99,246,1)',
+        gradientBackgroundColor: 'rgba(69,99,246, 0.2)',
+        ticks: {
+          thirtyDayTicks: {
+            callback: value => {
+              return this.numberWithCommas(value);
+            },
+            yAxesTicks: {
+              maxTicksLimit: 10,
+              stepSize: 500,
+              callback: value => yValueCallback(value)
+            },
+            xAxesTicks: {
+              maxTicksLimit: 5,
+              stepSize: 5
+            }
+          },
+          sevenDayTicks: {
+            yAxesTicks: {
+              maxTicksLimit: 10,
+              stepSize: 500,
+              callback: value => yValueCallback(value)
+            },
+            xAxesTicks: {
+              maxTicksLimit: 7,
+              stepSize: 1
+            }
+          }
+        }
+      },
       bch: {
         name: 'Bitcoin Cash',
         historicalRates: [],
@@ -193,11 +230,11 @@ export class HomePage {
         this.coins[currency].lastNumberOfTransactionsConfirmed =
           response.results[response.results.length - 1].transactionCount;
 
-        this.dailyTxChart.drawChart(
-          this.coins[currency],
-          7,
-          this.coins[currency].lastNumberOfTransactionsConfirmed
-        );
+        // this.dailyTxChart.drawChart(
+        //   this.coins[currency],
+        //   7,
+        //   this.coins[currency].lastNumberOfTransactionsConfirmed
+        // );
       });
   }
 
@@ -212,7 +249,7 @@ export class HomePage {
         this.coins[currency].currentPrice = response[days - 1].rate;
         this.currentPrice = this.coins[this.chainNetwork.chain.toLowerCase()].currentPrice;
         this.coins[currency].historicalRates = response;
-        this.priceChart.drawPriceChart(this.coins[currency], days);
+        // this.priceChart.drawPriceChart(this.coins[currency], days);
       });
   }
 

@@ -169,6 +169,8 @@ export class Credentials {
         }
       } else if (this.coin == 'btc') {
         coin = '0';
+      } else if (this.coin == 'duc') {
+        coin = '1025';
       } else if (this.coin == 'eth') {
         coin = '60';
       } else if (this.coin == 'xrp') {

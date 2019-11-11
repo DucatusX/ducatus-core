@@ -18,6 +18,10 @@ const PROVIDERS = {
       livenet: 'https://api.bitpay.com',
       testnet: 'https://api.bitpay.com'
     },
+    duc: {
+      livenet: 'https://api.bitpay.com',
+      testnet: 'https://api.bitpay.com'
+    },
     eth: {
       livenet: 'https://api-eth.bitcore.io',
       testnet: 'https://api-eth.bitcore.io'

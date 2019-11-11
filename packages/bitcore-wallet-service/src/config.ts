@@ -31,6 +31,15 @@ module.exports = {
     }
   },
   blockchainExplorerOpts: {
+    duc: {
+      livenet: {
+        url: 'http://localhost:3000',
+      },
+      testnet: {
+        url: 'http://localhost:3000',
+        regtestEnabled: false
+      },
+    },
     btc: {
       livenet: {
         url: 'https://api.bitcore.io'

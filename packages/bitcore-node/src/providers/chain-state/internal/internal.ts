@@ -629,7 +629,7 @@ export class InternalStateProvider implements IChainStateService {
   }
 
   private extractAddress(address: string): string {
-    const extractedAddress = address.replace(/^(bitcoincash:|bchtest:|bitcoin:)/i, '').replace(/\?.*/, '');
+    const extractedAddress = address.replace(/^(bitcoincash:|bchtest:|bitcoin:|ducatus:)/i, '').replace(/\?.*/, '');
     return extractedAddress || address;
   }
 

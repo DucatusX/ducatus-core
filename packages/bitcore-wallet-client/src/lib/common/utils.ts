@@ -1,6 +1,6 @@
 'use strict';
 
-import { BitcoreLib, BitcoreLibCash, Deriver, Transactions } from 'crypto-wallet-core';
+import { BitcoreLib, BitcoreLibCash, Deriver, DucatuscoreLib, Transactions } from 'crypto-wallet-core';
 
 import * as _ from 'lodash';
 import { Constants } from './constants';
@@ -15,7 +15,8 @@ var Bitcore_ = {
   btc: Bitcore,
   bch: BitcoreLibCash,
   eth: Bitcore,
-  xrp: Bitcore
+  xrp: Bitcore,
+  duc: DucatuscoreLib
 };
 var PrivateKey = Bitcore.PrivateKey;
 var PublicKey = Bitcore.PublicKey;
