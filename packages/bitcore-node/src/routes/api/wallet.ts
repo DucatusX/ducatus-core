@@ -1,4 +1,4 @@
-import { Validation } from 'crypto-wallet-core';
+import { Validation } from 'crypto-ducatus-wallet-core';
 import { Response, Router } from 'express';
 import { ChainStateProvider } from '../../providers/chain-state';
 import { Auth, AuthenticatedRequest } from '../../utils/auth';

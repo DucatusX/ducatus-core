@@ -5,4 +5,4 @@ var spec = {
   message: 'Internal Error on litecore-p2p Module {0}'
 };
 
-module.exports = require('litecore-lib').errors.extend(spec);
+module.exports = require('ducatuscore-lib').errors.extend(spec);

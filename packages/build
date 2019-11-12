@@ -1,6 +1,6 @@
 #!/bin/sh
 
-MODULES=' crypto-wallet-core bitcore-wallet-service bitcore-wallet-client bitcore-client'
+MODULES=' crypto-ducatus-wallet-core  bitcore-wallet-service ducatuscore-wallet-client'
 
 for i in $MODULES; 
 do

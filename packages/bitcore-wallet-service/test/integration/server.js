@@ -11,7 +11,7 @@ log.debug = log.verbose;
 
 var config = require('../../ts_build/config.js');
 
-var CWC = require('crypto-wallet-core');
+var CWC = require('../../../crypto-ducatus-wallet-core');
 var Bitcore = require('bitcore-lib');
 var Bitcore_ = {
   btc: Bitcore,

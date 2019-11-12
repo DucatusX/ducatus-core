@@ -1,4 +1,4 @@
-import { BitcoreLib, BitcoreLibCash, DucatuscoreLib } from 'crypto-wallet-core';
+import { BitcoreLib, BitcoreLibCash, DucatuscoreLib } from 'crypto-ducatus-wallet-core';
 
 var $ = require('preconditions').singleton();
 const URL = require('url');

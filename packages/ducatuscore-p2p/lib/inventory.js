@@ -1,6 +1,6 @@
 'use strict';
 
-var bitcore = require('litecore-lib');
+var bitcore = require('ducatuscore-lib');
 var $ = bitcore.util.preconditions;
 var BufferUtil = bitcore.util.buffer;
 var BufferReader = bitcore.encoding.BufferReader;

@@ -1,4 +1,4 @@
-import { DucatuscoreLib } from 'crypto-wallet-core';
+import { DucatuscoreLib } from '../../../../../crypto-ducatus-wallet-core';
 import _ from 'lodash';
 import { IChain } from '..';
 import { BtcChain } from '../btc';

@@ -2,7 +2,7 @@ var _ = require('lodash');
 var url = require('url');
 var read = require('read')
 var log = require('npmlog');
-var Client = require('bitcore-wallet-client').default;
+var Client = require('ducatuscore-wallet-client').default;
 const Key = Client.Key;
 var FileStorage = require('./filestorage');
 var sjcl = require('sjcl');
@@ -315,8 +315,8 @@ Utils.COIN = {
     maxDecimals: 8,
     minDecimals: 8,
   },
- 
- 
+
+
 };
 
 Utils.renderAmount = function(satoshis, coin, opts) {

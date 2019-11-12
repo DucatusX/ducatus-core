@@ -6,7 +6,7 @@ class LibProvider {
     },
     DUC: {
       lib: require('ducatuscore-lib'),
-      p2p: require('litecore-p2p')
+      p2p: require('ducatuscore-p2p')
     }
   };
 

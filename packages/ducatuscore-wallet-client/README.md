@@ -1,8 +1,8 @@
 # Bitcore Wallet Client
 
-[![NPM Package](https://img.shields.io/npm/v/bitcore-wallet-client.svg?style=flat-square)](https://www.npmjs.org/package/bitcore-wallet-client)
-[![Build Status](https://img.shields.io/travis/bitpay/bitcore-wallet-client.svg?branch=master&style=flat-square)](https://travis-ci.org/bitpay/bitcore-wallet-client)
-[![Coverage Status](https://coveralls.io/repos/bitpay/bitcore-wallet-client/badge.svg)](https://coveralls.io/r/bitpay/bitcore-wallet-client)
+[![NPM Package](https://img.shields.io/npm/v/ducatuscore-wallet-client.svg?style=flat-square)](https://www.npmjs.org/package/ducatuscore-wallet-client)
+[![Build Status](https://img.shields.io/travis/bitpay/ducatuscore-wallet-client.svg?branch=master&style=flat-square)](https://travis-ci.org/bitpay/ducatuscore-wallet-client)
+[![Coverage Status](https://coveralls.io/repos/bitpay/ducatuscore-wallet-client/badge.svg)](https://coveralls.io/r/bitpay/ducatuscore-wallet-client)
 
 **The *official* client library for [bitcore-wallet-service](https://github.com/bitpay/bitcore/tree/master/packages/bitcore-wallet-service).**
 
@@ -10,23 +10,23 @@
 
 This package communicates with BWS [Bitcore wallet service](https://github.com/bitpay/bitcore/tree/master/packages/bitcore-wallet-service) using the REST API. All REST endpoints are wrapped as simple async methods. All relevant responses from BWS are checked independently by the peers, thus the importance of using this library when talking to a third party BWS instance.
 
-See [Bitcore-wallet](https://github.com/bitpay/bitcore/tree/master/packages/bitcore-wallet) for a simple CLI wallet implementation that relays on BWS and uses bitcore-wallet-client.
+See [Bitcore-wallet](https://github.com/bitpay/bitcore/tree/master/packages/bitcore-wallet) for a simple CLI wallet implementation that relays on BWS and uses ducatuscore-wallet-client.
 
 ## Get Started
 
-You can start using bitcore-wallet-client in any of these two ways:
+You can start using ducatuscore-wallet-client in any of these two ways:
 
-- via [Bower](http://bower.io/): by running `bower install bitcore-wallet-client` from your console
-- or via [NPM](https://www.npmjs.com/package/bitcore-wallet-client): by running `npm install bitcore-wallet-client` from your console.
+- via [Bower](http://bower.io/): by running `bower install ducatuscore-wallet-client` from your console
+- or via [NPM](https://www.npmjs.com/package/ducatuscore-wallet-client): by running `npm install ducatuscore-wallet-client` from your console.
 
 ## Example
 
 Start your own local [Bitcore wallet service](https://github.com/bitpay/bitcore/tree/master/packages/bitcore-wallet-service) instance. In this example we assume you have `bitcore-wallet-service` running on your `localhost:3232`.
 
-Install `bitcore-wallet-client` before start:
+Install `ducatuscore-wallet-client` before start:
 
 ```sh
-npm i bitcore-wallet-client
+npm i ducatuscore-wallet-client
 ```
 
 ### **Create and join a shared wallet**
@@ -36,7 +36,7 @@ Create two files `irene.js` and `tomas.js` with the content below:
 #### irene.js
 
 ```javascript
-var Client = require('bitcore-wallet-client/index').default;
+var Client = require('ducatuscore-wallet-client/index').default;
 
 
 var fs = require('fs');
@@ -66,7 +66,7 @@ client.createWallet("My Wallet", "Irene", 2, 2, {network: 'testnet'}, function(e
 #### tomas.js
 
 ```javascript
-var Client = require('bitcore-wallet-client');
+var Client = require('ducatuscore-wallet-client');
 
 
 var fs = require('fs');
@@ -143,7 +143,7 @@ Note that the scripts created two files named `irene.dat` and `tomas.dat`. With 
 ### **Open a wallet dat file**
 
 ``` javascript
-var Client = require('bitcore-wallet-client');
+var Client = require('ducatuscore-wallet-client');
 
 
 var fs = require('fs');

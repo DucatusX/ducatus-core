@@ -1,80 +1,23 @@
 {
-  "_args": [
-    [
-      "litecore-p2p@1.1.2",
-      "/home/dimanok/Work/Projects/bitcore"
-    ]
-  ],
-  "_from": "litecore-p2p@1.1.2",
-  "_id": "litecore-p2p@1.1.2",
-  "_inBundle": false,
-  "_integrity": "sha1-AWP4QXE1fv2eHyCbhNnAf+PwX54=",
-  "_location": "/litecore-p2p",
-  "_phantomChildren": {},
-  "_requested": {
-    "type": "version",
-    "registry": true,
-    "raw": "litecore-p2p@1.1.2",
-    "name": "litecore-p2p",
-    "escapedName": "litecore-p2p",
-    "rawSpec": "1.1.2",
-    "saveSpec": null,
-    "fetchSpec": "1.1.2"
+  "name": "ducatuscore-p2p",
+  "version": "8.9.0",
+  "author": "BitPay <dev@bitpay.com>",
+  "scripts": {
+    "lint": "gulp lint",
+    "test": "gulp test",
+    "coverage": "gulp coverage",
+    "build": "gulp",
+    "pub": "npm run build && npm publish"
   },
-  "_requiredBy": [
-    "/"
-  ],
-  "_resolved": "https://registry.npmjs.org/litecore-p2p/-/litecore-p2p-1.1.2.tgz",
-  "_spec": "1.1.2",
-  "_where": "/home/dimanok/Work/Projects/bitcore",
-  "author": {
-    "name": "BitPay",
-    "email": "dev@bitpay.com"
+  "contributors": [],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/bitpay/bitcore-p2p.git"
   },
-  "bugs": {
-    "url": "https://github.com/litecoin-project/litecore-p2p/issues"
-  },
-  "contributors": [
-    {
-      "name": "Charlie Lee",
-      "email": "coblee@litecoin.org"
-    },
-    {
-      "name": "Yemel Jardi",
-      "email": "yemel@bitpay.com"
-    },
-    {
-      "name": "Braydon Fuller",
-      "email": "braydon@bitpay.com"
-    },
-    {
-      "name": "Ryan X. Charles",
-      "email": "ryan@bitpay.com"
-    },
-    {
-      "name": "Eric Martindale",
-      "email": "eric@bitpay.com"
-    },
-    {
-      "name": "Philip Hutchins",
-      "email": "philip@bitpay.com"
-    },
-    {
-      "name": "Manuel Araoz",
-      "email": "maraoz@bitpay.com"
-    },
-    {
-      "name": "Esteban Ordano",
-      "email": "eordano@gmail.com"
-    },
-    {
-      "name": "Elichai Turkel"
-    }
-  ],
   "dependencies": {
     "bloom-filter": "^0.2.0",
     "buffers": "github:bitpay/node-buffers#v0.1.2-bitpay",
-    "litecore-lib": "^0.13.19",
+    "ducatuscore-lib": "^8.9.0",
     "socks5-client": "^0.3.6"
   },
   "description": "Interface to the litecoin P2P network for litecore",
@@ -82,7 +25,6 @@
     "brfs": "^1.2.0",
     "chai": "~1.10.0",
     "gulp": "^3.8.10",
-    "litecore-build": "git://github.com/litecoin-project/litecore-build.git",
     "sinon": "^1.12.2"
   },
   "homepage": "https://github.com/litecoin-project/litecore-p2p#readme",
@@ -91,17 +33,5 @@
     "litecore"
   ],
   "license": "MIT",
-  "main": "index.js",
-  "name": "litecore-p2p",
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/litecoin-project/litecore-p2p.git"
-  },
-  "scripts": {
-    "build": "gulp",
-    "coverage": "gulp coverage",
-    "lint": "gulp lint",
-    "test": "gulp test:node"
-  },
-  "version": "1.1.2"
+  "main": "index.js"
 }

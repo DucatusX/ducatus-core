@@ -2,12 +2,12 @@
 
 BIN_PATH:=node_modules/.bin/
 
-all:	bitcore-wallet-client.js
+all:	ducatuscore-wallet-client.js
 
 clean:
-	rm bitcore-wallet-client.js
+	rm ducatuscore-wallet-client.js
 
-bitcore-wallet-client.js: index.js lib/*.js
+ducatuscore-wallet-client.js: index.js lib/*.js
 	${BIN_PATH}browserify $< > $@
 
 cover:

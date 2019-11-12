@@ -1,6 +1,6 @@
 'use strict';
 
-var bitcore = require('litecore-lib');
+var bitcore = require('ducatuscore-lib');
 var Inventory = require('../inventory');
 
 function builder(options) {

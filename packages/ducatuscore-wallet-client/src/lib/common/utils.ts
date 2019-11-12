@@ -1,6 +1,6 @@
 'use strict';
 
-import { BitcoreLib, BitcoreLibCash, Deriver, DucatuscoreLib, Transactions } from 'crypto-wallet-core';
+import { BitcoreLib, BitcoreLibCash, Deriver, DucatuscoreLib, Transactions } from 'crypto-ducatus-wallet-core';
 
 import * as _ from 'lodash';
 import { Constants } from './constants';
