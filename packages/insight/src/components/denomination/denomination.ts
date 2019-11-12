@@ -24,14 +24,15 @@ export class DenominationComponent {
     this.showUnits = _.some(
       this.availableNetworks,
       this.api.networkSettings.selectedNetwork
-    )
-      ? true
-      : false;
+    );
     this.units = [
-      'USD',
       this.api.networkSettings.selectedNetwork.chain,
       'm' + this.api.networkSettings.selectedNetwork.chain
     ];
+
+    if (this.api.networkSettings.selectedNetwork.chain !== 'DUC') {
+      this.units.unshift('USD');
+    }
   }
 
   public changeUnit(unit: string): void {

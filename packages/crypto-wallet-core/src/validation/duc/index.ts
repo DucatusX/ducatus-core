@@ -10,8 +10,8 @@ export class DucValidation implements IValidation {
 
   validateUri(addressUri: string): boolean {
     // Check if the input is a valid uri or address
-    const URICash = Ducatuscore.URI;
+    const URI = Ducatuscore.URI;
     // Bip21 uri
-    return URICash.isValid(addressUri);
+    return URI.isValid(addressUri);
   }
 }
