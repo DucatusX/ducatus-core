@@ -1,6 +1,6 @@
 #!/bin/sh
 
-MODULES='ducatuscore-lib crypto-ducatus-wallet-core ducatuscore-wallet-client'
+MODULES='ducatuscore-lib crypto-ducatus-wallet-core ducatus-wallet-client'
 
 
 for i in $MODULES; 

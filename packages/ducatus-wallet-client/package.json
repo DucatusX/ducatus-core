@@ -1,5 +1,5 @@
 {
-  "name": "ducatuscore-wallet-client",
+  "name": "ducatus-wallet-client",
   "description": "Client for bitcore-wallet-service",
   "author": "BitPay Inc",
   "version": "8.16.2",
@@ -18,11 +18,11 @@
   ],
   "engine": "node >= 8.0.0",
   "repository": {
-    "url": "git@github.com:bitpay/ducatuscore-wallet-client.git",
+    "url": "git@github.com:bitpay/ducatus-wallet-client.git",
     "type": "git"
   },
   "bugs": {
-    "url": "https://github.com/bitpay/ducatuscore-wallet-client/issues"
+    "url": "https://github.com/bitpay/ducatus-wallet-client/issues"
   },
   "dependencies": {
     "ajv": "^6.10.0",

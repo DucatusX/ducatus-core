@@ -3,7 +3,7 @@
 var program = require('commander');
 var utils = require('./cli-utils');
 var _ = require('lodash');
-var bwc = require('../../ducatuscore-wallet-client');
+var bwc = require('../../ducatus-wallet-client');
 var Bitcore_ = {
   bch: bwc.BitcoreCash,
   btc: bwc.Bitcore,

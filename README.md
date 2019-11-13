@@ -155,7 +155,7 @@ npm run node
 
 - [Bitcore Node](packages/bitcore-node) - A full node with extended capabilities using Bitcoin Core
 - [Bitcore Wallet](packages/bitcore-wallet) - A command-line based wallet client
-- [Bitcore Wallet Client](packages/ducatuscore-wallet-client) - A client for the wallet service
+- [Bitcore Wallet Client](packages/ducatus-wallet-client) - A client for the wallet service
 - [Bitcore Wallet Service](packages/bitcore-wallet-service) - A multisig HD service for wallets
 - [Bitpay Wallet](https://github.com/bitpay/copay) - An easy-to-use, multiplatform, multisignature, secure bitcoin wallet
 - [Insight](packages/insight) - A blockchain explorer web user interface
