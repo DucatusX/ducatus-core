@@ -46,17 +46,5 @@
     "ts-node": "8.1.0",
     "tslint": "5.14.0",
     "typescript": "3.3.4000"
-  },
-  "gitHead": "012cc0216a9bc6b195035855bd17149bad41acd1",
-  "lint-staged": {
-    "*.{ts}": [
-      "tslint --fix -c tslint.json",
-      "prettier --write",
-      "git add"
-    ],
-    "*.{js,ts,css,json,md}": [
-      "prettier --write",
-      "git add"
-    ]
   }
 }

@@ -1,6 +1,6 @@
-import { DucatuscoreLib } from '../../../../../crypto-ducatus-wallet-core';
 import _ from 'lodash';
 import { IChain } from '..';
+import { DucatuscoreLib } from '../../../../../crypto-ducatus-wallet-core';
 import { BtcChain } from '../btc';
 
 const Common = require('../../common');

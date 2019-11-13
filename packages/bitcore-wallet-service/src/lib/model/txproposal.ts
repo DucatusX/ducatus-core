@@ -1,5 +1,5 @@
-import { Transactions } from '../../../../crypto-ducatus-wallet-core';
 import _ from 'lodash';
+import { Transactions } from '../../../../crypto-ducatus-wallet-core';
 import { ChainService } from '../chain/index';
 import { TxProposalLegacy } from './txproposal_legacy';
 import { TxProposalAction } from './txproposalaction';

@@ -1,6 +1,6 @@
-import { BitcoreLib } from '../../../../../crypto-ducatus-wallet-core';
 import _ from 'lodash';
 import { IChain } from '..';
+import { BitcoreLib } from '../../../../../crypto-ducatus-wallet-core';
 import { ClientError } from '../../errors/clienterror';
 import { TxProposal } from '../../model';
 
