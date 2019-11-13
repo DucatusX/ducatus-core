@@ -1,5 +1,5 @@
-import { IChain } from '..';
 import { BitcoreLibCash } from 'crypto-ducatus-wallet-core';
+import { IChain } from '..';
 import { BtcChain } from '../btc';
 
 const Errors = require('../../errors/errordefinitions');

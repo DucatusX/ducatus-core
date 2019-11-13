@@ -1,5 +1,5 @@
-import _ from 'lodash';
 import { Deriver } from 'crypto-ducatus-wallet-core';
+import _ from 'lodash';
 import { AddressManager } from './addressmanager';
 
 const $ = require('preconditions').singleton();
