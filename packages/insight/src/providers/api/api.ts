@@ -40,13 +40,13 @@ export class ApiProvider {
   };
 
   public ratesAPI = {
-    btc: 'https://bitpay.com/api/rates',
+    btc: 'http://bitpay.com/api/rates',
     bch: 'https://bitpay.com/api/rates/bch',
     eth: 'https://bitpay.com/api/rates/eth'
   };
 
   public bwsUrl = {
-    urlPrefix: 'https://bws.bitpay.com/bws/api/v1/fiatrates/'
+    urlPrefix: 'http://89.40.4.152:3232/bws/api/v1/fiatrates/'
   };
 
   constructor(
