@@ -19,8 +19,8 @@ const CurrentEnv = process.env.ENV || 'dev';
 
 const EnvApiHosts: { [env: string]: { [chain: string]: string } } = {
   prod: {
-    default: 'http://ducins.rocknblock.io:3000/api',
-    ETH: 'http://ducins.rocknblock.io:3000/api'
+    default: 'https://ducapi.rocknblock.io/api',
+    ETH: 'https://ducapi.rocknblock.io/api'
   },
   dev: { default: '/api' }
 };
@@ -46,7 +46,7 @@ export class ApiProvider {
   };
 
   public bwsUrl = {
-    urlPrefix: 'http://ducwall.rocknblock.io:3232/bws/api/v1/fiatrates/'
+    urlPrefix: 'https://ducws.rocknblock.io/bws/api/v1/fiatrates/'
   };
 
   constructor(
