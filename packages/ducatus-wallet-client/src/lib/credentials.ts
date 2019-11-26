@@ -1,12 +1,12 @@
 'use strict';
 
-import { BitcoreLib } from '../../../crypto-ducatus-wallet-core';
+import { DucatuscoreLib } from '../../../crypto-ducatus-wallet-core';
 
 import { Constants, Utils } from './common';
 const $ = require('preconditions').singleton();
 const _ = require('lodash');
 
-const Bitcore = BitcoreLib;
+const Bitcore = DucatuscoreLib;
 const sjcl = require('sjcl');
 
 export class Credentials {
