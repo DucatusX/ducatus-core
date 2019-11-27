@@ -20,7 +20,9 @@ const CurrentEnv = process.env.ENV || 'dev';
 const EnvApiHosts: { [env: string]: { [chain: string]: string } } = {
   prod: {
     default: 'https://ducapi.rocknblock.io/api',
-    ETH: 'https://ducapi.rocknblock.io/api'
+    ETH: 'https://api-eth.bitcore.io/api',
+    BTC: 'https://eth.bitcore.io/api',
+    BCH: 'https://eth.bitcore.io/api',
   },
   dev: { default: '/api' }
 };
