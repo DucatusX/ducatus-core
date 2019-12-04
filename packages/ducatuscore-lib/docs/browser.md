@@ -16,8 +16,8 @@ You can also use a `bower.json` file to store the dependencies of your project:
   "version": "0.0.1",
   "license": "MIT",
   "dependencies": {
-    "bitcore-lib": "^0.13.7",
-    "bitcore-mnemonic": "^1.0.1"
+    "bitcore-lib": "8.10.0",
+    "bitcore-mnemonic": "8.10.0"
   }
 }
 ```

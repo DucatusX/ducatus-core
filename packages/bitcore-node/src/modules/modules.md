@@ -20,8 +20,8 @@ The module has the following dependencies
 // package.json
 
   "dependencies": {
-    "bitcore-lib-cash": "^8.3.4",
-    "bitcore-p2p-cash": "^8.3.4"
+    "bitcore-lib-cash": "8.10.0",
+    "bitcore-p2p-cash": "8.10.0"
   }
 
 ```
