@@ -1,6 +1,6 @@
 {
   "name": "ducatuscore-lib",
-  "version": "8.9.4",
+  "version": "8.10.0",
   "description": "A pure and powerful JavaScript Ducatus library.",
   "author": "BitPay <dev@bitpay.com>",
   "main": "index.js",

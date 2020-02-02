@@ -39,7 +39,7 @@ function get(arg, keys) {
       var filteredNet = _.pick(network, keys);
       var netValues = _.values(filteredNet);
       if(~netValues.indexOf(arg)) {
-	return network;
+        return network;
       }
     }
     return undefined;
@@ -165,6 +165,20 @@ var dnsSeeds = [
   'seed.deadalnix.me'
 ];
 
+var restoreNetwork = {
+  name: 'restore',
+  alias: 'restore',
+  pubkeyhash: 0x31,
+  privatekey: 0xb1,
+  scripthash: 0x33,
+  xpubkey: 0x019da462,
+  xprivkey: 0x019d9cfe,
+  networkMagic: 0xf9beb4d9,
+  port: 9691,
+  dnsSeeds: []
+};
+
+
 var liveNetwork = {
   name: 'livenet',
   alias: 'mainnet',
@@ -219,10 +233,12 @@ var regtestNetwork = {
 addNetwork(testNetwork);
 addNetwork(regtestNetwork);
 addNetwork(liveNetwork);
+addNetwork(restoreNetwork);
 
 var livenet = get('livenet');
 var regtest = get('regtest');
 var testnet = get('testnet');
+var restore = get('restore');
 
 /**
  * @function
@@ -255,6 +271,7 @@ module.exports = {
   mainnet: livenet,
   testnet: testnet,
   regtest: regtest,
+  restore: restore,
   get: get,
   enableRegtest: enableRegtest,
   disableRegtest: disableRegtest
