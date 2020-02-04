@@ -5,7 +5,6 @@ export abstract class AbstractDucatuscoreLibDeriver implements IDeriver {
 
   deriveAddress(network, pubKey, addressIndex, isChange) {
     const xpub = new this.bitcoreLib.HDPublicKey(pubKey, network);
-    console.log(xpub);
     const changeNum = isChange ? 1 : 0;
     const path = `m/${changeNum}/${addressIndex}`;
     return this.bitcoreLib

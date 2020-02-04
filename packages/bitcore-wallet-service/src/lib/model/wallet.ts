@@ -256,7 +256,6 @@ export class Wallet {
     $.checkState(this.isComplete());
 
     const path = this.addressManager.getNewAddressPath(isChange, step);
-    console.log(path);
     log.verbose('Deriving addr:' + path);
     const address = Address.derive(
       this.id,

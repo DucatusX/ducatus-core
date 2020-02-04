@@ -11,4 +11,8 @@ export class DucChain extends BtcChain implements IChain {
   constructor() {
     super(DucatuscoreLib);
   }
+
+  isSingleAddress() {
+    return true;
+  }
 }
