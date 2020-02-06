@@ -535,7 +535,7 @@ export class WalletService {
       return cb(new ClientError('Multisig wallets are not supported for this coin'));
     }
 
-    if (ChainService.isSingleAddress(opts.coin)) {
+    if (ChainService.isSingleAddress(opts.coin) && addressType === Constants.SCRIPT_TYPES.P2SH) {
       opts.singleAddress = true;
     }
 
