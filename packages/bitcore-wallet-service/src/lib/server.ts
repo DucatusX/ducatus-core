@@ -535,7 +535,7 @@ export class WalletService {
       return cb(new ClientError('Multisig wallets are not supported for this coin'));
     }
 
-    if (ChainService.isSingleAddress(opts.coin) && ((opts.coin !== 'duc') || (addressType === Constants.SCRIPT_TYPES.P2SH))) {
+    if (ChainService.isSingleAddress(opts.coin) || opts.singleAddress) {
       opts.singleAddress = true;
     }
 
@@ -1318,7 +1318,7 @@ export class WalletService {
     this.getWallet({ doNotMigrate: opts.doNotMigrate }, (err, wallet) => {
       if (err) return cb(err);
 
-      if (ChainService.isSingleAddress(wallet.coin) && ((wallet.coin !== 'duc') || (wallet.addressType === Constants.SCRIPT_TYPES.P2SH))) {
+      if (ChainService.isSingleAddress(wallet.coin) || opts.singleAddress) {
         opts.ignoreMaxGap = true;
         opts.singleAddress = true;
       }
