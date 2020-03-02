@@ -22,7 +22,8 @@ var Bitcore_ = {
   bch: CWC.BitcoreLibCash,
   eth: CWC.BitcoreLib,
   xrp: CWC.BitcoreLib,
-  duc: CWC.DucatuscoreLib
+  duc: CWC.DucatuscoreLib,
+  ducx: CWC.BitcoreLib
 };
 var Mnemonic = require('bitcore-mnemonic');
 var url = require('url');
@@ -431,7 +432,7 @@ export class API extends EventEmitter {
     var coin = opts.coin || 'btc';
     if (!_.includes(Constants.COINS, coin)) return cb(new Error('Invalid coin'));
 
-    if (coin == 'eth') return cb(new Error('ETH not supported for this action'));
+    if ((coin == 'eth') || (coin == 'ducx')) return cb(new Error('ETH not supported for this action'));
 
     var B = Bitcore_[coin];
     var privateKey = B.PrivateKey(privateKey);
@@ -637,6 +638,7 @@ export class API extends EventEmitter {
     switch (chain) {
       case 'XRP':
       case 'ETH':
+      case 'DUCX':
         const unsignedTxs = t.uncheckedSerialize();
         const signedTxs = [];
         for (let index = 0; index < signatures.length; index++) {
@@ -2378,6 +2380,7 @@ export class API extends EventEmitter {
         ['btc', 'livenet'],
         ['bch', 'livenet'],
         ['duc', 'livenet'],
+        ['ducx', 'livenet'],
         ['eth', 'livenet'],
         ['eth', 'testnet'],
         ['xrp', 'livenet'],

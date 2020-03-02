@@ -175,6 +175,8 @@ export class Credentials {
         coin = '60';
       } else if (this.coin == 'xrp') {
         coin = '144';
+      } else if (this.coin == 'ducx') {
+        coin = '1060';
       } else {
         throw new Error('unknown coin: ' + this.coin);
       }
