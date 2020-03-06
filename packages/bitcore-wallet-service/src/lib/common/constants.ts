@@ -5,6 +5,7 @@ module.exports = {
     BTC: 'btc',
     BCH: 'bch',
     DUC: 'duc',
+    DUCX: 'ducx',
     ETH: 'eth',
     XRP: 'xrp',
     USDC: 'usdc',

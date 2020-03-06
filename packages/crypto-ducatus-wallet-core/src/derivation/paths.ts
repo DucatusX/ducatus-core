@@ -16,6 +16,11 @@ export const Paths = {
     livenet: "m/44'/60'/",
     testnet: "m/44'/60'/"
   },
+  DUCX: {
+    mainnet: "m/44'/1060'/",
+    livenet: "m/44'/1060'/",
+    testnet: "m/44'/1060'/"
+  },
   default: {
     testnet: "m/44'/1'/"
   }

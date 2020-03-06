@@ -17,7 +17,8 @@ const Bitcore = {
   bch: require('bitcore-lib-cash'),
   eth: require('bitcore-lib'),
   xrp: require('bitcore-lib'),
-  duc: require('ducatuscore-lib')
+  duc: require('ducatuscore-lib'),
+  ducx: require('bitcore-lib')
 };
 
 export interface IWallet {

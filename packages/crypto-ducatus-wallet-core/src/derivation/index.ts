@@ -1,6 +1,7 @@
 import { BchDeriver } from './bch';
 import { BtcDeriver } from './btc';
 import { DucDeriver } from './duc';
+import { DucXDeriver } from './ducx';
 import { EthDeriver } from './eth';
 import { Paths } from './paths';
 
@@ -20,7 +21,8 @@ const derivers: { [chain: string]: IDeriver } = {
   BTC: new BtcDeriver(),
   BCH: new BchDeriver(),
   DUC: new DucDeriver(),
-  ETH: new EthDeriver()
+  ETH: new EthDeriver(),
+  DUCX: new DucXDeriver(),
 };
 
 export class DeriverProxy {

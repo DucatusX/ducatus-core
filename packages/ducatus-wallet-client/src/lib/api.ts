@@ -1,9 +1,9 @@
 'use strict';
 
-import * as CWC from '../../../crypto-ducatus-wallet-core';
 import { EventEmitter } from 'events';
 import _ from 'lodash';
 import sjcl from 'sjcl';
+import * as CWC from '../../../crypto-ducatus-wallet-core';
 import { Constants, Utils } from './common';
 import { Credentials } from './credentials';
 import { Key } from './key';
@@ -32,7 +32,7 @@ var querystring = require('querystring');
 var log = require('./log');
 const Errors = require('./errors');
 
-var BASE_URL = 'http://ducwall.rocknblock.io:3232/bws/api';
+var BASE_URL = 'http://127.0.0.1:3232/bws/api';
 
 // /**
 // * @desc ClientAPI constructor.

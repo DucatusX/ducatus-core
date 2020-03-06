@@ -16,7 +16,8 @@ var Bitcore_ = {
   bch: BitcoreLibCash,
   eth: Bitcore,
   xrp: Bitcore,
-  duc: DucatuscoreLib
+  duc: DucatuscoreLib,
+  ducx: Bitcore
 };
 var PrivateKey = Bitcore.PrivateKey;
 var PublicKey = Bitcore.PublicKey;
