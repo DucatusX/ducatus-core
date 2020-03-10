@@ -25,7 +25,7 @@ export class CoinComponent {
 
   // tslint:disable-next-line:use-life-cycle-interface
   ngAfterViewInit() {
-    if (this.chainNetwork.chain !== 'ETH') {
+    if (this.chainNetwork.chain !== 'ETH' && this.chainNetwork.chain !== 'DUCX') {
       this.getConfirmations();
     }
   }

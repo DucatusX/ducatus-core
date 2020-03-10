@@ -33,9 +33,10 @@ export class CoinListComponent implements OnInit {
       this.loading = true;
       this.addrProvider.getAddressActivity(this.addrStr, this.chainNetwork).subscribe(
         data => {
-          const toAppCoin: any = this.chainNetwork.chain !== 'ETH' ? this.txsProvider.toAppCoin: this.txsProvider.toAppEthCoin;
+          const noEth = this.chainNetwork.chain !== 'ETH' && this.chainNetwork.chain !== 'DUCX';
+          const toAppCoin: any = noEth ? this.txsProvider.toAppCoin: this.txsProvider.toAppEthCoin;
           const formattedData = data.map(toAppCoin);
-          this.txs = this.chainNetwork.chain !== 'ETH' ? this.processData(formattedData): formattedData;
+          this.txs = noEth ? this.processData(formattedData): formattedData;
           this.showTransactions = true;
           this.loading = false;
           this.events.publish('CoinList', { length: data.length });

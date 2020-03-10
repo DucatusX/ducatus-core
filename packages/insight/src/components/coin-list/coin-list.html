@@ -5,7 +5,7 @@
     <ion-row *ngFor="let tx of txs; let i = index">
       <ion-col col-12 *ngIf="i < limit && (tx.spentTxid !== '' || tx.mintTxid)">
         <coin *ngIf="chainNetwork.chain === 'DUC' || chainNetwork.chain === 'BTC' || chainNetwork.chain === 'BCH'" [coin]="tx" [chainNetwork]="chainNetwork"></coin>
-        <transaction-details-eth *ngIf="chainNetwork.chain === 'ETH'" [tx]="tx" [showCoins]="true" [chainNetwork]="chainNetwork"></transaction-details-eth>
+        <transaction-details-eth *ngIf="chainNetwork.chain === 'ETH' || chainNetwork.chain === 'DUCX'" [tx]="tx" [showCoins]="true" [chainNetwork]="chainNetwork"></transaction-details-eth>
       </ion-col>
     </ion-row>
     <ion-row *ngIf="limit < txs.length">
