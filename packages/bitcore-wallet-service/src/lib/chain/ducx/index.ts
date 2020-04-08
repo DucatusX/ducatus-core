@@ -1,4 +1,4 @@
-import { Transactions } from 'crypto-ducatus-wallet-core';
+import { Transactions, Validation } from 'crypto-ducatus-wallet-core';
 import _ from 'lodash';
 import { IAddress } from 'src/lib/model/address';
 import { IChain } from '..';
@@ -17,7 +17,7 @@ export class DucXChain implements IChain {
    */
   private convertBitcoreBalance(bitcoreBalance, locked) {
     const { unconfirmed, confirmed, balance } = bitcoreBalance;
-    // we ASUME all locked as confirmed, for DUCX.
+    // we ASUME all locked as confirmed, for ETH.
     const convertedBalance = {
       totalAmount: balance,
       totalConfirmedAmount: confirmed,
@@ -28,6 +28,14 @@ export class DucXChain implements IChain {
       byAddress: []
     };
     return convertedBalance;
+  }
+
+  notifyConfirmations() {
+    return false;
+  }
+
+  supportsMultisig() {
+    return false;
   }
 
   getWalletBalance(server, wallet, opts, cb) {
@@ -41,27 +49,24 @@ export class DucXChain implements IChain {
       if (err) {
         return cb(err);
       }
-      server.getPendingTxs({}, (err, txps) => {
+      server.getPendingTxs(opts, (err, txps) => {
         if (err) return cb(err);
-        const lockedSum = _.sumBy(txps, 'amount');
+        const lockedSum = _.sumBy(txps, 'amount') || 0;
         const convertedBalance = this.convertBitcoreBalance(balance, lockedSum);
-        server.storage.fetchAddresses(
-          server.walletId,
-          (err, addresses: IAddress[]) => {
-            if (err) return cb(err);
-            if (addresses.length > 0) {
-              const byAddress = [
-                {
-                  address: addresses[0].address,
-                  path: Constants.PATHS.SINGLE_ADDRESS,
-                  amount: convertedBalance.totalAmount
-                }
-              ];
-              convertedBalance.byAddress = byAddress;
-            }
-            return cb(null, convertedBalance);
+        server.storage.fetchAddresses(server.walletId, (err, addresses: IAddress[]) => {
+          if (err) return cb(err);
+          if (addresses.length > 0) {
+            const byAddress = [
+              {
+                address: addresses[0].address,
+                path: addresses[0].path,
+                amount: convertedBalance.totalAmount
+              }
+            ];
+            convertedBalance.byAddress = byAddress;
           }
-        );
+          return cb(null, convertedBalance);
+        });
       });
     });
   }
@@ -124,9 +129,7 @@ export class DucXChain implements IChain {
         }
         if (_.isNumber(opts.fee)) {
           // This is used for sendmax
-          gasPrice = feePerKb = Number(
-            (opts.fee / (inGasLimit || Defaults.DEFAULT_GAS_LIMIT)).toFixed()
-          );
+          gasPrice = feePerKb = Number((opts.fee / (inGasLimit || Defaults.DEFAULT_GAS_LIMIT)).toFixed());
         }
 
         const gasLimit = inGasLimit || Defaults.DEFAULT_GAS_LIMIT;
@@ -196,31 +199,39 @@ export class DucXChain implements IChain {
   }
 
   selectTxInputs(server, txp, wallet, opts, cb, next) {
-    server.getBalance(
-      { wallet, tokenAddress: opts.tokenAddress },
-      (err, balance) => {
-        if (err) return next(err);
+    server.getBalance({ wallet, tokenAddress: opts.tokenAddress }, (err, balance) => {
+      if (err) return next(err);
 
-        const { totalAmount, availableAmount } = balance;
-        if (totalAmount < txp.getTotalAmount()) {
-          return cb(Errors.INSUFFICIENT_FUNDS);
-        } else if (availableAmount < txp.getTotalAmount()) {
-          return cb(Errors.LOCKED_FUNDS);
+      const { totalAmount, availableAmount } = balance;
+      if (totalAmount < txp.getTotalAmount()) {
+        return cb(Errors.INSUFFICIENT_FUNDS);
+      } else if (availableAmount < txp.getTotalAmount()) {
+        return cb(Errors.LOCKED_FUNDS);
+      } else {
+        if (opts.tokenAddress) {
+          // ETH wallet balance
+          server.getBalance({}, (err, ethBalance) => {
+            if (err) return next(err);
+            const { totalAmount, availableAmount } = ethBalance;
+            if (totalAmount < txp.fee) {
+              return cb(Errors.INSUFFICIENT_ETH_FEE);
+            } else if (availableAmount < txp.fee) {
+              return cb(Errors.LOCKED_ETH_FEE);
+            } else {
+              return next(server._checkTx(txp));
+            }
+          });
         } else {
           return next(server._checkTx(txp));
         }
       }
-    );
+    });
   }
 
   checkUtxos(opts) {}
 
   checkValidTxAmount(output): boolean {
-    if (
-      !_.isNumber(output.amount) ||
-      _.isNaN(output.amount) ||
-      output.amount < 0
-    ) {
+    if (!_.isNumber(output.amount) || _.isNaN(output.amount) || output.amount < 0) {
       return false;
     }
     return true;
@@ -268,5 +279,18 @@ export class DucXChain implements IChain {
       tx.id = Transactions.getHash({ tx: signed, chain });
     }
     tx.uncheckedSerialize = () => signedTxs;
+  }
+
+  validateAddress(wallet, inaddr, opts) {
+    const chain = 'DUCX';
+    const isValidTo = Validation.validateAddress(chain, wallet.network, inaddr);
+    if (!isValidTo) {
+      throw Errors.INVALID_ADDRESS;
+    }
+    const isValidFrom = Validation.validateAddress(chain, wallet.network, opts.from);
+    if (!isValidFrom) {
+      throw Errors.INVALID_ADDRESS;
+    }
+    return;
   }
 }

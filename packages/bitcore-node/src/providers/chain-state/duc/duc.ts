@@ -1,13 +1,7 @@
-import { BTCStateProvider } from '../btc/btc';
-import { CSP } from '../../../types/namespaces/ChainStateProvider';
+import { InternalStateProvider } from '../internal/internal';
 
-export class DUCStateProvider extends BTCStateProvider {
+export class DUCStateProvider extends InternalStateProvider {
   constructor(chain: string = 'DUC') {
     super(chain);
-  }
-
-  async getFee(params: CSP.GetEstimateSmartFeeParams) {
-    const { chain, network } = params;
-    return { feerate: await this.getRPC(chain, network).getEstimateFee() };
   }
 }

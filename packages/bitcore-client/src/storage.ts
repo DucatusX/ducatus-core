@@ -5,7 +5,7 @@ import { Level } from './storage/level';
 import { Mongo } from './storage/mongo';
 import { KeyImport } from './wallet';
 
-const bitcoreLib = require('crypto-wallet-core').BitcoreLib;
+const bitcoreLib = require('crypto-ducatus-wallet-core').BitcoreLib;
 
 export class Storage {
   path: string;
