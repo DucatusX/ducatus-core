@@ -661,9 +661,9 @@ export class ExpressApp {
     });
 
     router.get('/v1/txcoins/', (req, res) => {
-      const opts: { network: string, coin: string, txId: string } = {
-        network : req.query.network,
-        coin : req.query.coin,
+      const opts: { network: string; coin: string; txId: string } = {
+        network: req.query.network,
+        coin: req.query.coin,
         txId: req.query.txId
       };
       getServerWithAuth(req, res, server => {

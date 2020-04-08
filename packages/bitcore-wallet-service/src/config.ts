@@ -33,12 +33,12 @@ module.exports = {
   blockchainExplorerOpts: {
     duc: {
       livenet: {
-        url: 'http://127.0.0.1:3000',
+        url: 'http://127.0.0.1:3000'
       },
       testnet: {
         url: 'http://127.0.0.1:3000',
         regtestEnabled: false
-      },
+      }
     },
     btc: {
       livenet: {

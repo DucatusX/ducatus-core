@@ -10,7 +10,7 @@ export class ETHTxProvider {
     gasLimit: number;
     chainId?: number;
   }) {
-    const { recipients, nonce, gasPrice, data, gasLimit, chainId = 1} = params;
+    const { recipients, nonce, gasPrice, data, gasLimit, chainId = 1 } = params;
     const { address, amount } = recipients[0];
     const txData = {
       nonce: utils.toHex(nonce),
@@ -24,7 +24,7 @@ export class ETHTxProvider {
     return ethers.utils.serializeTransaction(txData);
   }
 
-  getSignatureObject (params: { tx: string; key: Key; }) {
+  getSignatureObject(params: { tx: string; key: Key }) {
     const { tx, key } = params;
     const signingKey = new ethers.utils.SigningKey(key.privKey);
     const signDigest = signingKey.signDigest.bind(signingKey);

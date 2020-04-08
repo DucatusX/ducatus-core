@@ -9,6 +9,6 @@ module.exports = {
   },
   DUC: {
     lib: require('ducatuscore-lib'),
-    p2p: require('ducatuscore-p2p'),
+    p2p: require('ducatuscore-p2p')
   }
 };

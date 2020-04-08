@@ -22,7 +22,7 @@ const derivers: { [chain: string]: IDeriver } = {
   BCH: new BchDeriver(),
   DUC: new DucDeriver(),
   ETH: new EthDeriver(),
-  DUCX: new DucXDeriver(),
+  DUCX: new DucXDeriver()
 };
 
 export class DeriverProxy {

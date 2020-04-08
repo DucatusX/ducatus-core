@@ -25,7 +25,7 @@ module.exports = {
     btc: 0.05 * 1e8,
     bch: 0.05 * 1e8,
     duc: 0.05 * 1e8,
-    eth: 1 * 1e18,  // 1 eth
+    eth: 1 * 1e18, // 1 eth
     xrp: 1 * 1e6, // 1 xrp
     ducx: 1 * 1e18 // 1 eth
   },

@@ -100,8 +100,8 @@ export function RateLimiter(method: string, perSecond: number, perMinute: number
       if (
         false &&
         (perSecondResult.value!.count > perSecond ||
-        perMinuteResult.value!.count > perMinute ||
-        perHourResult.value!.count > perHour)
+          perMinuteResult.value!.count > perMinute ||
+          perHourResult.value!.count > perHour)
       ) {
         return res.status(429).send('Rate Limited');
       } else {

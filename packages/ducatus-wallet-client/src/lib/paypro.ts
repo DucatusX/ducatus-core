@@ -9,7 +9,7 @@ const Errors = require('./errors');
 var Bitcore_ = {
   btc: Bitcore,
   bch: BitcoreLibCash,
-  duc: DucatuscoreLib,
+  duc: DucatuscoreLib
 };
 // const request = require('request');
 const JSON_PAYMENT_REQUEST_CONTENT_TYPE = 'application/payment-request';

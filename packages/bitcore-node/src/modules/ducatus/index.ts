@@ -1,6 +1,6 @@
-import { BitcoinP2PWorker } from '../bitcoin/p2p';
 import { BaseModule } from '..';
 import { DUCStateProvider } from '../../providers/chain-state/duc/duc';
+import { BitcoinP2PWorker } from '../bitcoin/p2p';
 
 export default class DUCModule extends BaseModule {
   constructor(services) {
