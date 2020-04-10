@@ -25,6 +25,7 @@ import {
   Wallet
 } from './model';
 import { Storage } from './storage';
+import { Validation } from 'crypto-ducatus-wallet-core';
 
 const config = require('../config');
 const Uuid = require('uuid');
@@ -39,7 +40,6 @@ log.level = 'error';
 
 const EmailValidator = require('email-validator');
 
-import { Validation } from 'crypto-ducatus-wallet-core';
 const Bitcore = require('bitcore-lib');
 const Bitcore_ = {
   btc: Bitcore,

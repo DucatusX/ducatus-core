@@ -3,7 +3,7 @@ import logger from '../../../logger';
 import { ETH } from './csp';
 export const EthRoutes = Router();
 
-EthRoutes.get('/api/ETH/:network/address/:address/txs/count', async (req, res) => {
+EthRoutes.get('/api/DUCX/:network/address/:address/txs/count', async (req, res) => {
   let { address, network } = req.params;
   try {
     const nonce = await ETH.getAccountNonce(network, address);
@@ -14,7 +14,7 @@ EthRoutes.get('/api/ETH/:network/address/:address/txs/count', async (req, res) =
   }
 });
 
-EthRoutes.post('/api/ETH/:network/gas', async (req, res) => {
+EthRoutes.post('/api/DUCX/:network/gas', async (req, res) => {
   const { from, to, value, data, gasPrice } = req.body;
   const { network } = req.params;
   try {
@@ -25,7 +25,7 @@ EthRoutes.post('/api/ETH/:network/gas', async (req, res) => {
   }
 });
 
-EthRoutes.get('/api/ETH/:network/token/:tokenAddress', async (req, res) => {
+EthRoutes.get('/api/DUCX/:network/token/:tokenAddress', async (req, res) => {
   const { network, tokenAddress } = req.params;
   try {
     const tokenInfo = await ETH.getERC20TokenInfo(network, tokenAddress);

@@ -31,7 +31,7 @@ export class EthP2pWorker extends BaseP2PWorker<IEthBlock> {
 
   constructor({ chain, network, chainConfig, blockModel = EthBlockStorage, txModel = EthTransactionStorage }) {
     super({ chain, network, chainConfig, blockModel });
-    this.chain = chain || 'ETH';
+    this.chain = chain || 'DUCX';
     this.network = network;
     this.chainConfig = chainConfig;
     this.syncing = false;

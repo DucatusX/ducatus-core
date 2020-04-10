@@ -39,7 +39,7 @@ describe('Point', function() {
       var p = Point(valid.x,valid.y);
       var a = p.getX().toBuffer({size: 32});
       a.length.should.equal(32);
-      a.should.deep.equal(new Buffer(valid.x, 'hex'));
+      a.should.deep.equal( Buffer.from(valid.x, 'hex'));
     });
 
   });
@@ -55,7 +55,7 @@ describe('Point', function() {
       var p = Point(valid.x,valid.y);
       var a = p.getY().toBuffer({size: 32});
       a.length.should.equal(32);
-      a.should.deep.equal(new Buffer(valid.y, 'hex'));
+      a.should.deep.equal( Buffer.from(valid.y, 'hex'));
     });
 
   });
@@ -132,7 +132,7 @@ describe('Point', function() {
       var y = '0000000000000000000000000000000000000000000000000000000000000000';
       (function() {
         var p = Point(x, y);
-      }).should.throw('Invalid x,y value for curve, cannot equal 0.');
+      }).should.throw('Invalid y value for curve.');
     });
 
 
@@ -160,13 +160,12 @@ describe('Point', function() {
 
     it('should describe this point as invalid because out of curve bounds', function() {
 
-      // point larger than max
       var x = '0000000000000000000000000000000000000000000000000000000000000000';
 
       (function() {
         // set the point
         var p = Point.fromX(false, x);
-      }).should.throw('Invalid x,y value for curve, cannot equal 0.');
+      }).should.throw('Invalid X');
     });
 
   });

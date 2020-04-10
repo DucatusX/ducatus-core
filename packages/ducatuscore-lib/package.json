@@ -1,11 +1,10 @@
 {
   "name": "ducatuscore-lib",
-  "version": "8.10.0",
-  "description": "A pure and powerful JavaScript Ducatus library.",
+  "version": "8.16.2",
+  "description": "A pure and powerful JavaScript Bitcoin library.",
   "author": "BitPay <dev@bitpay.com>",
   "main": "index.js",
   "scripts": {
-    "lint": "gulp lint",
     "test": "gulp test",
     "test:ci": "npm run test",
     "coverage": "gulp coverage",
@@ -36,7 +35,7 @@
     "request": "browser-request"
   },
   "dependencies": {
-    "bitcore-lib": "8.10.0",
+    "bech32": "=1.1.3",
     "bn.js": "=4.11.8",
     "bs58": "^4.0.1",
     "buffer-compare": "=1.1.1",
@@ -45,8 +44,7 @@
     "lodash": "=4.17.15"
   },
   "devDependencies": {
-    "base-x": "=3.0.4",
-    "bitcore-build": "8.10.0",
+    "bitcore-build": "^8.16.2",
     "brfs": "^2.0.1",
     "chai": "^4.2.0",
     "gulp": "^4.0.0",

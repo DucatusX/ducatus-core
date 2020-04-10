@@ -3,7 +3,7 @@
 import { EventEmitter } from 'events';
 import _ from 'lodash';
 import sjcl from 'sjcl';
-import * as CWC from '../../../crypto-ducatus-wallet-core';
+import * as CWC from "crypto-ducatus-wallet-core";
 import { Constants, Utils } from './common';
 import { Credentials } from './credentials';
 import { Key } from './key';

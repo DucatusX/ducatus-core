@@ -4,6 +4,16 @@ var bitcore = module.exports;
 
 // module information
 bitcore.version = 'v' + require('./package.json').version;
+bitcore.versionGuard = function(version) {
+  if (version !== undefined) {
+    var message = 'More than one instance of ducatuscore-lib found. ' +
+      'Please make sure to require ducatuscore-lib and check that submodules do' +
+      ' not also include their own ducatuscore-lib dependency.';
+    throw new Error(message);
+  }
+};
+bitcore.versionGuard(global._ducatuscore);
+global._ducatuscore = bitcore.version;
 
 // crypto
 bitcore.crypto = {};
@@ -38,6 +48,7 @@ bitcore.MerkleBlock = require('./lib/block/merkleblock');
 bitcore.BlockHeader = require('./lib/block/blockheader');
 bitcore.HDPrivateKey = require('./lib/hdprivatekey.js');
 bitcore.HDPublicKey = require('./lib/hdpublickey.js');
+bitcore.Message = require('./lib/message');
 bitcore.Networks = require('./lib/networks');
 bitcore.Opcode = require('./lib/opcode');
 bitcore.PrivateKey = require('./lib/privatekey');

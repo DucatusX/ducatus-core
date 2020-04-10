@@ -34,31 +34,21 @@ function get(arg, keys) {
     if (!_.isArray(keys)) {
       keys = [keys];
     }
-    for (var i = 0; i < networks.length; i++) {
-      var network = networks[i];
-      var filteredNet = _.pick(network, keys);
-      var netValues = _.values(filteredNet);
-      if(~netValues.indexOf(arg)) {
-        return network;
+    var containsArg = function(key) {
+      return networks[index][key] === arg;
+    };
+    for (var index in networks) {
+      if (_.some(keys, containsArg)) {
+        return networks[index];
       }
     }
     return undefined;
   }
-  return networkMaps[arg];
-}
-
-/***
- * Derives an array from the given prefix to be used in the computation
- * of the address' checksum.
- *
- * @param {string} prefix Network prefix. E.g.: 'bitcoincash'.
- */
-function prefixToArray(prefix) {
-  var result = [];
-  for (var i=0; i < prefix.length; i++) {
-    result.push(prefix.charCodeAt(i) & 31);
+  if(networkMaps[arg] && networkMaps[arg].length >= 1) {
+    return networkMaps[arg][0];
+  } else {
+    return networkMaps[arg];
   }
-  return result;
 }
 
 /**
@@ -71,6 +61,7 @@ function prefixToArray(prefix) {
  * @param {Number} data.pubkeyhash - The publickey hash prefix
  * @param {Number} data.privatekey - The privatekey prefix
  * @param {Number} data.scripthash - The scripthash prefix
+ * @param {string} data.bech32prefix - The native segwit prefix
  * @param {Number} data.xpubkey - The extended public key magic
  * @param {Number} data.xprivkey - The extended private key magic
  * @param {Number} data.networkMagic - The network magic number
@@ -88,58 +79,41 @@ function addNetwork(data) {
     pubkeyhash: data.pubkeyhash,
     privatekey: data.privatekey,
     scripthash: data.scripthash,
+    bech32prefix: data.bech32prefix,
     xpubkey: data.xpubkey,
-    xprivkey: data.xprivkey,
+    xprivkey: data.xprivkey
   });
 
-  var indexBy = data.indexBy || Object.keys(data);
-
-  if (data.prefix) {
-    _.extend(network, {
-      prefix: data.prefix,
-      prefixArray: prefixToArray(data.prefix),
-    });
-  }
-
   if (data.networkMagic) {
-    _.extend(network, {
+    JSUtil.defineImmutable(network, {
       networkMagic: BufferUtil.integerAsBuffer(data.networkMagic)
     });
   }
 
   if (data.port) {
-    _.extend(network, {
+    JSUtil.defineImmutable(network, {
       port: data.port
     });
   }
 
   if (data.dnsSeeds) {
-    _.extend(network, {
+    JSUtil.defineImmutable(network, {
       dnsSeeds: data.dnsSeeds
     });
   }
+  _.each(network, function(value) {
+    if (!_.isUndefined(value) && !_.isObject(value)) {
+      if(!networkMaps[value]) {
+        networkMaps[value] = [];
+      }
+      networkMaps[value].push(network);
+    }
+  });
+
   networks.push(network);
-  indexNetworkBy(network, indexBy);
+
   return network;
-}
 
-function indexNetworkBy(network, keys) {
-  for(var i = 0; i <  keys.length; i++) {
-    var key = keys[i];
-    var networkValue = network[key];
-    if(!_.isUndefined(networkValue) && !_.isObject(networkValue)) {
-      networkMaps[networkValue] = network;
-    }
-  }
-}
-
-function unindexNetworkBy(network, values) {
-  for(var index = 0; index < values.length; index++){
-    var value = values[index];
-    if(networkMaps[value] === network) {
-      delete networkMaps[value];
-    }
-  }
 }
 
 /**
@@ -154,32 +128,15 @@ function removeNetwork(network) {
       networks.splice(i, 1);
     }
   }
-  unindexNetworkBy(network, Object.keys(networkMaps));
+  for (var key in networkMaps) {
+    const index = networkMaps[key].indexOf(network);
+    if (index >= 0) {
+      delete networkMaps[key][index];
+    }
+  }
 }
 
-var dnsSeeds = [
-  'seed.bitcoinabc.org',
-  'seed-abc.bitcoinforks.org',
-  'seed.bitcoinunlimited.info',
-  'seed.bitprim.org ',
-  'seed.deadalnix.me'
-];
-
-var restoreNetwork = {
-  name: 'restore',
-  alias: 'restore',
-  pubkeyhash: 0x31,
-  privatekey: 0xb1,
-  scripthash: 0x33,
-  xpubkey: 0x019da462,
-  xprivkey: 0x019d9cfe,
-  networkMagic: 0xf9beb4d9,
-  port: 9691,
-  dnsSeeds: []
-};
-
-
-var liveNetwork = {
+addNetwork({
   name: 'livenet',
   alias: 'mainnet',
   prefix: 'ducatus',
@@ -192,53 +149,94 @@ var liveNetwork = {
   networkMagic: 0xebd0c6dc,
   port: 9691,
   dnsSeeds: []
-};
-
-var testNetwork = {
-  name: 'testnet',
-  prefix: 'bchtest',
-  pubkeyhash: 0x6f,
-  privatekey: 0xef,
-  scripthash: 0xc4,
-  xpubkey: 0x043587cf,
-  xprivkey: 0x04358394,
-  networkMagic: 0xf4e5f3f4,
-  port: 18333,
-  dnsSeeds: dnsSeeds
-};
-
-var regtestNetwork = {
-  name: 'regtest',
-  prefix: 'bchreg',
-  pubkeyhash: 0x6f,
-  privatekey: 0xef,
-  scripthash: 0xc4,
-  xpubkey: 0x043587cf,
-  xprivkey: 0x04358394,
-  networkMagic: 0xdab5bffa,
-  port: 18444,
-  dnsSeeds: [],
-  indexBy: [
-    'port',
-    'name',
-    'prefix',
-    'networkMagic'
-  ]
-};
-
-
-// Add configurable values for testnet/regtest
-
-
-addNetwork(testNetwork);
-addNetwork(regtestNetwork);
-addNetwork(liveNetwork);
-addNetwork(restoreNetwork);
+});
 
 var livenet = get('livenet');
-var regtest = get('regtest');
+
+addNetwork({
+  name: 'testnet',
+  prefix: 'ducatus',
+  pubkeyhash: 0x31,
+  privatekey: 0xb1,
+  scripthash: 0x33,
+  bech32prefix: 'dc',
+  xpubkey: 0x0488b21e,
+  xprivkey: 0x0488ade4,
+  networkMagic: 0xebd0c6dc,
+  port: 9691,
+  dnsSeeds: []
+});
+
 var testnet = get('testnet');
+
+
+addNetwork({
+  name: 'restore',
+  alias: 'restore',
+  prefix: 'ducatus',
+  pubkeyhash: 0x31,
+  privatekey: 0xb1,
+  scripthash: 0x33,
+  xpubkey: 0x019da462,
+  xprivkey: 0x019d9cfe,
+  networkMagic: 0xf9beb4d9,
+  port: 9691,
+  dnsSeeds: []
+});
+
 var restore = get('restore');
+
+
+
+// /**
+//  * @instance
+//  * @member Networks#livenet
+//  */
+
+// addNetwork({
+//   name: 'testnet',
+//   alias: 'test',
+//   pubkeyhash: 0x6f,
+//   privatekey: 0xef,
+//   scripthash: 0xc4,
+//   bech32prefix: 'tb',
+//   xpubkey: 0x043587cf,
+//   xprivkey: 0x04358394,
+//   networkMagic: 0x0b110907,
+//   port: 18333,
+//   dnsSeeds: [
+//     'testnet-seed.bitcoin.petertodd.org',
+//     'testnet-seed.bluematt.me',
+//     'testnet-seed.alexykot.me',
+//     'testnet-seed.bitcoin.schildbach.de'
+//   ]
+// });
+//
+// /**
+//  * @instance
+//  * @member Networks#testnet
+//  */
+// var testnet = get('testnet');
+//
+// addNetwork({
+//   name: 'regtest',
+//   alias: 'dev',
+//   pubkeyhash: 0x6f,
+//   privatekey: 0xef,
+//   scripthash: 0xc4,
+//   bech32prefix: 'bcrt',
+//   xpubkey: 0x043587cf,
+//   xprivkey: 0x04358394,
+//   networkMagic: 0xfabfb5da,
+//   port: 18444,
+//   dnsSeeds: []
+// });
+//
+// /**
+//  * @instance
+//  * @member Networks#testnet
+//  */
+// var regtest = get('regtest');
 
 /**
  * @function
@@ -247,7 +245,7 @@ var restore = get('restore');
  * Will enable regtest features for testnet
  */
 function enableRegtest() {
-  testnet.regtestEnabled = true;
+  // testnet.regtestEnabled = true;
 }
 
 /**
@@ -257,7 +255,7 @@ function enableRegtest() {
  * Will disable regtest features for testnet
  */
 function disableRegtest() {
-  testnet.regtestEnabled = false;
+  // testnet.regtestEnabled = false;
 }
 
 /**
@@ -267,11 +265,10 @@ module.exports = {
   add: addNetwork,
   remove: removeNetwork,
   defaultNetwork: livenet,
-  livenet: livenet,
+  livenet,
   mainnet: livenet,
-  testnet: testnet,
-  regtest: regtest,
-  restore: restore,
+  restore,
+  testnet,
   get: get,
   enableRegtest: enableRegtest,
   disableRegtest: disableRegtest

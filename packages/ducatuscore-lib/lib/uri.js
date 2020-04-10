@@ -20,7 +20,7 @@ var Unit = require('./unit');
  * @example
  * ```javascript
  *
- * var uri = new URI('bitcoin:12A1MyfXbW6RhdRAZEqofac5jCQQjwEPBu?amount=1.2');
+ * var uri = new URI('ducatus:12A1MyfXbW6RhdRAZEqofac5jCQQjwEPBu?amount=1.2');
  * console.log(uri.address, uri.amount);
  * ```
  *
@@ -43,7 +43,6 @@ var URI = function(data, knownParams) {
 
   if (typeof(data) === 'string') {
     var params = URI.parse(data);
-    console.log(params);
     if (params.amount) {
       params.amount = this._parseAmount(params.amount);
     }
@@ -84,7 +83,7 @@ URI.fromObject = function fromObject(json) {
  * @example
  * ```javascript
  *
- * var valid = URI.isValid('bitcoin:12A1MyfXbW6RhdRAZEqofac5jCQQjwEPBu');
+ * var valid = URI.isValid('ducatus:12A1MyfXbW6RhdRAZEqofac5jCQQjwEPBu');
  * // true
  * ```
  *
@@ -110,8 +109,9 @@ URI.isValid = function(arg, knownParams) {
  */
 URI.parse = function(uri) {
   var info = URL.parse(uri, true);
+
   if (info.protocol !== 'ducatus:') {
-    throw new TypeError('Invalid ducatus URI');
+    throw new TypeError('Invalid bitcoin URI');
   }
 
   // workaround to host insensitiveness

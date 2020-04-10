@@ -163,29 +163,29 @@ module.exports = {
     ducx: [
       {
         name: 'urgent',
-        nbBlocks: 10, // < 2 min
+        nbBlocks: 1, // < 2 min
         multiplier: 1.1,
         defaultValue: 3000000000
       },
       {
         name: 'priority',
-        nbBlocks: 15, // 3 min
+        nbBlocks: 2, // 3 min
         defaultValue: 2500000000
       },
       {
         name: 'normal',
-        nbBlocks: 25, // 5 min
+        nbBlocks: 3, // 5 min
         defaultValue: 2000000000
       },
       {
         name: 'economy',
-        nbBlocks: 50, // 10 minutes
+        nbBlocks: 4, // 10 minutes
         multiplier: 0.9,
         defaultValue: 1500000000
       },
       {
         name: 'superEconomy',
-        nbBlocks: 75, // 15 minutes
+        nbBlocks: 4, // 15 minutes
         multiplier: 0.8,
         defaultValue: 1000000000
       }

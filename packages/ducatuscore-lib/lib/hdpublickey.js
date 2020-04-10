@@ -281,8 +281,8 @@ HDPublicKey.prototype._buildFromObject = function(arg) {
     depth: _.isNumber(arg.depth) ? BufferUtil.integerAsSingleByteBuffer(arg.depth) : arg.depth,
     parentFingerPrint: _.isNumber(arg.parentFingerPrint) ? BufferUtil.integerAsBuffer(arg.parentFingerPrint) : arg.parentFingerPrint,
     childIndex: _.isNumber(arg.childIndex) ? BufferUtil.integerAsBuffer(arg.childIndex) : arg.childIndex,
-    chainCode: _.isString(arg.chainCode) ? BufferUtil.hexToBuffer(arg.chainCode) : arg.chainCode,
-    publicKey: _.isString(arg.publicKey) ? BufferUtil.hexToBuffer(arg.publicKey) :
+    chainCode: _.isString(arg.chainCode) ? Buffer.from(arg.chainCode,'hex') : arg.chainCode,
+    publicKey: _.isString(arg.publicKey) ? Buffer.from(arg.publicKey,'hex') :
       BufferUtil.isBuffer(arg.publicKey) ? arg.publicKey : arg.publicKey.toBuffer(),
     checksum: _.isNumber(arg.checksum) ? BufferUtil.integerAsBuffer(arg.checksum) : arg.checksum
   };
@@ -348,7 +348,7 @@ HDPublicKey.prototype._buildFromBuffers = function(arg) {
 
   var xpubkey;
   xpubkey = Base58Check.encode(BufferUtil.concat(sequence));
-  arg.xpubkey = new Buffer(xpubkey);
+  arg.xpubkey = Buffer.from(xpubkey);
 
   var publicKey = new PublicKey(arg.publicKey, {network: network});
   var size = HDPublicKey.ParentFingerPrintSize;
