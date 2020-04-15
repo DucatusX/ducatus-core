@@ -47,6 +47,11 @@ interface ERC20Transfer
     [key: string]: string;
   }> {}
 
+const minGasPrices = {
+  livenet: 8000000000,
+  testnet: 2000000000
+};
+
 export class ETHStateProvider extends InternalStateProvider implements IChainStateService {
   config: any;
   static rpcs = {} as { [network: string]: { rpc: CryptoRpc; web3: Web3 } };
@@ -109,7 +114,7 @@ export class ETHStateProvider extends InternalStateProvider implements IChainSta
       .toArray();
 
     const blockGasPrices = txs
-      .map(tx => Number(tx.gasPrice))
+      .map(tx => Number(Math.max(tx.gasPrice, minGasPrices[network])))
       .filter(gasPrice => gasPrice)
       .sort((a, b) => b - a);
 

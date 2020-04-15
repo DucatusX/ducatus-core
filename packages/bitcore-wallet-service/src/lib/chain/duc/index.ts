@@ -17,7 +17,6 @@ export class DucChain extends BtcChain implements IChain {
     super(DucatuscoreLib);
   }
 
-
   validateAddress(wallet, inaddr, opts) {
     const A = DucatuscoreLib.Address;
     let addr: {
@@ -38,7 +37,6 @@ export class DucChain extends BtcChain implements IChain {
   getChangeAddress(server, wallet, opts) {
     return new Promise((resolve, reject) => {
       const getChangeAddress = (wallet, cb) => {
-
         if (wallet.singleAddress) {
           server.storage.fetchAddresses(server.walletId, (err, addresses) => {
             if (err) return cb(err);
@@ -69,7 +67,6 @@ export class DucChain extends BtcChain implements IChain {
       });
     });
   }
-
 
   buildTx(txp) {
     const t = new DucatuscoreLib.Transaction();
@@ -133,8 +130,6 @@ export class DucChain extends BtcChain implements IChain {
     return t;
   }
 
-
-
   addSignaturesToBitcoreTx(tx, inputs, inputPaths, signatures, xpub) {
     if (signatures.length != inputs.length) throw new Error('Number of signatures does not match number of inputs');
 
@@ -149,7 +144,7 @@ export class DucChain extends BtcChain implements IChain {
           inputIndex: i,
           signature,
           sigtype:
-          // tslint:disable-next-line:no-bitwise
+            // tslint:disable-next-line:no-bitwise
             DucatuscoreLib.crypto.Signature.SIGHASH_ALL | DucatuscoreLib.crypto.Signature.SIGHASH_FORKID,
           publicKey: pub
         };
@@ -160,6 +155,4 @@ export class DucChain extends BtcChain implements IChain {
 
     if (i != tx.inputs.length) throw new Error('Wrong signatures');
   }
-
-
 }

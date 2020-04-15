@@ -3,6 +3,7 @@ import * as _ from 'lodash';
 import * as log from 'npmlog';
 import 'source-map-support/register';
 
+import { Validation } from 'crypto-ducatus-wallet-core';
 import { BlockChainExplorer } from './blockchainexplorer';
 import { V8 } from './blockchainexplorers/v8';
 import { ChainService } from './chain/index';
@@ -25,7 +26,6 @@ import {
   Wallet
 } from './model';
 import { Storage } from './storage';
-import { Validation } from 'crypto-ducatus-wallet-core';
 
 const config = require('../config');
 const Uuid = require('uuid');
