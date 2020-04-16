@@ -48,7 +48,7 @@ interface ERC20Transfer
   }> {}
 
 const minGasPrices = {
-  livenet: 8000000000,
+  mainnet: 8000000000,
   testnet: 2000000000
 };
 

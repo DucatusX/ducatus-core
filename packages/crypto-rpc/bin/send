@@ -1,0 +1,68 @@
+#!/usr/bin/env node
+/**
+ * SendProgram
+ *
+ * @param config
+ * ETHNode: {
+ *  chain: 'ETH',
+ *  host: 'localhost',
+ *  rpcPort: '8545',
+ *  protocol: 'http',
+ *  tokens : {
+ *    GUSD: {
+ *      tokenContractAddress: '0xd0683a2f4e9ecc9ac6bb41090b4269f7cacdd5d4',
+ *      type: 'ERC20'
+ *    },
+ *    USDC: {
+ *      tokenContractAddress: '0xc92e381c387edbfd2e2112f3054896dd20ac3d31',
+ *      type: 'ERC20'
+ *    }
+ *  }
+ *}
+ */
+const SendProgram = {
+  start: (program) => {
+    const CryptoRPC = require('../lib');
+    const {
+      currency,
+      address,
+      host,
+      port,
+      user,
+      password,
+      chain,
+      protocol,
+      rpcUser,
+      rpcPass,
+      rpcPort,
+      token,
+      amount,
+      unlock,
+    } = program;
+
+    let rpcs = new CryptoRPC({
+      chain,
+      host,
+      rpcPort: port || rpcPort,
+      rpcUser: user || rpcUser,
+      rpcPass: password || rpcPass,
+      protocol,
+      token,
+    });
+
+    const sendParams = { currency, address, amount };
+    if (unlock) {
+      return rpcs.unlockAndSendToAddress(sendParams);
+    }
+    return rpcs.sendToAddress(sendParams);
+  }
+};
+
+if (require.main === module) {
+  const params = require('../lib/args');
+  SendProgram.start(params)
+    .then(balance => process.stdout.write(`${balance}\n`))
+    .catch(err => console.error(err));
+}
+
+module.exports = SendProgram;

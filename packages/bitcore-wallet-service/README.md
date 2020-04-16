@@ -88,7 +88,7 @@ The are plenty example creating and sending proposals in the `/test/integration`
 
 ### Requirements
 
-- bitcore-node running on http://localhost:3000
+- bitcore-node running on https://ducapi.rocknblock.io
 - bws running locally on http://localhost:3232/bws/api
 - mongod running
 - copay running on port: 8100
@@ -124,7 +124,7 @@ The are plenty example creating and sending proposals in the `/test/integration`
 
 **bitcore-wallet-service/config.js**
 
-2. Point testnet to http://localhost:3000 in BWS/config.js and set regtestEnabled to true.
+2. Point testnet to https://ducapi.rocknblock.io in BWS/config.js and set regtestEnabled to true.
 
 ```
 blockchainExplorerOpts: {
@@ -133,8 +133,8 @@ blockchainExplorerOpts: {
         url: 'https://api.bitcore.io'
       },
       testnet: {
-        // set url to http://localhost:3000 here
-        url: 'http://localhost:3000',
+        // set url to https://ducapi.rocknblock.io here
+        url: 'https://ducapi.rocknblock.io',
         // set regtestEnabled to true here
         regtestEnabled: true
       }

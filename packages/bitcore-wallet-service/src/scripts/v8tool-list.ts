@@ -33,8 +33,8 @@ const BASE = {
   BTC: `https://api.bitcore.io/api/${coin}/${network}`,
   BCH: `https://api.bitcore.io/api/${coin}/${network}`,
   ETH: `https://api-eth.bitcore.io/api/${coin}/${network}`,
-  DUC: `http://localhost:3000/api/${coin}/${network}`,
-  DUCX: `http://localhost:3000/api/${coin}/${network}`
+  DUC: `https://ducapi.rocknblock.io/api/${coin}/${network}`,
+  DUCX: `https://ducapi.rocknblock.io/api/${coin}/${network}`
 };
 
 let baseUrl = BASE[coin];

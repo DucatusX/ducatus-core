@@ -233,7 +233,7 @@ module.exports = {
   // Cache time for blockchain height (in ms)
   // this is actually erased on 'new block' notifications
   // so, 30m seems fine
-  BLOCKHEIGHT_CACHE_TIME: 30 * 60 * 1000,
+  BLOCKHEIGHT_CACHE_TIME: 3 * 60 * 1000,
 
   // Cache time fee levels (in ms)
   FEE_LEVEL_CACHE_DURATION: 6 * 60 * 1000,

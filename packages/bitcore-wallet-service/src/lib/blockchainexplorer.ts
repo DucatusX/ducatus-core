@@ -19,8 +19,8 @@ const PROVIDERS = {
       testnet: 'https://api.bitpay.com'
     },
     duc: {
-      livenet: 'http://127.0.0.1:3000',
-      testnet: 'http://127.0.0.1:3000'
+      livenet: 'https://ducapi.rocknblock.io',
+      testnet: 'https://ducapi.rocknblock.io'
     },
     eth: {
       livenet: 'https://api-eth.bitcore.io',
@@ -31,8 +31,8 @@ const PROVIDERS = {
       testnet: 'https://api-xrp.bitcore.io'
     },
     ducx: {
-      livenet: 'http://127.0.0.1:3000',
-      testnet: 'http://127.0.0.1:3000'
+      livenet: 'https://ducapi.rocknblock.io',
+      testnet: 'https://ducapi.rocknblock.io'
     }
   }
 };
