@@ -1158,7 +1158,7 @@ export class WalletService {
     this.getWallet({}, (err, wallet) => {
       if (err) return cb(err);
 
-      if (wallet.coin != 'eth') {
+      if ((wallet.coin != 'eth') && (wallet.coin != 'ducx')) {
         opts.tokenAddresses = null;
       }
 

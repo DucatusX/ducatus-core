@@ -4,6 +4,7 @@ import { DUCTxProvider } from './duc';
 import { DUCXTxProvider } from './ducx';
 import { ERC20TxProvider } from './erc20';
 import { ETHTxProvider } from './eth';
+import { XRPTxProvider } from './xrp';
 
 const providers = {
   BTC: new BTCTxProvider(),
@@ -11,7 +12,8 @@ const providers = {
   DUC: new DUCTxProvider(),
   ETH: new ETHTxProvider(),
   DUCX: new DUCXTxProvider(),
-  ERC20: new ERC20TxProvider()
+  ERC20: new ERC20TxProvider(),
+  XRP: new XRPTxProvider()
 };
 
 export class TransactionsProxy {

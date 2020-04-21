@@ -22,6 +22,12 @@ const fiatCodes = {
   AUD: 1
 };
 
+
+const staticRates = {
+  duc: 0.05,
+  ducx: 0.5
+};
+
 export class FiatRateService {
   request: request.RequestAPI<any, any, any>;
   defaultProvider: any;
@@ -71,7 +77,7 @@ export class FiatRateService {
 
   _fetch(cb?) {
     cb = cb || function() {};
-    const coins = ['btc', 'bch', 'eth', 'xrp', 'duc'];
+    const coins = ['btc', 'bch', 'eth', 'xrp', 'duc', 'ducx'];
     const provider = this.providers[0];
 
     //    async.each(this.providers, (provider, next) => {
@@ -164,11 +170,20 @@ export class FiatRateService {
     // Oldest date in timestamp range in epoch number ex. 24 hours ago
     const now = Date.now() - Defaults.FIAT_RATE_FETCH_INTERVAL * 60 * 1000;
     const ts = _.isNumber(opts.ts) ? opts.ts : now;
-    const coins = ['btc', 'bch', 'eth', 'xrp'];
+    const coins = ['btc', 'bch', 'eth', 'xrp', 'duc', 'ducx'];
 
     async.map(
       coins,
       (coin: string, cb) => {
+
+        if (staticRates[coin]) {
+          historicalRates[coin] = [{
+            rate: staticRates[coin],
+            fetchedOn: new Date().getTime()
+          }];
+          return cb(null, historicalRates);
+        }
+
         this.storage.fetchHistoricalRates(coin, opts.code, ts, (err, rates) => {
           if (err) return cb(err);
           if (!rates) return cb();

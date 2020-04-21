@@ -4,6 +4,7 @@ import { DucDeriver } from './duc';
 import { DucXDeriver } from './ducx';
 import { EthDeriver } from './eth';
 import { Paths } from './paths';
+import { XrpDeriver } from './xrp';
 
 export interface Key {
   address: string;
@@ -22,7 +23,8 @@ const derivers: { [chain: string]: IDeriver } = {
   BCH: new BchDeriver(),
   DUC: new DucDeriver(),
   ETH: new EthDeriver(),
-  DUCX: new DucXDeriver()
+  DUCX: new DucXDeriver(),
+  XRP: new XrpDeriver()
 };
 
 export class DeriverProxy {

@@ -40,6 +40,14 @@ module.exports = {
         regtestEnabled: false
       }
     },
+    ducx: {
+      livenet: {
+        url: 'https://ducapi.rocknblock.io'
+      },
+      testnet: {
+        url: 'https://ducapi.rocknblock.io'
+      }
+    },
     btc: {
       livenet: {
         url: 'https://api.bitcore.io'
