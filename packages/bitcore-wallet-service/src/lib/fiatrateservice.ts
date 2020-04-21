@@ -22,7 +22,6 @@ const fiatCodes = {
   AUD: 1
 };
 
-
 const staticRates = {
   duc: 0.05,
   ducx: 0.5
@@ -175,12 +174,13 @@ export class FiatRateService {
     async.map(
       coins,
       (coin: string, cb) => {
-
         if (staticRates[coin]) {
-          historicalRates[coin] = [{
-            rate: staticRates[coin],
-            fetchedOn: new Date().getTime()
-          }];
+          historicalRates[coin] = [
+            {
+              rate: staticRates[coin],
+              fetchedOn: new Date().getTime()
+            }
+          ];
           return cb(null, historicalRates);
         }
 
