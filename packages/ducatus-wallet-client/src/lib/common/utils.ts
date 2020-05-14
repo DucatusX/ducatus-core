@@ -345,7 +345,7 @@ export class Utils {
 
       return t;
     } else {
-      const { data, destinationTag, outputs, payProUrl, tokenAddress } = txp;
+      const { data, destinationTag, outputs, payProUrl, tokenAddress, tokenId } = txp;
       const recipients = outputs.map(output => {
         return {
           amount: output.amount,
@@ -360,7 +360,9 @@ export class Utils {
       }
       const unsignedTxs = [];
       const isERC20 = tokenAddress && !payProUrl;
-      const chain = isERC20 ? 'ERC20' : this.getChain(coin);
+      const isERC721 = isERC20 && tokenId;
+      const chain = isERC721 ? 'ERC721' : isERC20 ? 'ERC20' : this.getChain(coin);
+
       for (let index = 0; index < recipients.length; index++) {
         const rawTx = Transactions.create({
           ...txp,

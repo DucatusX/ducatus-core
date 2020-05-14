@@ -140,9 +140,12 @@ export class DucXChain implements IChain {
   }
 
   buildTx(txp) {
-    const { data, outputs, payProUrl, tokenAddress } = txp;
+    const { data, outputs, payProUrl, tokenAddress, tokenId } = txp;
     const isERC20 = tokenAddress && !payProUrl;
-    const chain = isERC20 ? 'ERC20' : 'DUCX';
+    const isERC721 = isERC20 && tokenId;
+
+    const chain = isERC721 ? 'ERC721' : isERC20 ? 'ERC20' : 'DUCX';
+
     const recipients = outputs.map(output => {
       return {
         amount: output.amount,

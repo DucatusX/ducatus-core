@@ -9,6 +9,8 @@ export class ETHTxProvider {
     data: string;
     gasLimit: number;
     chainId?: number;
+    fromAddress?: string;
+    tokenId?: number;
   }) {
     const { recipients, nonce, gasPrice, data, gasLimit, chainId = 1 } = params;
     const { address, amount } = recipients[0];
