@@ -99,7 +99,7 @@ module.exports = {
     maintenanceMode: false
   },
   staticRoot: '/tmp/static',
-  ignoreRateLimiter: true
+  // ignoreRateLimiter: true
   // simplex: {
   //   sandbox: {
   //     apiKey: 'simplex_sandbox_api_key_here',
