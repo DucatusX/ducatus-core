@@ -28,9 +28,14 @@ export class ERC721TxProvider extends DUCXTxProvider {
     return super.create(newParams);
   }
 
-  encodeData(params: { recipients: Array<{ address: string; amount: string }>; tokenAddress: string; from: string; tokenId: number;}) {
+  encodeData(params: {
+    recipients: Array<{ address: string; amount: string }>;
+    tokenAddress: string;
+    from: string;
+    tokenId: number;
+  }) {
     const [{ address }] = params.recipients;
-    const { tokenAddress, from, tokenId} = params;
+    const { tokenAddress, from, tokenId } = params;
     const data = this.getERC721Contract(tokenAddress)
       .methods.transferFrom(from, address, tokenId)
       .encodeABI();

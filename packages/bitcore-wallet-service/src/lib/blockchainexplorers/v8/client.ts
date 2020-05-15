@@ -42,7 +42,7 @@ export class Client {
 
   async getBalance(params) {
     const { payload, pubKey, tokenAddress, tokenId } = params;
-    const query = (tokenAddress && !tokenId) ? `?tokenAddress=${tokenAddress}` : '';
+    const query = tokenAddress && !tokenId ? `?tokenAddress=${tokenAddress}` : '';
     const url = `${this.baseUrl}/wallet/${pubKey}/balance${query}`;
     console.log('[client.js.37:url:]', url); // TODO
     const signature = this.sign({ method: 'GET', url, payload });
