@@ -23,8 +23,8 @@ const fiatCodes = {
 };
 
 const staticRates = {
-  duc: 0.05,
-  ducx: 0.5
+  duc: 0.06,
+  ducx: 0.6
 };
 
 export class FiatRateService {
