@@ -2463,7 +2463,8 @@ export class WalletService {
                     data: opts.data, // Backward compatibility for BWC < v7.1.1
                     tokenAddress: opts.tokenAddress,
                     destinationTag: opts.destinationTag,
-                    invoiceID: opts.invoiceID
+                    invoiceID: opts.invoiceID,
+                    tokenId: opts.tokenId
                   };
                   txp = TxProposal.create(txOpts);
                   next();

@@ -120,6 +120,7 @@ export class TxProposal {
   gasLimit?: number; // Backward compatibility for BWC <= 8.9.0
   data?: string; // Backward compatibility for BWC <= 8.9.0
   tokenAddress?: string;
+  tokenId?: string;
   destinationTag?: string;
   invoiceID?: string;
 
@@ -180,6 +181,7 @@ export class TxProposal {
     x.gasLimit = opts.gasLimit; // Backward compatibility for BWC <= 8.9.0
     x.data = opts.data; // Backward compatibility for BWC <= 8.9.0
     x.tokenAddress = opts.tokenAddress;
+    x.tokenId = opts.tokenId;
 
     // XRP
     x.destinationTag = opts.destinationTag;
@@ -238,6 +240,7 @@ export class TxProposal {
     x.gasLimit = obj.gasLimit; // Backward compatibility for BWC <= 8.9.0
     x.data = obj.data; // Backward compatibility for BWC <= 8.9.0
     x.tokenAddress = obj.tokenAddress;
+    x.tokenId = obj.tokenId;
 
     // XRP
     x.destinationTag = obj.destinationTag;
