@@ -3,6 +3,7 @@ import { BTCTxProvider } from './btc';
 import { DUCTxProvider } from './duc';
 import { DUCXTxProvider } from './ducx';
 import { ERC20TxProvider } from './erc20';
+import { ERC721TxProvider } from './erc721';
 import { ETHTxProvider } from './eth';
 import { XRPTxProvider } from './xrp';
 
@@ -13,6 +14,7 @@ const providers = {
   ETH: new ETHTxProvider(),
   DUCX: new DUCXTxProvider(),
   ERC20: new ERC20TxProvider(),
+  ERC721: new ERC721TxProvider(),
   XRP: new XRPTxProvider()
 };
 
