@@ -1378,6 +1378,33 @@ export class WalletService {
   }
 
   /**
+   * Get all addresses.
+   * @param {Object} opts
+   * @param {Numeric} opts.limit (optional) - Limit the resultset. Return all addresses by default.
+   * @param {Boolean} [opts.reverse=false] (optional) - Reverse the order of returned addresses.
+   * @returns {Address}
+   */
+  findInfoByAddress(address, cb) {
+  
+    this.storage.fetchAddress(address, (err, address) => {
+      if (err) return cb(err);
+      else {
+
+        this.storage.fetchWallet(this.walletId, (err, wallet) => {
+          if (err) return cb(err);
+          if (!wallet) return cb(Errors.WALLET_NOT_FOUND);
+
+          const data = { address, wallet };
+          return cb(null, data);
+        });
+
+        // return cb(null, info);
+      }
+    });
+
+  }
+
+  /**
    * Verifies that a given message was actually sent by an authorized copayer.
    * @param {Object} opts
    * @param {string} opts.message - The message to verify.

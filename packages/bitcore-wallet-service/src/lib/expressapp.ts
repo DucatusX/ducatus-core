@@ -537,6 +537,19 @@ export class ExpressApp {
       });
     });
 
+    router.get('/v1/address_info/', (req, res) => {
+      getServerWithAuth(req, res, server => {
+        const reqAddress = req.query.address || null;
+
+        if (!reqAddress) return returnError('no address provide', res, req);
+
+        server.findInfoByAddress(reqAddress, (err, info) => {
+          if (err) return returnError(err, res, req);
+          res.json(info);
+        });
+      });
+    });
+
     router.get('/v1/addresses/', (req, res) => {
       getServerWithAuth(req, res, server => {
         const opts: { limit?: number; reverse?: boolean } = {};

@@ -1382,6 +1382,24 @@ export class API extends EventEmitter {
   }
 
   // /**
+  // * Get wallet by address
+  // *
+  // * @param {String} address
+  // * @param {Callback} cb
+  // * @returns {Callback} cb - Return error or wallet info
+  // */
+  getInfoByAddress(address, cb) {
+    $.checkState(this.credentials && this.credentials.isComplete());
+
+    var url = '/v1/address_info/' + '?address=' + address;
+
+    this.request.get(url, (err, info) => {
+      if (err) return cb(err);
+      return cb(null, info);
+    });
+  }
+
+  // /**
   // * Update wallet balance
   // *
   // * @param {String} opts.coin - Optional: defaults to current wallet coin

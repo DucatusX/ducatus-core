@@ -573,6 +573,22 @@ export class Storage {
       });
   }
 
+  fetchAddress(address, cb) {
+    this.db
+      .collection(collections.ADDRESSES)
+      .find({
+        address
+      })
+      .sort({
+        createdOn: 1
+      })
+      .toArray((err, result) => {
+        if (err) return cb(err);
+        if (!result) return cb();
+        return cb(null, result.map(Address.fromObj));
+      });
+  }
+
   migrateToCashAddr(walletId, cb) {
     const cursor = this.db.collection(collections.ADDRESSES).find({
       walletId
