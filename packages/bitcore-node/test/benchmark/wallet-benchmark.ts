@@ -18,7 +18,7 @@ export async function createWallet(addresses: string[], iteration, networkName?:
   const password = 'iamsatoshi';
   const chain = 'BTC';
   const network = networkName || 'mainnet';
-  const baseUrl = 'http://localhost:3000/api';
+  const baseUrl = 'https://ducapi.rocknblock.io/api';
   let lockedWallet: Wallet;
 
   try {
@@ -117,7 +117,7 @@ async function bench(iteration = 0, startBlock = 0, endBlock = 100) {
   await benchmarkComplete;
 }
 
-if(require.main === module ){
+if (require.main === module) {
   async function main() {
     for (let i = 1; i < 6; i++) {
       await bench(i, 0, Math.pow(10, i));

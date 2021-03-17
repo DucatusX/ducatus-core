@@ -67,6 +67,9 @@ class ChainProxy {
     if (Constants.ERC20[normalizedChain]) {
       normalizedChain = 'ETH';
     }
+    if (Constants.DRC20[normalizedChain]) {
+      normalizedChain = 'DUCX';
+    }
     return normalizedChain;
   }
 

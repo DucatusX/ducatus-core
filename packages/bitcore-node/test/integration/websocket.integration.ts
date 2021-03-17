@@ -20,10 +20,7 @@ import { WalletAddressStorage } from '../../src/models/walletAddress';
 import { Socket } from '../../src/services/socket';
 
 function getSocket() {
-  const socket = io.connect(
-    'http://localhost:3000',
-    { transports: ['websocket'] }
-  );
+  const socket = io.connect('https://ducapi.rocknblock.io', { transports: ['websocket'] });
   return socket;
 }
 
@@ -140,9 +137,9 @@ describe('Websockets', function() {
   });
 
   it('should get wallet events', async () => {
-    const authClient = new Client({ apiUrl: 'http://localhost:3000/api', authKey });
+    const authClient = new Client({ apiUrl: 'https://ducapi.rocknblock.io/api', authKey });
 
-    const payload = { method: 'socket', url: 'http://localhost:3000/api' };
+    const payload = { method: 'socket', url: 'https://ducapi.rocknblock.io/api' };
     const authPayload = { pubKey, message: authClient.getMessage(payload), signature: authClient.sign(payload) };
     const chain = 'BTC';
     const network = 'regtest';
@@ -175,8 +172,8 @@ describe('Websockets', function() {
   });
 
   it('should get all wallet events', async () => {
-    const authClient = new Client({ apiUrl: 'http://localhost:3000/api', authKey: bwsPrivKey });
-    const payload = { method: 'socket', url: 'http://localhost:3000/api' };
+    const authClient = new Client({ apiUrl: 'https://ducapi.rocknblock.io/api', authKey: bwsPrivKey });
+    const payload = { method: 'socket', url: 'https://ducapi.rocknblock.io/api' };
     const authPayload = {
       pubKey: bwsKey,
       message: authClient.getMessage(payload),
@@ -218,9 +215,9 @@ describe('Websockets', function() {
   it('should get an error when the key does not match the bwsKey', async () => {
     const pubKey = authKey.publicKey.toString('hex');
     const wrongKey = new PrivateKey();
-    const authClient = new Client({ apiUrl: 'http://localhost:3000/api', authKey: wrongKey });
+    const authClient = new Client({ apiUrl: 'https://ducapi.rocknblock.io/api', authKey: wrongKey });
 
-    const payload = { method: 'socket', url: 'http://localhost:3000/api' };
+    const payload = { method: 'socket', url: 'https://ducapi.rocknblock.io/api' };
     const authPayload = { pubKey, message: authClient.getMessage(payload), signature: authClient.sign(payload) };
     const chain = 'BTC';
     const network = 'regtest';
@@ -238,9 +235,9 @@ describe('Websockets', function() {
 
   it('should get an error when the signature is invalid', async () => {
     const wrongKey = new PrivateKey();
-    const authClient = new Client({ apiUrl: 'http://localhost:3000/api', authKey: wrongKey });
+    const authClient = new Client({ apiUrl: 'https://ducapi.rocknblock.io/api', authKey: wrongKey });
 
-    const payload = { method: 'socket', url: 'http://localhost:3000/api' };
+    const payload = { method: 'socket', url: 'https://ducapi.rocknblock.io/api' };
     const authPayload = { pubKey, message: authClient.getMessage(payload), signature: 'invalid' };
     const chain = 'BTC';
     const network = 'regtest';

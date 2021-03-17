@@ -31,6 +31,9 @@ export class Utils {
     if (Constants.ERC20.includes(coin)) {
       normalizedChain = 'ETH';
     }
+    if (Constants.DRC20.includes(coin)) {
+      normalizedChain = 'DUCX';
+    }
     return normalizedChain;
   }
 
@@ -361,7 +364,14 @@ export class Utils {
       const unsignedTxs = [];
       const isERC20 = tokenAddress && !payProUrl;
       const isERC721 = isERC20 && tokenId;
-      const chain = isERC721 ? 'ERC721' : isERC20 ? 'ERC20' : this.getChain(coin);
+
+      const chain = isERC721
+        ? 'ERC721'
+        : isERC20
+        ? this.getChain(coin) === 'DUCX'
+          ? 'DRC20'
+          : 'ERC20'
+        : this.getChain(coin);
 
       for (let index = 0; index < recipients.length; index++) {
         const rawTx = Transactions.create({

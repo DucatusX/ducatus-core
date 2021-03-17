@@ -160,7 +160,24 @@ export class FiatRateService {
     );
   }
 
-  getHistoricalRates(opts, cb) {
+  getCustomCoinRate() {
+    return new Promise((resolve, reject) => {
+      this.request.get(
+        {
+          url: 'https://ducexpl.rocknblock.io/api/v1/rates/',
+          json: true
+        },
+        (err, res, body) => {
+          if (err || !body) {
+            reject(err);
+          }
+          resolve(res);
+        }
+      );
+    });
+  }
+
+  async getHistoricalRates(opts, cb) {
     $.shouldBeFunction(cb);
 
     opts = opts || {};
@@ -170,18 +187,32 @@ export class FiatRateService {
     const now = Date.now() - Defaults.FIAT_RATE_FETCH_INTERVAL * 60 * 1000;
     const ts = _.isNumber(opts.ts) ? opts.ts : now;
     const coins = ['btc', 'bch', 'eth', 'xrp', 'duc', 'ducx'];
+    const customCoins = ['duc', 'ducx'];
 
     async.map(
       coins,
-      (coin: string, cb) => {
-        if (staticRates[coin]) {
-          historicalRates[coin] = [
-            {
-              rate: staticRates[coin],
-              fetchedOn: new Date().getTime()
+      async (coin: string, cb) => {
+        if (customCoins.includes(coin)) {
+          try {
+            const { body }: any = await this.getCustomCoinRate();
+            historicalRates[coin] = [
+              {
+                rate: body[coin.toUpperCase()].USD,
+                fetchedOn: new Date().getTime()
+              }
+            ];
+            return cb(null, historicalRates);
+          } catch (err) {
+            if (staticRates[coin]) {
+              historicalRates[coin] = [
+                {
+                  rate: staticRates[coin],
+                  fetchedOn: new Date().getTime()
+                }
+              ];
+              return cb(null, historicalRates);
             }
-          ];
-          return cb(null, historicalRates);
+          }
         }
 
         this.storage.fetchHistoricalRates(coin, opts.code, ts, (err, rates) => {

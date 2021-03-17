@@ -23,7 +23,7 @@ const EnvApiHosts: { [env: string]: { [chain: string]: string } } = {
     // DUCX: 'http://127.0.0.1:3000/api',
     ETH: 'https://api-eth.bitcore.io/api',
     BTC: 'https://eth.bitcore.io/api',
-    BCH: 'https://eth.bitcore.io/api',
+    BCH: 'https://eth.bitcore.io/api'
   },
   dev: {
     default: '/api',

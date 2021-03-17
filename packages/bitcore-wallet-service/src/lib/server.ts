@@ -1385,11 +1385,9 @@ export class WalletService {
    * @returns {Address}
    */
   findInfoByAddress(address, cb) {
-  
     this.storage.fetchAddress(address, (err, address) => {
       if (err) return cb(err);
       else {
-
         this.storage.fetchWallet(this.walletId, (err, wallet) => {
           if (err) return cb(err);
           if (!wallet) return cb(Errors.WALLET_NOT_FOUND);
@@ -1401,7 +1399,6 @@ export class WalletService {
         // return cb(null, info);
       }
     });
-
   }
 
   /**

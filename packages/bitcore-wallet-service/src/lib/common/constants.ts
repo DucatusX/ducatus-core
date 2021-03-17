@@ -10,7 +10,12 @@ module.exports = {
     XRP: 'xrp',
     USDC: 'usdc',
     PAX: 'pax',
-    GUSD: 'gusd'
+    GUSD: 'gusd',
+    JAMASY: 'jamasy',
+    NUYASA: 'nuyasa',
+    SUNOBA: 'sunoba',
+    DSCMED: 'dscmed',
+    POG1: 'pog1'
   },
 
   ERC20: {
@@ -18,7 +23,13 @@ module.exports = {
     PAX: 'pax',
     GUSD: 'gusd'
   },
-
+  DRC20: {
+    JAMASY: 'jamasy',
+    NUYASA: 'nuyasa',
+    SUNOBA: 'sunoba',
+    DSCMED: 'dscmed',
+    POG1: 'pog1'
+  },
   UTXO_COINS: {
     BTC: 'btc',
     BCH: 'bch',
@@ -70,6 +81,36 @@ module.exports = {
       symbol: 'GUSD',
       decimal: 2,
       address: '0x056fd409e1d7a124bd7017459dfea2f387b6d5cd'
+    },
+    '0xa9CB8e18E4C2C0a1C9Bf4367E7115165ed7e41F0': {
+      name: 'JAMASY',
+      symbol: 'JAMASY',
+      decimal: 8,
+      address: '0xa9CB8e18E4C2C0a1C9Bf4367E7115165ed7e41F0'
+    },
+    '0x3D30806b1E1F021Fe12DF506C3A1F96CfB94464a': {
+      name: 'NUYASA',
+      symbol: 'NUYASA',
+      decimal: 8,
+      address: '0x3D30806b1E1F021Fe12DF506C3A1F96CfB94464a'
+    },
+    '0xB7A7221E37d12A8Ea92468F283422B16DbC364D9': {
+      name: 'SUNOBA',
+      symbol: 'SUNOBA',
+      decimal: 8,
+      address: '0xB7A7221E37d12A8Ea92468F283422B16DbC364D9'
+    },
+    '0x14460383feFFE73eA1FB4F0F11B941F44c17bDD2': {
+      name: 'DSCMED',
+      symbol: 'DSCMED',
+      decimal: 8,
+      address: '0x14460383feFFE73eA1FB4F0F11B941F44c17bDD2'
+    },
+    '0x511e1f8e872c3fe9b3fCefEf58ec7FE4E8130Cc1': {
+      name: 'POG1',
+      symbol: 'POG1',
+      decimal: 8,
+      address: '0x511e1f8e872c3fe9b3fCefEf58ec7FE4E8130Cc1'
     }
   }
 };

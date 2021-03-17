@@ -98,7 +98,7 @@ module.exports = {
   maintenanceOpts: {
     maintenanceMode: false
   },
-  staticRoot: '/tmp/static',
+  staticRoot: '/tmp/static'
   // ignoreRateLimiter: true
   // simplex: {
   //   sandbox: {

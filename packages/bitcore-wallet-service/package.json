@@ -29,7 +29,7 @@
     "body-parser": "^1.11.0",
     "compression": "^1.6.2",
     "ducatuscore-lib": "^8.16.2",
-    "crypto-ducatus-wallet-core": "^8.16.9",
+    "crypto-ducatus-wallet-core": "^8.16.11",
     "email-validator": "^1.0.1",
     "express": "^4.10.0",
     "express-rate-limit": "^2.6.0",

@@ -150,6 +150,31 @@ export class Utils {
         toSatoshis: 1e18,
         maxDecimals: 6,
         minDecimals: 2
+      },
+      jamasy: {
+        toSatoshis: 1e8,
+        maxDecimals: 8,
+        minDecimals: 2
+      },
+      nuyasa: {
+        toSatoshis: 1e8,
+        maxDecimals: 8,
+        minDecimals: 2
+      },
+      sunoba: {
+        toSatoshis: 1e8,
+        maxDecimals: 8,
+        minDecimals: 2
+      },
+      dscmed: {
+        toSatoshis: 1e8,
+        maxDecimals: 8,
+        minDecimals: 2
+      },
+      pog1: {
+        toSatoshis: 1e8,
+        maxDecimals: 8,
+        minDecimals: 2
       }
     };
 
