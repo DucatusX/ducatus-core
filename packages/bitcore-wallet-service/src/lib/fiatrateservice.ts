@@ -164,8 +164,7 @@ export class FiatRateService {
     return new Promise((resolve, reject) => {
       this.request.get(
         {
-          url: 'https://ducexpl.rocknblock.io/api/v1/rates/',
-          json: true
+          url: 'https://rates.ducatuscoins.com/api/v1/rates/'
         },
         (err, res, body) => {
           if (err || !body) {
