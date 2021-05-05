@@ -87,7 +87,7 @@
     "bitcore-p2p": "^8.16.2",
     "bitcore-p2p-cash": "^8.16.2",
     "ducatuscore-p2p": "^8.9.0",
-    "ducatus-wallet-client": "^8.16.16",
+    "ducatus-wallet-client": "^8.16.31",
     "ducatuscore-lib": "^8.16.2",
     "body-parser": "1.18.3",
     "cors": "2.8.4",

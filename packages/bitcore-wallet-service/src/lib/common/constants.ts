@@ -15,7 +15,8 @@ module.exports = {
     NUYASA: 'nuyasa',
     SUNOBA: 'sunoba',
     DSCMED: 'dscmed',
-    POG1: 'pog1'
+    POG1: 'pog1',
+    WDE: 'wde'
   },
 
   ERC20: {
@@ -28,7 +29,8 @@ module.exports = {
     NUYASA: 'nuyasa',
     SUNOBA: 'sunoba',
     DSCMED: 'dscmed',
-    POG1: 'pog1'
+    POG1: 'pog1',
+    WDE: 'wde'
   },
   UTXO_COINS: {
     BTC: 'btc',
@@ -111,6 +113,12 @@ module.exports = {
       symbol: 'POG1',
       decimal: 8,
       address: '0x511e1f8e872c3fe9b3fCefEf58ec7FE4E8130Cc1'
+    },
+    '0x17CaCa02DDf472F62bFED5165FACf7A6B5C72926': {
+      name: 'WDE',
+      symbol: 'WDE',
+      decimal: 8,
+      address: '0x17CaCa02DDf472F62bFED5165FACf7A6B5C72926'
     }
   }
 };

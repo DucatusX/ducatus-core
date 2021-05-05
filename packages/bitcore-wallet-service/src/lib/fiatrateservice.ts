@@ -22,16 +22,14 @@ const fiatCodes = {
   AUD: 1
 };
 
-const staticRates = {
-  duc: 0.06,
-  ducx: 0.6
-};
+const customCoins = ['duc', 'ducx'];
 
 export class FiatRateService {
   request: request.RequestAPI<any, any, any>;
   defaultProvider: any;
   providers: any[];
   storage: Storage;
+
   init(opts, cb) {
     opts = opts || {};
 
@@ -77,12 +75,16 @@ export class FiatRateService {
   _fetch(cb?) {
     cb = cb || function() {};
     const coins = ['btc', 'bch', 'eth', 'xrp', 'duc', 'ducx'];
-    const provider = this.providers[0];
 
     //    async.each(this.providers, (provider, next) => {
     async.each(
       coins,
       (coin, next2) => {
+        const provider = customCoins.includes(coin) ? this.providers[1] : this.providers[0];
+        if (customCoins.includes(coin)) {
+          console.log(`Get ${coin} from ${provider.url}`);
+        }
+
         this._retrieve(provider, coin, (err, res) => {
           if (err) {
             log.warn('Error retrieving data for ' + provider.name + coin, err);
@@ -103,9 +105,11 @@ export class FiatRateService {
 
   _retrieve(provider, coin, cb) {
     log.debug(`Fetching data for ${provider.name} / ${coin} `);
+    const url = customCoins.includes(coin) ? provider.url : provider.url + coin.toUpperCase();
+
     this.request.get(
       {
-        url: provider.url + coin.toUpperCase(),
+        url,
         json: true
       },
       (err, res, body) => {
@@ -113,13 +117,21 @@ export class FiatRateService {
           return cb(err);
         }
 
+        const customRates = [];
+
+        if (customCoins.includes(coin)) {
+          customRates.push({ code: 'USD', name: 'US Dollar', rate: body[coin.toUpperCase()].USD });
+        }
+
+        const bodyRates = customCoins.includes(coin) ? customRates : body;
+
         log.debug(`Data for ${provider.name} /  ${coin} fetched successfully`);
 
         if (!provider.parseFn) {
           return cb(new Error('No parse function for provider ' + provider.name));
         }
         try {
-          const rates = _.filter(provider.parseFn(body), x => fiatCodes[x.code]);
+          const rates = _.filter(provider.parseFn(bodyRates), x => fiatCodes[x.code]);
           return cb(null, rates);
         } catch (e) {
           return cb(e);
@@ -160,22 +172,6 @@ export class FiatRateService {
     );
   }
 
-  getCustomCoinRate() {
-    return new Promise((resolve, reject) => {
-      this.request.get(
-        {
-          url: 'https://rates.ducatuscoins.com/api/v1/rates/'
-        },
-        (err, res, body) => {
-          if (err || !body) {
-            reject(err);
-          }
-          resolve(res);
-        }
-      );
-    });
-  }
-
   async getHistoricalRates(opts, cb) {
     $.shouldBeFunction(cb);
 
@@ -186,34 +182,10 @@ export class FiatRateService {
     const now = Date.now() - Defaults.FIAT_RATE_FETCH_INTERVAL * 60 * 1000;
     const ts = _.isNumber(opts.ts) ? opts.ts : now;
     const coins = ['btc', 'bch', 'eth', 'xrp', 'duc', 'ducx'];
-    const customCoins = ['duc', 'ducx'];
 
     async.map(
       coins,
       async (coin: string, cb) => {
-        if (customCoins.includes(coin)) {
-          try {
-            const { body }: any = await this.getCustomCoinRate();
-            historicalRates[coin] = [
-              {
-                rate: body[coin.toUpperCase()].USD,
-                fetchedOn: new Date().getTime()
-              }
-            ];
-            return cb(null, historicalRates);
-          } catch (err) {
-            if (staticRates[coin]) {
-              historicalRates[coin] = [
-                {
-                  rate: staticRates[coin],
-                  fetchedOn: new Date().getTime()
-                }
-              ];
-              return cb(null, historicalRates);
-            }
-          }
-        }
-
         this.storage.fetchHistoricalRates(coin, opts.code, ts, (err, rates) => {
           if (err) return cb(err);
           if (!rates) return cb();

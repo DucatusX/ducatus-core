@@ -40,7 +40,6 @@ export class DucXChain implements IChain {
 
   getWalletBalance(server, wallet, opts, cb) {
     const bc = server._getBlockchainExplorer(wallet.coin, wallet.network);
-
     if (opts.tokenAddress) {
       wallet.tokenAddress = opts.tokenAddress;
     }
