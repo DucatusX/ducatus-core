@@ -197,6 +197,17 @@ export const Constants = {
         minDecimals: 2,
       },
     },
+    mdxb: {
+      toSatoshis: 1e8,
+      full: {
+        maxDecimals: 8,
+        minDecimals: 8,
+      },
+      short: {
+        maxDecimals: 8,
+        minDecimals: 2,
+      },
+    },
   },
   COINS: [
     'btc',
@@ -214,9 +225,10 @@ export const Constants = {
     'dscmed',
     'pog1',
     'wde',
+    'mdxb',
   ],
   ERC20: ['usdc', 'pax', 'gusd'],
-  DRC20: ['jamasy', 'nuyasa', 'sunoba', 'dscmed', 'pog1', 'wde'],
+  DRC20: ['jamasy', 'nuyasa', 'sunoba', 'dscmed', 'pog1', 'wde', 'mdxb'],
   UTXO_COINS: ['btc', 'bch', 'duc'],
   TOKEN_OPTS: {
     '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48': {
@@ -272,6 +284,12 @@ export const Constants = {
       symbol: 'WDE',
       decimal: 8,
       address: '0x17CaCa02DDf472F62bFED5165FACf7A6B5C72926',
+    },
+    '0x60DFde24CdE54df342E52a72248B2bD54e0ea4A5': {
+      name: 'MarsaDXB',
+      symbol: 'MDXB',
+      decimal: 8,
+      address: '0x60DFde24CdE54df342E52a72248B2bD54e0ea4A5',
     },
   },
 };
