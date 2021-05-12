@@ -16,7 +16,8 @@ module.exports = {
     SUNOBA: 'sunoba',
     DSCMED: 'dscmed',
     POG1: 'pog1',
-    WDE: 'wde'
+    WDE: 'wde',
+    MDXB: 'mdxb'
   },
 
   ERC20: {
@@ -30,7 +31,8 @@ module.exports = {
     SUNOBA: 'sunoba',
     DSCMED: 'dscmed',
     POG1: 'pog1',
-    WDE: 'wde'
+    WDE: 'wde',
+    MDXB: 'mdxb'
   },
   UTXO_COINS: {
     BTC: 'btc',
@@ -119,6 +121,12 @@ module.exports = {
       symbol: 'WDE',
       decimal: 8,
       address: '0x17CaCa02DDf472F62bFED5165FACf7A6B5C72926'
+    },
+    '0x60DFde24CdE54df342E52a72248B2bD54e0ea4A5': {
+      name: 'MDXB',
+      symbol: 'MDXB',
+      decimal: 8,
+      address: '0x60DFde24CdE54df342E52a72248B2bD54e0ea4A5'
     }
   }
 };
