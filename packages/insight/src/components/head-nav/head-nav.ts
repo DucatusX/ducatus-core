@@ -8,6 +8,7 @@ import {
   ToastController
 } from 'ionic-angular';
 import * as _ from 'lodash';
+import { StatisticPage } from '../../pages';
 import { ApiProvider, ChainNetwork } from '../../providers/api/api';
 import { CurrencyProvider } from '../../providers/currency/currency';
 import { Logger } from '../../providers/logger/logger';
@@ -28,6 +29,10 @@ export class HeadNavComponent implements OnInit {
   public title: string;
   @Input()
   public chainNetwork: ChainNetwork;
+  @Input()
+  public currentPage: string;
+  @Input()
+  public currentCurrency: string;
   public q: string;
   public redirTo: any;
   public params: any;
@@ -53,11 +58,13 @@ export class HeadNavComponent implements OnInit {
     };
   }
 
-  public goHome(chainNetwork): void {
-    this.navCtrl.setRoot('home', {
-      chain: chainNetwork.chain,
-      network: chainNetwork.network
-    });
+  // function for navigation
+  public openPage(page: string): void {
+    if (page === 'home') {
+      this.navCtrl.setRoot('home', this.params);
+    } else {
+      this.navCtrl.push(page, this.params);
+    }
   }
 
   public search(): void {
@@ -153,10 +160,11 @@ export class HeadNavComponent implements OnInit {
     popover.onDidDismiss(data => {
       if (!data) {
         return;
-      } else if (data.chainNetwork !== this.chainNetwork) {
-        this.apiProvider.changeNetwork(data.chainNetwork);
-        this.setCurrency(data.chainNetwork);
-        this.goHome(data.chainNetwork);
+      } else if (data.config !== this.chainNetwork) {
+        this.apiProvider.changeNetwork(data.config);
+        this.setCurrency(data.config);
+        const page = this.currentPage ? 'home' : 'statistic';
+        this.navCtrl.setRoot(page, this.apiProvider.getConfig());
       } else if (data.currencySymbol !== this.currencyProvider.getCurrency()) {
         this.setCurrency(this.chainNetwork, data.currencySymbol);
       }

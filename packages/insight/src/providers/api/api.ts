@@ -26,8 +26,8 @@ const EnvApiHosts: { [env: string]: { [chain: string]: string } } = {
     BCH: 'https://eth.bitcore.io/api'
   },
   dev: {
-    default: '/api',
-    DUCX: 'http://192.168.10.177:3000/api'
+    default: '/api'
+    // DUCX: 'http://192.168.10.177:3000/api'
   }
 };
 
@@ -40,7 +40,13 @@ export class ApiProvider {
     network: this.defaults.getDefault('%NETWORK%')
   };
   public networkSettings = {
-    availableNetworks: [this.defaultNetwork],
+    availableNetworks: [
+      this.defaultNetwork,
+      {
+        network: 'mainnet',
+        chain: 'DUCX'
+      }
+    ],
     selectedNetwork: this.defaultNetwork,
     chainNetworkLookup: {}
   };

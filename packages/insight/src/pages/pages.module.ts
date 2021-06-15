@@ -1,3 +1,4 @@
+import { HttpClientModule } from '@angular/common/http';
 import { NgModule } from '@angular/core';
 import { IonicModule } from 'ionic-angular';
 import { ComponentsModule } from '../components';
@@ -10,15 +11,18 @@ import { PriceChartModule } from '../components/price-card/price-chart/price-cha
 import { BlocksPageModule } from '../pages/blocks/blocks.module';
 import { BroadcastTxPageModule } from './broadcast-tx/broadcast-tx.module';
 import { HomePageModule } from './home/home.module';
+import { StatisticPageModule } from './statistic/statistic.module';
 
 @NgModule({
   declarations: [],
   imports: [
     IonicModule,
+    HttpClientModule,
     ComponentsModule,
     BlocksPageModule,
     BroadcastTxPageModule,
     HomePageModule,
+    StatisticPageModule,
     FooterComponentModule,
     HeadNavComponentModule,
     LatestBlocksComponentModule,

@@ -26,20 +26,23 @@ export class DenominationComponent {
       this.api.networkSettings.selectedNetwork
     );
     this.units = [
-      this.api.networkSettings.selectedNetwork.chain,
-      'm' + this.api.networkSettings.selectedNetwork.chain
+      this.api.networkSettings.availableNetworks[0].chain,
+      this.api.networkSettings.availableNetworks[1].chain
     ];
-
-    if (this.api.networkSettings.selectedNetwork.chain !== 'DUC') {
-      this.units.unshift('USD');
-    }
   }
 
   public changeUnit(unit: string): void {
     this.currencySymbol = unit;
-    this.viewCtrl.dismiss({
-      chainNetwork: this.navParams.data.config,
+    this.viewCtrl.data = {
+      ...this.viewCtrl.data,
+      config: {
+        chain: this.currencySymbol,
+        network: this.navParams.data.config.network
+      },
       currencySymbol: this.currencySymbol
+    };
+    this.viewCtrl.dismiss({
+      ...this.viewCtrl.data
     });
   }
 

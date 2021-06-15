@@ -70,17 +70,19 @@ export class LatestBlocksComponent implements OnInit, OnDestroy {
               ) {
                 return this.blocksProvider.toUtxoCoinAppBlock(block);
               }
-              if (this.chainNetwork.chain === 'ETH' || this.chainNetwork.chain === 'DUCX') {
+              if (
+                this.chainNetwork.chain === 'ETH' ||
+                this.chainNetwork.chain === 'DUCX'
+              ) {
                 return this.blocksProvider.toEthAppBlock(block);
               }
             }
           );
           this.blocks = blocks;
           this.loading = false;
-          if(this.blocks[this.blocks.length - 1].height < this.numBlocks) { 
+          if (this.blocks[this.blocks.length - 1].height < this.numBlocks) {
             this.showLoadMoreButton = false;
           }
-          
         },
         err => {
           this.subscriber.unsubscribe();
@@ -108,7 +110,10 @@ export class LatestBlocksComponent implements OnInit, OnDestroy {
               ) {
                 return this.blocksProvider.toUtxoCoinAppBlock(block);
               }
-              if (this.chainNetwork.chain === 'ETH' || this.chainNetwork.chain === 'DUCX') {
+              if (
+                this.chainNetwork.chain === 'ETH' ||
+                this.chainNetwork.chain === 'DUCX'
+              ) {
                 return this.blocksProvider.toEthAppBlock(block);
               }
             }

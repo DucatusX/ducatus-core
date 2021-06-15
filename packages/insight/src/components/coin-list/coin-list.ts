@@ -31,21 +31,27 @@ export class CoinListComponent implements OnInit {
   public ngOnInit(): void {
     if (this.txs && this.txs.length === 0) {
       this.loading = true;
-      this.addrProvider.getAddressActivity(this.addrStr, this.chainNetwork).subscribe(
-        data => {
-          const noEth = this.chainNetwork.chain !== 'ETH' && this.chainNetwork.chain !== 'DUCX';
-          const toAppCoin: any = noEth ? this.txsProvider.toAppCoin: this.txsProvider.toAppEthCoin;
-          const formattedData = data.map(toAppCoin);
-          this.txs = noEth ? this.processData(formattedData): formattedData;
-          this.showTransactions = true;
-          this.loading = false;
-          this.events.publish('CoinList', { length: data.length });
-        },
-        () => {
-          this.loading = false;
-          this.showTransactions = false;
-        }
-      );
+      this.addrProvider
+        .getAddressActivity(this.addrStr, this.chainNetwork)
+        .subscribe(
+          data => {
+            const noEth =
+              this.chainNetwork.chain !== 'ETH' &&
+              this.chainNetwork.chain !== 'DUCX';
+            const toAppCoin: any = noEth
+              ? this.txsProvider.toAppCoin
+              : this.txsProvider.toAppEthCoin;
+            const formattedData = data.map(toAppCoin);
+            this.txs = noEth ? this.processData(formattedData) : formattedData;
+            this.showTransactions = true;
+            this.loading = false;
+            this.events.publish('CoinList', { length: data.length });
+          },
+          () => {
+            this.loading = false;
+            this.showTransactions = false;
+          }
+        );
     }
   }
 

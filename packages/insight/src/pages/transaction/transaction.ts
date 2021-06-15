@@ -62,7 +62,10 @@ export class TransactionPage {
         ) {
           tx = this.txProvider.toUtxoCoinsAppTx(response);
         }
-        if (this.chainNetwork.chain === 'ETH' || this.chainNetwork.chain === 'DUCX') {
+        if (
+          this.chainNetwork.chain === 'ETH' ||
+          this.chainNetwork.chain === 'DUCX'
+        ) {
           tx = this.txProvider.toEthAppTx(response);
         }
         this.tx = tx;

@@ -33,9 +33,11 @@ export class TransactionDetailsEthComponent implements OnInit {
   ) {}
 
   public ngOnInit(): void {
-    this.txProvider.getConfirmations(this.tx.blockheight, this.chainNetwork).subscribe((confirmations) => {
-      this.tx.confirmations = confirmations;
-    });
+    this.txProvider
+      .getConfirmations(this.tx.blockheight, this.chainNetwork)
+      .subscribe(confirmations => {
+        this.tx.confirmations = confirmations;
+      });
   }
 
   public goToTx(txId: string, vout?: number, fromVout?: boolean): void {

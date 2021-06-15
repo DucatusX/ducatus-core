@@ -2,7 +2,7 @@ import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { IonicApp, IonicModule } from 'ionic-angular';
-import { BlocksPage, HomePage, PagesModule } from '../pages';
+import { BlocksPage, HomePage, PagesModule, StatisticPage } from '../pages';
 import { AddressProvider } from '../providers/address/address';
 import { ApiProvider } from '../providers/api/api';
 import { BlocksProvider } from '../providers/blocks/blocks';

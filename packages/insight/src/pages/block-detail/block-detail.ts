@@ -61,7 +61,10 @@ export class BlockDetailPage {
         ) {
           block = this.blocksProvider.toUtxoCoinAppBlock(response);
         }
-        if (this.chainNetwork.chain === 'ETH' || this.chainNetwork.chain === 'DUCX') {
+        if (
+          this.chainNetwork.chain === 'ETH' ||
+          this.chainNetwork.chain === 'DUCX'
+        ) {
           block = this.blocksProvider.toEthAppBlock(response);
         }
         this.block = block;
