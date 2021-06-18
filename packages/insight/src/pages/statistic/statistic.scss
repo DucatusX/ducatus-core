@@ -1,3 +1,27 @@
+@mixin b($point) {
+  @if $point==desktop {
+    @media (max-width: 1366px) and (min-width: 1024px) {
+      @content;
+    }
+  } @else if $point==tablet {
+    @media (max-width: 1000px) {
+      @content;
+    }
+  } @else if $point==mobile {
+    @media (max-width: 767px) {
+      @content;
+    }
+  } @else if $point==mobile3x {
+    @media only screen and (-webkit-min-device-pixel-ratio: 3), only screen and (min-resolution: 3dppx), only screen and (min-resolution: 350dpi) {
+      @content;
+    }
+  } @else {
+    @media (max-width: $point + 'px') {
+      @content;
+    }
+  }
+}
+
 .page-content-grid-desktop {
   display: flex;
   flex: 1;
@@ -5,25 +29,17 @@
   padding-left: calc((100% - #{map-get($grid-max-widths, lg)}) / 4);
 }
 
-.page-content-grid-mobile {
-  .stats-block-item {
-    width: 100%;
-    display: flex;
-    flex-direction: row;
-  }
-}
-
 .stats {
   &-block {
     display: flex;
-    width: 100%;
+    align-items: center;
     flex-wrap: wrap;
     gap: 1rem;
     justify-content: space-between;
+    width: 100%;
 
     &-item {
       max-width: 185px;
-      width: 100%;
       min-height: 185px;
       background-color: #f9f7f1;
       border-radius: 12px;
@@ -32,6 +48,12 @@
       flex-direction: column;
       align-items: center;
       justify-content: space-between;
+
+      @include b(mobile) {
+        padding: 0 30px;
+        min-width: 100%;
+        flex-direction: row;
+      }
     }
   }
 
@@ -40,6 +62,11 @@
     font-size: 16px;
     text-align: center;
     color: rgba(0, 0, 0, 0.5);
+
+    @include b(mobile) {
+      width: 50%;
+      text-align: left;
+    }
   }
 
   &-info {
@@ -47,6 +74,10 @@
     font-size: 28px;
     text-align: center;
     color: #862632;
+
+    @include b(mobile) {
+      font-size: 24px;
+    }
   }
 }
 
@@ -63,6 +94,12 @@
       border-radius: 4px;
       background-color: #f9f7f1;
       box-sizing: border-box;
+
+      @include  b(mobile) {
+        width: 100%;
+        display: flex;
+        justify-content: center;
+      }
     }
 
     &-item {
@@ -86,6 +123,7 @@
   }
   &-container {
     height: 50vh;
+    margin-bottom: 50px;
   }
 }
 

@@ -57,27 +57,10 @@ export class StatisticPage implements OnInit {
     this.dataType = 'tx';
   }
 
-  public week = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-
-  public year = [
-    'Jan',
-    'Feb',
-    'Mar',
-    'Apr',
-    'May',
-    'Jun',
-    'Jul',
-    'Aug',
-    'Sep',
-    'Oct',
-    'Nov',
-    'Dec'
-  ];
-
   // fetch data for statistic from server
-  public fetchData() {
+  public async fetchData() {
     this.divider = this.currentCurrency === 'DUCX' ? 10 ** 18 : 10 ** 8;
-    this.http
+    await this.http
       .get(`${this.url}${this.currentCurrency}/${this.days}`)
       .subscribe(
         (data: {
@@ -137,7 +120,7 @@ export class StatisticPage implements OnInit {
         }
       );
 
-    this.http
+    await this.http
       .get(`${this.url}${this.currentCurrency.toLowerCase()}_wallets/`)
       .subscribe((data: Array<{ address; balance }>) => {
         let sum = 0;
@@ -201,19 +184,21 @@ export class StatisticPage implements OnInit {
 
   // change type of data for graphic
   public changeType(event: any) {
+    const path = event.path ? event.path : event.composedPath();
+
     if (
       event.target.innerText === 'Volume' &&
       event.target.className === 'chart-panel-item'
     ) {
-      event.path[1].children[0].className = 'chart-panel-item';
-      event.path[1].children[1].className += ' active';
+      path[1].children[0].className = 'chart-panel-item';
+      path[1].children[1].className += ' active';
       this.fetchData();
     } else if (
       event.target.innerText === 'Transactions number' &&
       event.target.className === 'chart-panel-item'
     ) {
-      event.path[1].children[0].className += ' active';
-      event.path[1].children[1].className = 'chart-panel-item';
+      path[1].children[0].className += ' active';
+      path[1].children[1].className = 'chart-panel-item';
       this.fetchData();
     }
 
@@ -222,7 +207,9 @@ export class StatisticPage implements OnInit {
 
   // change time parameter for graphic
   public changeTime(event: any) {
-    for (const item of event.path[1].children) {
+    const path = event.path ? event.path : event.composedPath();
+
+    for (const item of path[1].children) {
       if (
         item.className === 'chart-panel-item' &&
         item.innerText === event.target.innerText
