@@ -17,11 +17,11 @@ export class StatisticPage implements OnInit {
   public network: string;
   public currentPage: string;
   public data: Array<{ count: number; value: number; time: string }>;
-  public txForDay: number;
-  public txForWeek: number;
-  public volumeForDay: number;
-  public volumeForWeek: number;
-  public circulation: number;
+  public txForDay: string;
+  public txForWeek: string;
+  public volumeForDay: string;
+  public volumeForWeek: string;
+  public circulation: string;
   public lineChartType: string;
   public lineChartData: {
     labels: string[];
@@ -29,6 +29,7 @@ export class StatisticPage implements OnInit {
       data: number[];
       borderColor: string;
       backgroundColor: string;
+      showLine: boolean;
     }>;
   };
   public lineChartOptions: {};
@@ -70,10 +71,12 @@ export class StatisticPage implements OnInit {
           weekly_value: number;
           graph_data: Array<{ count: number; value: number; time: string }>;
         }) => {
-          this.txForDay = data.daily_count;
-          this.txForWeek = data.weekly_count;
-          this.volumeForDay = Math.floor(data.daily_value / this.divider);
-          this.volumeForWeek = Math.floor(data.weekly_value / this.divider);
+          this.txForDay = data.daily_count.toString();
+          this.txForWeek = data.weekly_count.toString();
+          this.volumeForDay = Math.floor(data.daily_value / this.divider).toString();
+          this.volumeForDay = this.volumeForDay.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+          this.volumeForWeek = Math.floor(data.weekly_value / this.divider).toString();
+          this.volumeForWeek = this.volumeForWeek.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
           this.data = data.graph_data;
           this.lineChartType = 'line';
           this.lineChartData = {
@@ -86,11 +89,18 @@ export class StatisticPage implements OnInit {
                   this.data
                 ),
                 borderColor: '#7C2D35',
-                backgroundColor: 'rgba(255, 255, 255, 0)'
+                backgroundColor: 'rgba(255, 255, 255, 0)',
+                showLine: true,
               }
             ]
           };
           this.lineChartOptions = {
+            elements: {
+              point: {
+                radius: 7,
+                borderWidth: 3,
+              }
+            },
             scales: {
               yAxes: [
                 {
@@ -111,11 +121,6 @@ export class StatisticPage implements OnInit {
             },
             responsive: true,
             legend: false,
-            elements: {
-              line: {
-                tension: 0
-              }
-            }
           };
         }
       );
@@ -127,7 +132,8 @@ export class StatisticPage implements OnInit {
         data.forEach((user: { address; balance }) => {
           sum += parseInt(user.balance, 10);
         });
-        this.circulation = Math.floor(sum / this.divider);
+        this.circulation = Math.floor(sum / this.divider).toString();
+        this.circulation = this.circulation.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
       });
   }
 

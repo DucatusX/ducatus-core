@@ -29,6 +29,11 @@
   padding-left: calc((100% - #{map-get($grid-max-widths, lg)}) / 4);
 }
 
+.page-content {
+  margin-top: 20px;
+  margin-bottom: 0;
+}
+
 .stats {
   &-block {
     display: flex;
@@ -122,8 +127,10 @@
     }
   }
   &-container {
-    height: 50vh;
-    margin-bottom: 50px;
+
+  }
+  &-footer {
+    height: 100px;
   }
 }
 

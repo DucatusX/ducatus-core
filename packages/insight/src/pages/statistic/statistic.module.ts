@@ -1,7 +1,7 @@
 import { HttpClientModule } from '@angular/common/http';
 import { NgModule } from '@angular/core';
 import { ChartModule } from 'angular2-chartjs';
-import { IonicPageModule, Segment } from 'ionic-angular';
+import { IonicPageModule } from 'ionic-angular';
 import { ErrorComponentModule } from '../../components/error/error.module';
 import { HeadNavComponentModule } from '../../components/head-nav/head-nav.module';
 import { LoaderComponentModule } from '../../components/loader/loader.module';
@@ -16,11 +16,12 @@ import { StatisticPage } from './statistic';
     HeadNavComponentModule,
     LoaderComponentModule,
     ErrorComponentModule,
-    ChartModule
+    ChartModule,
   ],
   providers: [
     { provide: String, useValue: 'dummy' },
-    { provide: Number, useValue: 1 }
+    { provide: Number, useValue: 1 },
+    ApiProvider
   ],
   exports: [StatisticPage]
 })
