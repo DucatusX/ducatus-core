@@ -22,6 +22,7 @@ export class StatisticPage implements OnInit {
   public volumeForDay: string;
   public volumeForWeek: string;
   public circulation: string;
+  public dailySwaps: string;
   public lineChartType: string;
   public lineChartData: {
     labels: string[];
@@ -125,16 +126,21 @@ export class StatisticPage implements OnInit {
         }
       );
 
+    // get data for DUC/DUCX circulations
     await this.http
-      .get(`${this.url}${this.currentCurrency.toLowerCase()}_wallets/`)
-      .subscribe((data: Array<{ address; balance }>) => {
-        let sum = 0;
-        data.forEach((user: { address; balance }) => {
-          sum += parseInt(user.balance, 10);
-        });
-        this.circulation = Math.floor(sum / this.divider).toString();
+      .get(`${this.url}/wallets_total/`)
+      .subscribe((data: {duc, ducx}) => {
+        const value = this.currentCurrency.toLowerCase();
+        this.circulation = Math.floor(data[value] / this.divider).toString();
         this.circulation = this.circulation.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
       });
+
+    // get data for daily swaps of DUC/DUCX
+    await this.http
+      .get(`${this.url}/daily_swap/${this.currentCurrency === 'DUC' ? 'duc_to_ducx' : 'ducx_to_duc'}/`)
+      .subscribe((data: {amount, currency}) => {
+        this.dailySwaps = data.amount;
+      })
   }
 
   // get labels for graphic

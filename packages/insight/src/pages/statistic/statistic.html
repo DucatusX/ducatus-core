@@ -27,6 +27,12 @@
             <span class='stats-title'>Coins in circulation</span>
             <span class='stats-info'>{{ circulation }}</span>
           </div>
+          <div class='stats-block-item'>
+            <span class='stats-title'>
+              Daily swap {{currentCurrency === 'DUCX' ? 'DUCX to DUC' : 'DUC to DUCX'}}
+            </span>
+            <span class='stats-info'>{{dailySwaps}}</span>
+          </div>
         </div>
       </ion-col>
 
