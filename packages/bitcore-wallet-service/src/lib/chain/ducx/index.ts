@@ -40,11 +40,12 @@ export class DucXChain implements IChain {
 
   getWalletBalance(server, wallet, opts, cb) {
     const bc = server._getBlockchainExplorer(wallet.coin, wallet.network);
-    if (opts.tokenAddress) {
+    if (opts.tokenAddress && opts.tokenAddress !== '0x1D85186b5d9C12a6707D5fd3ac7133d58F437877') {
       wallet.tokenAddress = opts.tokenAddress;
     }
 
     bc.getBalance(wallet, (err, balance) => {
+      console.log(balance, err, 'balance');
       if (err) {
         return cb(err);
       }
@@ -143,7 +144,11 @@ export class DucXChain implements IChain {
     const isERC20 = tokenAddress && !payProUrl;
     const isERC721 = isERC20 && tokenId;
 
-    const chain = isERC721 ? 'ERC721' : isERC20 ? 'DRC20' : 'DUCX';
+    let chain = isERC721 ? 'ERC721' : isERC20 ? 'DRC20' : 'DUCX';
+
+    if (txp.tokenAddress === '0x1D85186b5d9C12a6707D5fd3ac7133d58F437877') {
+      chain = 'TOB';
+    }
 
     const recipients = outputs.map(output => {
       return {
@@ -166,10 +171,14 @@ export class DucXChain implements IChain {
         nonce: Number(txp.nonce) + Number(index),
         recipients: [recipients[index]]
       });
+      console.log('rawTx', rawTx, txp);
       unsignedTxs.push(rawTx);
     }
     return {
-      uncheckedSerialize: () => unsignedTxs,
+      uncheckedSerialize: () => {
+        console.log('uncheckedSerialize', unsignedTxs, txp);
+        return unsignedTxs;
+      },
       txid: () => txp.txid,
       toObject: () => {
         let ret = _.clone(txp);

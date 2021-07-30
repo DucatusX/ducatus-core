@@ -10,17 +10,17 @@ var scripts = [
   'emailservice/emailservice.js',
   'pushnotificationsservice/pushnotificationsservice.js',
   'fiatrateservice/fiatrateservice.js',
-  'bws.js'
+  'bws.js',
 ];
 
-async.eachSeries(scripts, function(script, callback) {
+async.eachSeries(scripts, function (script, callback) {
   console.log(`Spawning ${script}`);
 
   const node = spawn('node', [script]);
-  node.stdout.on('data', data => {
+  node.stdout.on('data', (data) => {
     console.log(`${data}`);
   });
-  node.stderr.on('data', data => {
+  node.stderr.on('data', (data) => {
     console.error(`${data}`);
   });
 

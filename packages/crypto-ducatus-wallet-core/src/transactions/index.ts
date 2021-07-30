@@ -6,6 +6,7 @@ import { DUCXTxProvider } from './ducx';
 import { ERC20TxProvider } from './erc20';
 import { ERC721TxProvider } from './erc721';
 import { ETHTxProvider } from './eth';
+import { TransferDUCXToWDUCXProvider } from './tob';
 import { XRPTxProvider } from './xrp';
 
 const providers = {
@@ -17,7 +18,8 @@ const providers = {
   ERC20: new ERC20TxProvider(),
   DRC20: new DRC20TxProvider(),
   ERC721: new ERC721TxProvider(),
-  XRP: new XRPTxProvider()
+  XRP: new XRPTxProvider(),
+  TOB: new TransferDUCXToWDUCXProvider()
 };
 
 export class TransactionsProxy {

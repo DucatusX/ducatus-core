@@ -52,15 +52,15 @@ export class Stats {
     let result = {};
     async.series(
       [
-        next => {
+        (next) => {
           this._getNewWallets(next);
         },
-        next => {
+        (next) => {
           this._getTxProposals(next);
         },
-        next => {
+        (next) => {
           this._getFiatRates(next);
-        }
+        },
       ],
       (err, results) => {
         if (err) return cb(err);
@@ -78,24 +78,24 @@ export class Stats {
         '_id.coin': this.coin,
         '_id.day': {
           $gte: this.from,
-          $lte: this.to
-        }
+          $lte: this.to,
+        },
       })
       .sort({
-        '_id.day': 1
+        '_id.day': 1,
       })
       .toArray((err, results) => {
         if (err) return cb(err);
         const stats = {
-          byDay: _.map(results, record => {
+          byDay: _.map(results, (record) => {
             const day = moment(record._id.day).format('YYYYMMDD');
             return {
               day,
               coin: record._id.coin,
               value: record._id.value,
-              count: record.count ? record.count : record.value.count
+              count: record.count ? record.count : record.value.count,
             };
-          })
+          }),
         };
         return cb(null, stats);
       });
@@ -108,23 +108,23 @@ export class Stats {
         '_id.coin': this.coin,
         '_id.day': {
           $gte: this.from,
-          $lte: this.to
-        }
+          $lte: this.to,
+        },
       })
       .sort({
-        '_id.day': 1
+        '_id.day': 1,
       })
       .toArray((err, results) => {
         if (err) return cb(err);
         const stats = {
-          byDay: _.map(results, record => {
+          byDay: _.map(results, (record) => {
             const day = moment(record._id.day).format('YYYYMMDD');
             return {
               day,
               coin: record._id.coin,
-              value: record.value
+              value: record.value,
             };
-          })
+          }),
         };
         return cb(null, stats);
       });
@@ -138,28 +138,28 @@ export class Stats {
         '_id.coin': this.coin,
         '_id.day': {
           $gte: this.from,
-          $lte: this.to
-        }
+          $lte: this.to,
+        },
       })
       .sort({
-        '_id.day': 1
+        '_id.day': 1,
       })
       .toArray((err, results) => {
         if (err) return cb(err);
         const stats = {
           nbByDay: [],
-          amountByDay: []
+          amountByDay: [],
         };
-        _.each(results, record => {
+        _.each(results, (record) => {
           const day = moment(record._id.day).format('YYYYMMDD');
           stats.nbByDay.push({
             day,
             coin: record._id.coin,
-            count: record.count ? record.count : record.value.count
+            count: record.count ? record.count : record.value.count,
           });
           stats.amountByDay.push({
             day,
-            amount: record.amount ? record.amount : record.value.amount
+            amount: record.amount ? record.amount : record.value.amount,
           });
         });
         return cb(null, stats);

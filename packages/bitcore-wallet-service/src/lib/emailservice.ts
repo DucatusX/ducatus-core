@@ -373,6 +373,7 @@ export class EmailService {
   }
 
   sendEmail(notification, cb) {
+    console.log('sendEmail', notification);
     cb = cb || function() {};
 
     const emailType = EMAIL_TYPES[notification.type];

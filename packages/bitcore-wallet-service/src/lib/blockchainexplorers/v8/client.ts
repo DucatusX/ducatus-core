@@ -147,6 +147,7 @@ export class Client {
   }
 
   async broadcast(params) {
+    console.log('broadcastt', params, this.baseUrl);
     const { payload } = params;
     const url = `${this.baseUrl}/tx/send`;
     console.log('[client.js.113:url:]', url); // TODO

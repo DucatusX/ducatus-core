@@ -2404,10 +2404,12 @@ export class WalletService {
           checkTxpAlreadyExists(opts.txProposalId, (err, txp) => {
             if (err) return cb(err);
             if (txp) return cb(null, txp);
+            console.log('start');
 
             async.series(
               [
                 next => {
+                  console.log('first');
                   if (ChainService.isUTXOCoin(wallet.coin)) return next();
                   this.getMainAddresses({ reverse: true, limit: 1 }, (err, mainAddr) => {
                     if (err) return next(err);
@@ -2416,9 +2418,11 @@ export class WalletService {
                   });
                 },
                 next => {
+                  console.log('second');
                   this._validateAndSanitizeTxOpts(wallet, opts, next);
                 },
                 next => {
+                  console.log('third');
                   this._canCreateTx((err, canCreate) => {
                     if (err) return next(err);
                     if (!canCreate) return next(Errors.TX_CANNOT_CREATE);
@@ -2426,6 +2430,7 @@ export class WalletService {
                   });
                 },
                 async next => {
+                  console.log('fourd');
                   if (opts.sendMax) return next();
                   try {
                     changeAddress = await ChainService.getChangeAddress(this, wallet, opts);
@@ -2435,6 +2440,7 @@ export class WalletService {
                   return next();
                 },
                 async next => {
+                  console.log('5ird');
                   if (_.isNumber(opts.fee) && !_.isEmpty(opts.inputs)) return next();
 
                   try {
@@ -2445,6 +2451,7 @@ export class WalletService {
                   next();
                 },
                 async next => {
+                  console.log('6ird');
                   try {
                     opts.nonce = await ChainService.getTransactionCount(this, wallet, opts.from);
                   } catch (error) {
@@ -2453,6 +2460,7 @@ export class WalletService {
                   return next();
                 },
                 next => {
+                  console.log('7ird');
                   const txOpts = {
                     id: opts.txProposalId,
                     walletId: this.walletId,
@@ -2494,14 +2502,17 @@ export class WalletService {
                   next();
                 },
                 next => {
+                  console.log('8ird');
                   return ChainService.selectTxInputs(this, txp, wallet, opts, cb, next);
                 },
                 next => {
+                  console.log('9ird');
                   if (!changeAddress || wallet.singleAddress || opts.dryRun || opts.changeAddress) return next();
 
                   this._store(wallet, txp.changeAddress, next, true);
                 },
                 next => {
+                  console.log('10ird');
                   if (opts.dryRun) return next();
 
                   if (txp.coin == 'bch') {
@@ -2547,6 +2558,7 @@ export class WalletService {
         if (err) return cb(err);
 
         this.storage.fetchTx(this.walletId, opts.txProposalId, (err, txp) => {
+          console.log(txp, 'txxp');
           if (err) return cb(err);
           if (!txp) return cb(Errors.TX_NOT_FOUND);
           if (!txp.isTemporary()) return cb(null, txp);
@@ -2583,6 +2595,7 @@ export class WalletService {
                     txp.changeAddress.address = BCHAddressTranslator.translate(txp.changeAddress.address, 'copay');
                   }
                 }
+                console.log('publishTx', txp);
                 return cb(null, txp);
               });
             });
@@ -2729,6 +2742,7 @@ export class WalletService {
   _broadcastRawTx(coin, network, raw, cb) {
     const bc = this._getBlockchainExplorer(coin, network);
     if (!bc) return cb(new Error('Could not get blockchain explorer instance'));
+    console.log('will broadcast');
     bc.broadcast(raw, (err, txid) => {
       if (err) return cb(err);
       return cb(null, txid);
@@ -2783,6 +2797,7 @@ export class WalletService {
           txProposalId: opts.txProposalId
         },
         (err, txp) => {
+          console.log('signTx', txp);
           if (err) return cb(err);
 
           if (opts.maxTxpVersion < txp.version) {
@@ -2898,6 +2913,7 @@ export class WalletService {
           } catch (ex) {
             return cb(ex);
           }
+          console.log('broadcastTx raw', raw, opts, txp);
           this._broadcastRawTx(wallet.coin, wallet.network, raw, (err, txid) => {
             if (err || txid != txp.txid) {
               if (!err || txp.txid != txid) {
@@ -2921,6 +2937,7 @@ export class WalletService {
                 );
               });
             } else {
+              console.log('_broadcastRawTx', txp);
               this._processBroadcast(
                 txp,
                 {

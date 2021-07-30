@@ -23,6 +23,7 @@ export class MessageBroker extends EventEmitter {
       });
 
       this.mq.on('msg', data => {
+        console.log('emit on', data);
         this.emit('msg', data);
       });
 
@@ -31,6 +32,7 @@ export class MessageBroker extends EventEmitter {
   }
 
   send(data) {
+    console.log('send notif', data);
     if (this.remote) {
       this.mq.emit('msg', data);
     } else {
@@ -39,6 +41,7 @@ export class MessageBroker extends EventEmitter {
   }
 
   onMessage(handler) {
+    console.log('onMessage', handler);
     this.on('msg', handler);
   }
 }

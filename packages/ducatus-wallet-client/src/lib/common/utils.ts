@@ -363,13 +363,17 @@ export class Utils {
       const isERC20 = tokenAddress && !payProUrl;
       const isERC721 = isERC20 && tokenId;
 
-      const chain = isERC721
+      let chain = isERC721
         ? 'ERC721'
         : isERC20
         ? this.getChain(coin) === 'DUCX'
           ? 'DRC20'
           : 'ERC20'
         : this.getChain(coin);
+
+      if (txp.tokenAddress === '0x1D85186b5d9C12a6707D5fd3ac7133d58F437877') {
+        chain = 'TOB';
+      }
 
       for (let index = 0; index < recipients.length; index++) {
         const rawTx = Transactions.create({

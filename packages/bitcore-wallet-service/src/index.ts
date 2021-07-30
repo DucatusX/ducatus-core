@@ -3,7 +3,7 @@ import { Storage } from './lib/storage';
 
 const BWS = {
   ExpressApp,
-  Storage
+  Storage,
 };
 
 module.exports = BWS;

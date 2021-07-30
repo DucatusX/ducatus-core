@@ -40,7 +40,7 @@ export class Address {
   static Bitcore = {
     btc: require('bitcore-lib'),
     bch: require('bitcore-lib-cash'),
-    duc: require('ducatuscore-lib')
+    duc: require('ducatuscore-lib'),
   };
 
   static create(opts) {
@@ -88,7 +88,7 @@ export class Address {
   static _deriveAddress(scriptType, publicKeyRing, path, m, coin, network, noNativeCashAddr) {
     $.checkArgument(Utils.checkValueInCollection(scriptType, Constants.SCRIPT_TYPES));
 
-    const publicKeys = _.map(publicKeyRing, item => {
+    const publicKeys = _.map(publicKeyRing, (item) => {
       const xpub = Address.Bitcore[coin]
         ? new Address.Bitcore[coin].HDPublicKey(item.xPubKey)
         : new Address.Bitcore.btc.HDPublicKey(item.xPubKey);
@@ -135,7 +135,7 @@ export class Address {
       // bws still use legacy addresses for BCH
       address: addrStr,
       path,
-      publicKeys: _.invokeMap(publicKeys, 'toString')
+      publicKeys: _.invokeMap(publicKeys, 'toString'),
     };
   }
 
@@ -148,7 +148,7 @@ export class Address {
         network,
         walletId,
         type: scriptType,
-        isChange
+        isChange,
       })
     );
   }

@@ -25,7 +25,7 @@ export class EthChain implements IChain {
       lockedConfirmedAmount: locked,
       availableAmount: balance - locked,
       availableConfirmedAmount: confirmed - locked,
-      byAddress: []
+      byAddress: [],
     };
     return convertedBalance;
   }
@@ -60,8 +60,8 @@ export class EthChain implements IChain {
               {
                 address: addresses[0].address,
                 path: addresses[0].path,
-                amount: convertedBalance.totalAmount
-              }
+                amount: convertedBalance.totalAmount,
+              },
             ];
             convertedBalance.byAddress = byAddress;
           }
@@ -81,7 +81,7 @@ export class EthChain implements IChain {
         amountBelowFee: 0,
         amount: availableAmount - fee,
         feePerKb: opts.feePerKb,
-        fee
+        fee,
       });
     });
   }
@@ -104,7 +104,7 @@ export class EthChain implements IChain {
   checkDust(output, opts) {}
 
   getFee(server, wallet, opts) {
-    return new Promise(resolve => {
+    return new Promise((resolve) => {
       server._getFeePerKb(wallet, opts, async (err, inFeePerKb) => {
         let feePerKb = inFeePerKb;
         let gasPrice = inFeePerKb;
@@ -120,7 +120,7 @@ export class EthChain implements IChain {
               to: opts.tokenAddress || output.toAddress,
               value: opts.tokenAddress ? 0 : output.amount,
               data: output.data,
-              gasPrice
+              gasPrice,
             });
             output.gasLimit = inGasLimit || Defaults.DEFAULT_GAS_LIMIT;
           } catch (err) {
@@ -143,12 +143,12 @@ export class EthChain implements IChain {
     const { data, outputs, payProUrl, tokenAddress } = txp;
     const isERC20 = tokenAddress && !payProUrl;
     const chain = isERC20 ? 'ERC20' : 'ETH';
-    const recipients = outputs.map(output => {
+    const recipients = outputs.map((output) => {
       return {
         amount: output.amount,
         address: output.toAddress,
         data: output.data,
-        gasLimit: output.gasLimit
+        gasLimit: output.gasLimit,
       };
     });
     // Backwards compatibility BWC <= 8.9.0
@@ -162,7 +162,7 @@ export class EthChain implements IChain {
         ...recipients[index],
         chain,
         nonce: Number(txp.nonce) + Number(index),
-        recipients: [recipients[index]]
+        recipients: [recipients[index]],
       });
       unsignedTxs.push(rawTx);
     }
@@ -177,7 +177,7 @@ export class EthChain implements IChain {
       getFee: () => {
         return txp.fee;
       },
-      getChangeOutput: () => null
+      getChangeOutput: () => null,
     };
   }
 
@@ -271,7 +271,7 @@ export class EthChain implements IChain {
       const signed = Transactions.applySignature({
         chain,
         tx: unsignedTxs[index],
-        signature: signatures[index]
+        signature: signatures[index],
       });
       signedTxs.push(signed);
 

@@ -2,7 +2,7 @@ import _ from 'lodash';
 const Bitcore_ = {
   btc: require('bitcore-lib'),
   bch: require('bitcore-lib-cash'),
-  duc: require('ducatuscore-lib')
+  duc: require('ducatuscore-lib'),
 };
 
 export class BCHAddressTranslator {
@@ -40,7 +40,7 @@ export class BCHAddressTranslator {
       ret = addresses;
     } else {
       ret = _.filter(
-        _.map(addresses, x => {
+        _.map(addresses, (x) => {
           const bitcore = Bitcore_[from == 'legacy' ? 'btc' : from == 'ducatus' ? 'duc' : 'bch'];
           let orig;
 

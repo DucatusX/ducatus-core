@@ -206,6 +206,8 @@ export class BlockchainMonitor {
     let out = data.out;
     if (!out || !out.address || out.address.length < 10) return;
 
+    console.log('_handleIncomingPayments', coin, network, data);
+
     // For eth, amount = 0 is ok, repeating addr payments are ok (no change).
     if (coin != 'eth' && coin != 'ducx') {
       if (!(out.amount > 0)) return;

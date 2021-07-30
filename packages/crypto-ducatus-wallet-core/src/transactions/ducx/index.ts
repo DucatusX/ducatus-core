@@ -1,6 +1,7 @@
 import { ethers } from 'ethers';
 import { Key } from '../../derivation';
 const utils = require('web3-utils');
+
 export class DUCXTxProvider {
   create(params: {
     recipients: Array<{ address: string; amount: string }>;
@@ -32,6 +33,7 @@ export class DUCXTxProvider {
       value: utils.toHex(amount),
       chainId
     };
+    console.log('create tx', txData);
     return ethers.utils.serializeTransaction(txData);
   }
 

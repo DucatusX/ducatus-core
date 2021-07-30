@@ -5,8 +5,8 @@ module.exports = {
     return [
       {
         code: 'USD',
-        value: parseFloat(raw.last)
-      }
+        value: parseFloat(raw.last),
+      },
     ];
-  }
+  },
 };

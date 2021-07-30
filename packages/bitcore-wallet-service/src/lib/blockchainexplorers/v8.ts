@@ -17,7 +17,7 @@ const Bitcore_ = {
   eth: Bitcore,
   xrp: Bitcore,
   duc: require('ducatuscore-lib'),
-  ducx: Bitcore
+  ducx: Bitcore,
 };
 const config = require('../../config');
 const Constants = Common.Constants,
@@ -77,7 +77,7 @@ export class V8 {
 
   _getClient() {
     return new this.Client({
-      baseUrl: this.baseUrl
+      baseUrl: this.baseUrl,
     });
   }
 
@@ -85,16 +85,16 @@ export class V8 {
     $.checkState(wallet.beAuthPrivateKey2);
     return new this.Client({
       baseUrl: this.baseUrl,
-      authKey: Bitcore_[this.coin].PrivateKey(wallet.beAuthPrivateKey2)
+      authKey: Bitcore_[this.coin].PrivateKey(wallet.beAuthPrivateKey2),
     });
   }
 
   addAddresses(wallet, addresses, cb) {
     const client = this._getAuthClient(wallet);
 
-    const payload = _.map(addresses, a => {
+    const payload = _.map(addresses, (a) => {
       return {
-        address: a
+        address: a,
       };
     });
 
@@ -103,13 +103,13 @@ export class V8 {
     client
       .importAddresses({
         payload,
-        pubKey: wallet.beAuthPublicKey2
+        pubKey: wallet.beAuthPublicKey2,
       })
-      .then(ret => {
+      .then((ret) => {
         console.timeEnd(k);
         return cb(null, ret);
       })
-      .catch(err => {
+      .catch((err) => {
         return cb(err);
       });
   }
@@ -124,14 +124,14 @@ export class V8 {
       name: wallet.id,
       pubKey: wallet.beAuthPublicKey2,
       network: this.v8network,
-      chain: this.coin
+      chain: this.coin,
     };
     client
       .register({
         authKey: wallet.beAuthPrivateKey2,
-        payload
+        payload,
       })
-      .then(ret => {
+      .then((ret) => {
         return cb(null, ret);
       })
       .catch(cb);
@@ -142,7 +142,7 @@ export class V8 {
     const { tokenAddress } = wallet;
     client
       .getBalance({ pubKey: wallet.beAuthPublicKey2, payload: {}, tokenAddress })
-      .then(ret => {
+      .then((ret) => {
         return cb(null, ret);
       })
       .catch(cb);
@@ -155,10 +155,10 @@ export class V8 {
   _transformUtxos(unspent, bcheight) {
     $.checkState(bcheight > 0, 'No BC height passed to _transformUtxos');
     const ret = _.map(
-      _.reject(unspent, x => {
+      _.reject(unspent, (x) => {
         return x.spentHeight && x.spentHeight <= -3;
       }),
-      x => {
+      (x) => {
         const u = {
           address: x.address,
           satoshis: x.value,
@@ -167,7 +167,7 @@ export class V8 {
           txid: x.mintTxid,
           vout: x.mintIndex,
           locked: false,
-          confirmations: x.mintHeight > 0 && bcheight >= x.mintHeight ? bcheight - x.mintHeight + 1 : 0
+          confirmations: x.mintHeight > 0 && bcheight >= x.mintHeight ? bcheight - x.mintHeight + 1 : 0,
         };
 
         // v8 field name differences
@@ -190,7 +190,7 @@ export class V8 {
     console.time('V8getUtxos');
     client
       .getCoins({ pubKey: wallet.beAuthPublicKey2, payload: {} })
-      .then(unspent => {
+      .then((unspent) => {
         console.timeEnd('V8getUtxos');
         return cb(null, this._transformUtxos(unspent, height));
       })
@@ -203,7 +203,7 @@ export class V8 {
     console.time('V8getCoinsForTx');
     client
       .getCoinsForTx({ txId, payload: {} })
-      .then(coins => {
+      .then((coins) => {
         console.timeEnd('V8getCoinsForTx');
         return cb(null, coins);
       })
@@ -218,7 +218,7 @@ export class V8 {
     console.time('WalletCheck');
     client
       .getCheckData({ pubKey: wallet.beAuthPublicKey2, payload: {} })
-      .then(checkInfo => {
+      .then((checkInfo) => {
         console.timeEnd('WalletCheck');
         return cb(null, checkInfo);
       })
@@ -232,19 +232,19 @@ export class V8 {
     const payload = {
       rawTx,
       network: this.v8network,
-      chain: this.coin.toUpperCase()
+      chain: this.coin.toUpperCase(),
     };
 
     const client = this._getClient();
     client
       .broadcast({ payload })
-      .then(ret => {
+      .then((ret) => {
         if (!ret.txid) {
           return cb(new Error('Error broadcasting'));
         }
         return cb(null, ret.txid);
       })
-      .catch(err => {
+      .catch((err) => {
         if (count > 3) {
           log.error('FINAL Broadcast error:', err);
           return cb(err);
@@ -265,13 +265,13 @@ export class V8 {
     const client = this._getClient();
     client
       .getTx({ txid })
-      .then(tx => {
+      .then((tx) => {
         if (!tx || _.isEmpty(tx)) {
           return cb();
         }
         return cb(null, tx);
       })
-      .catch(err => {
+      .catch((err) => {
         // The TX was not found
         if (err.statusCode == '404') {
           return cb();
@@ -287,7 +287,7 @@ export class V8 {
 
     client
       .getAddressTxos({ address, unspent: true })
-      .then(utxos => {
+      .then((utxos) => {
         return cb(null, this._transformUtxos(utxos, height));
       })
       .catch(cb);
@@ -310,13 +310,13 @@ export class V8 {
       pubKey: wallet.beAuthPublicKey2,
       payload: {},
       startBlock: undefined,
-      tokenAddress: wallet.tokenAddress
+      tokenAddress: wallet.tokenAddress,
     };
 
     if (_.isNumber(startBlock)) opts.startBlock = startBlock;
 
     const txStream = client.listTransactions(opts);
-    txStream.on('data', raw => {
+    txStream.on('data', (raw) => {
       acum = acum + raw.toString();
     });
 
@@ -327,7 +327,7 @@ export class V8 {
 
       const txs = [],
         unconf = [];
-      _.each(acum.split(/\r?\n/), rawTx => {
+      _.each(acum.split(/\r?\n/), (rawTx) => {
         if (!rawTx) return;
 
         let tx;
@@ -348,7 +348,7 @@ export class V8 {
       return cb(null, _.flatten(_.orderBy(unconf, 'blockTime', 'desc').concat(txs.reverse())));
     });
 
-    txStream.on('error', e => {
+    txStream.on('error', (e) => {
       log.error('v8 error:' + e);
       broken = true;
       return cb(e);
@@ -360,10 +360,10 @@ export class V8 {
     console.log('[v8.js.328:url:] CHECKING ADDRESS ACTIVITY', url); // TODO
     this.request
       .get(url, {})
-      .then(ret => {
+      .then((ret) => {
         return cb(null, ret !== '[]');
       })
-      .catch(err => {
+      .catch((err) => {
         return cb(err);
       });
   }
@@ -373,11 +373,11 @@ export class V8 {
     console.log('[v8.js.364:url:] CHECKING ADDRESS NONCE', url);
     this.request
       .get(url, {})
-      .then(ret => {
+      .then((ret) => {
         ret = JSON.parse(ret);
         return cb(null, ret.nonce);
       })
-      .catch(err => {
+      .catch((err) => {
         return cb(err);
       });
   }
@@ -387,11 +387,11 @@ export class V8 {
     console.log('[v8.js.378:url:] CHECKING GAS LIMIT', url);
     this.request
       .post(url, { body: opts, json: true })
-      .then(gasLimit => {
+      .then((gasLimit) => {
         gasLimit = JSON.parse(gasLimit);
         return cb(null, gasLimit);
       })
-      .catch(err => {
+      .catch((err) => {
         return cb(err);
       });
   }
@@ -406,7 +406,7 @@ export class V8 {
         const url = this.baseUrl + '/fee/' + x;
         this.request
           .get(url, {})
-          .then(ret => {
+          .then((ret) => {
             try {
               ret = JSON.parse(ret);
 
@@ -423,11 +423,11 @@ export class V8 {
 
             return icb();
           })
-          .catch(err => {
+          .catch((err) => {
             return icb(err);
           });
       },
-      err => {
+      (err) => {
         if (err) {
           return cb(err);
         }
@@ -442,7 +442,7 @@ export class V8 {
 
     this.request
       .get(url, {})
-      .then(ret => {
+      .then((ret) => {
         try {
           ret = JSON.parse(ret);
           return cb(null, ret.height, ret.hash);
@@ -457,7 +457,7 @@ export class V8 {
     const url = this.baseUrl + '/tx/?blockHash=' + blockHash;
     this.request
       .get(url, {})
-      .then(ret => {
+      .then((ret) => {
         try {
           ret = JSON.parse(ret);
           const res = _.map(ret, 'txid');
@@ -476,7 +476,7 @@ export class V8 {
 
     const blockSocket = io.connect(this.host, { transports: ['websocket'] });
 
-    const getAuthPayload = host => {
+    const getAuthPayload = (host) => {
       const authKey = config.blockchainExplorerOpts.socketApiKey;
 
       if (!authKey) throw new Error('provide authKey');
@@ -498,7 +498,7 @@ export class V8 {
       log.error(`Error connecting to ${this.getConnectionInfo()}`);
     });
 
-    blockSocket.on('block', data => {
+    blockSocket.on('block', (data) => {
       return callbacks.onBlock(data.hash);
     });
 
@@ -511,22 +511,22 @@ export class V8 {
       log.error(`Error connecting to ${this.getConnectionInfo()}  ${this.coin.toUpperCase()}/${this.v8network}`);
     });
 
-    walletsSocket.on('failure', err => {
+    walletsSocket.on('failure', (err) => {
       log.error(`Error joining room ${err.message} ${this.coin.toUpperCase()}/${this.v8network}`);
     });
 
-    walletsSocket.on('coin', data => {
+    walletsSocket.on('coin', (data) => {
       const coin = data.coin;
       // script output, or similar.
       if (!coin || !coin.address || coin.chain === 'ETH' || coin.chain === 'DUCX') return;
       const out = {
         address: coin.address,
-        amount: coin.value
+        amount: coin.value,
       };
       return callbacks.onIncomingPayments({ out, txid: coin.mintTxid });
     });
 
-    walletsSocket.on('tx', data => {
+    walletsSocket.on('tx', (data) => {
       const tx = data.tx;
       // script output, or similar.
       if (!tx || (tx.chain !== 'ETH' && tx.chain !== 'DUCX')) return;
@@ -544,7 +544,7 @@ export class V8 {
       const out = {
         address,
         amount,
-        tokenAddress
+        tokenAddress,
       };
       return callbacks.onIncomingPayments({ out, txid: tx.txid });
     });

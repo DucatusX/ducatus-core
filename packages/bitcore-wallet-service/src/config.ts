@@ -22,67 +22,67 @@ module.exports = {
 
   storageOpts: {
     mongoDb: {
-      uri: 'mongodb://localhost:27017/bws'
-    }
+      uri: 'mongodb://localhost:27017/bws',
+    },
   },
   messageBrokerOpts: {
     //  To use message broker server, uncomment this:
     messageBrokerServer: {
-      url: 'http://localhost:3380'
-    }
+      url: 'http://localhost:3380',
+    },
   },
   blockchainExplorerOpts: {
     duc: {
       livenet: {
-        url: 'https://ducapi.rocknblock.io'
+        url: 'https://ducapi.rocknblock.io',
       },
       testnet: {
         url: 'https://ducapi.rocknblock.io',
-        regtestEnabled: false
-      }
+        regtestEnabled: false,
+      },
     },
     ducx: {
       livenet: {
-        url: 'https://ducapi.rocknblock.io'
+        url: 'https://ducapi.rocknblock.io',
       },
       testnet: {
-        url: 'https://ducapi.rocknblock.io'
-      }
+        url: 'https://ducapi.rocknblock.io',
+      },
     },
     btc: {
       livenet: {
-        url: 'https://api.bitcore.io'
+        url: 'https://api.bitcore.io',
       },
       testnet: {
         url: 'https://api.bitcore.io',
-        regtestEnabled: false
-      }
+        regtestEnabled: false,
+      },
     },
     bch: {
       livenet: {
-        url: 'https://api.bitcore.io'
+        url: 'https://api.bitcore.io',
       },
       testnet: {
-        url: 'https://api.bitcore.io'
-      }
+        url: 'https://api.bitcore.io',
+      },
     },
     eth: {
       livenet: {
-        url: 'https://api-eth.bitcore.io'
+        url: 'https://api-eth.bitcore.io',
       },
       testnet: {
-        url: 'https://api-eth.bitcore.io'
-      }
+        url: 'https://api-eth.bitcore.io',
+      },
     },
     xrp: {
       livenet: {
-        url: 'https://api-xrp.bitcore.io'
+        url: 'https://api-xrp.bitcore.io',
       },
       testnet: {
-        url: 'https://api-xrp.bitcore.io'
-      }
+        url: 'https://api-xrp.bitcore.io',
+      },
     },
-    socketApiKey: 'socketApiKey'
+    socketApiKey: 'socketApiKey',
   },
   pushNotificationsOpts: {
     templatePath: 'templates',
@@ -90,16 +90,16 @@ module.exports = {
     defaultUnit: 'btc',
     subjectPrefix: '',
     pushServerUrl: 'https://fcm.googleapis.com/fcm',
-    authorizationKey: 'You_have_to_put_something_here'
+    authorizationKey: 'You_have_to_put_something_here',
   },
   fiatRateServiceOpts: {
     defaultProvider: 'BitPay',
-    fetchInterval: 60 // in minutes
+    fetchInterval: 60, // in minutes
   },
   maintenanceOpts: {
-    maintenanceMode: false
+    maintenanceMode: false,
   },
-  staticRoot: '/tmp/static'
+  staticRoot: '/tmp/static',
   // ignoreRateLimiter: true
   // simplex: {
   //   sandbox: {

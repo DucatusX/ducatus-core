@@ -131,6 +131,7 @@ export class PushNotificationsService {
   }
 
   _sendPushNotifications(notification, cb) {
+    console.log('_sendPushNotifications', notification);
     cb = cb || function() {};
 
     const notifType = PUSHNOTIFICATIONS_TYPES[notification.type];

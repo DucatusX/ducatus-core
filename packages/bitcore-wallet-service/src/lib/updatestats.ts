@@ -6,7 +6,7 @@ const ObjectID = mongodb.ObjectID;
 const storage = require('./storage');
 const LAST_DAY = '2019-12-01';
 
-var objectIdFromDate = function(date) {
+var objectIdFromDate = function (date) {
   return Math.floor(date.getTime() / 1000).toString(16) + '0000000000000000';
 };
 
@@ -43,20 +43,20 @@ export class UpdateStats {
   updateStats(cb) {
     async.series(
       [
-        next => {
+        (next) => {
           console.log('## Updating new wallets stats...');
           this._updateNewWallets(next);
         },
-        next => {
+        (next) => {
           console.log('## Updating tx proposals stats...');
           this._updateTxProposals(next);
         },
-        next => {
+        (next) => {
           console.log('## Updating fiat rates stats...');
           this._updateFiatRates(next);
-        }
+        },
       ],
-      err => {
+      (err) => {
         this.db.close();
         if (err) return cb(err);
         return cb();
@@ -72,26 +72,26 @@ export class UpdateStats {
       .aggregate([
         {
           $match: {
-            _id: { $gt: new ObjectID(od) }
-          }
+            _id: { $gt: new ObjectID(od) },
+          },
         },
         {
           $project: {
             date: { $add: [new Date(0), { $multiply: ['$createdOn', 1000] }] },
             network: '$network',
-            coin: '$coin'
-          }
+            coin: '$coin',
+          },
         },
         {
           $group: {
             _id: {
               day: { $dateToString: { format: '%Y-%m-%d', date: '$date' } },
               network: '$network',
-              coin: '$coin'
+              coin: '$coin',
             },
-            count: { $sum: 1 }
-          }
-        }
+            count: { $sum: 1 },
+          },
+        },
       ])
       .toArray(async (err, res) => {
         if (err) {
@@ -111,9 +111,9 @@ export class UpdateStats {
             await this.db
               .collection('stats_wallets')
               .remove({ '_id.day': { $gte: lastDay } })
-              .then(async err => {
+              .then(async (err) => {
                 // rm day = null
-                res = res.filter(x => x._id.day);
+                res = res.filter((x) => x._id.day);
                 console.log(`\tTrying to insert ${res.length} entries`);
                 const opts: any = { ordered: false };
                 await this.db.collection('stats_wallets').insert(res, opts);
@@ -137,30 +137,30 @@ export class UpdateStats {
       .aggregate([
         {
           $match: {
-            _id: { $gt: new ObjectID(od) }
-          }
+            _id: { $gt: new ObjectID(od) },
+          },
         },
         {
           $match: {
-            code: 'USD'
-          }
+            code: 'USD',
+          },
         },
         {
           $project: {
             date: { $add: [new Date(0), '$ts'] },
             coin: '$coin',
-            value: '$value'
-          }
+            value: '$value',
+          },
         },
         {
           $group: {
             _id: {
               day: { $dateToString: { format: '%Y-%m-%d', date: '$date' } },
-              coin: '$coin'
+              coin: '$coin',
             },
-            value: { $first: '$value' }
-          }
-        }
+            value: { $first: '$value' },
+          },
+        },
       ])
       .toArray(async (err, res) => {
         if (err) {
@@ -179,9 +179,9 @@ export class UpdateStats {
             await this.db
               .collection('stats_fiat_rates')
               .remove({ '_id.day': { $gte: lastDay } })
-              .then(async err => {
+              .then(async (err) => {
                 // rm day = null
-                res = res.filter(x => x._id.day);
+                res = res.filter((x) => x._id.day);
 
                 console.log(`Trying to insert ${res.length} entries`);
                 const opts: any = { ordered: false };
@@ -200,11 +200,7 @@ export class UpdateStats {
 
   async lastRun(coll) {
     // Grab last run
-    let cursor = await this.db
-      .collection(coll)
-      .find({}, { _id: true })
-      .sort({ _id: -1 })
-      .limit(1);
+    let cursor = await this.db.collection(coll).find({}, { _id: true }).sort({ _id: -1 }).limit(1);
 
     let last = await cursor.next();
     let lastDay = LAST_DAY;
@@ -225,8 +221,8 @@ export class UpdateStats {
       .aggregate([
         {
           $match: {
-            _id: { $gt: new ObjectID(od) }
-          }
+            _id: { $gt: new ObjectID(od) },
+          },
         },
         {
           $project: {
@@ -234,20 +230,20 @@ export class UpdateStats {
             network: '$network',
             coin: '$coin',
             amount: '$amount',
-            id: '$_id'
-          }
+            id: '$_id',
+          },
         },
         {
           $group: {
             _id: {
               day: { $dateToString: { format: '%Y-%m-%d', date: '$date' } },
               network: '$network',
-              coin: '$coin'
+              coin: '$coin',
             },
             amount: { $sum: '$amount' },
-            count: { $sum: 1 }
-          }
-        }
+            count: { $sum: 1 },
+          },
+        },
       ])
       .toArray(async (err, res) => {
         if (err) {
@@ -267,9 +263,9 @@ export class UpdateStats {
             await this.db
               .collection('stats_txps')
               .remove({ '_id.day': { $gte: lastDay } })
-              .then(async err => {
+              .then(async (err) => {
                 // rm day = null
-                res = res.filter(x => x._id.day);
+                res = res.filter((x) => x._id.day);
                 console.log(`\tTrying to insert ${res.length} entries`);
                 const opts: any = { ordered: false };
                 await this.db.collection('stats_txps').insert(res, opts);

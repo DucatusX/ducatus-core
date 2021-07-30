@@ -18,7 +18,7 @@ const Bitcore = {
   eth: require('bitcore-lib'),
   xrp: require('bitcore-lib'),
   duc: require('ducatuscore-lib'),
-  ducx: require('bitcore-lib')
+  ducx: require('bitcore-lib'),
 };
 
 export interface IWallet {
@@ -105,7 +105,7 @@ export class Wallet {
     x.addressType = opts.addressType || Constants.SCRIPT_TYPES.P2SH;
 
     x.addressManager = AddressManager.create({
-      derivationStrategy: x.derivationStrategy
+      derivationStrategy: x.derivationStrategy,
     });
     x.usePurpose48 = opts.usePurpose48;
 
@@ -137,7 +137,7 @@ export class Wallet {
     x.singleAddress = !!obj.singleAddress;
     x.status = obj.status;
     x.publicKeyRing = obj.publicKeyRing;
-    x.copayers = _.map(obj.copayers, copayer => {
+    x.copayers = _.map(obj.copayers, (copayer) => {
       return Copayer.fromObj(copayer);
     });
     x.pubKey = obj.pubKey;
@@ -195,13 +195,7 @@ export class Wallet {
     const bitcore = Bitcore[chain];
     const salt = config.BE_KEY_SALT || Defaults.BE_KEY_SALT;
 
-    var seed =
-      _.map(this.copayers, 'xPubKey')
-        .sort()
-        .join('') +
-      this.network +
-      this.coin +
-      salt;
+    var seed = _.map(this.copayers, 'xPubKey').sort().join('') + this.network + this.coin + salt;
     seed = bitcore.crypto.Hash.sha256(new Buffer(seed));
     const priv = bitcore.PrivateKey(seed, this.network);
 
@@ -211,7 +205,7 @@ export class Wallet {
   }
 
   _updatePublicKeyRing() {
-    this.publicKeyRing = _.map(this.copayers, copayer => {
+    this.publicKeyRing = _.map(this.copayers, (copayer) => {
       return _.pick(copayer, ['xPubKey', 'requestPubKey']);
     });
   }
@@ -237,12 +231,12 @@ export class Wallet {
       signature,
       selfSigned: true,
       restrictions: restrictions || {},
-      name: name || null
+      name: name || null,
     });
   }
 
   getCopayer(copayerId): Copayer {
-    return this.copayers.find(c => c.id == copayerId);
+    return this.copayers.find((c) => c.id == copayerId);
   }
 
   isComplete() {
