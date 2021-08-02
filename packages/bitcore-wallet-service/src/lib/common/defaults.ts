@@ -9,7 +9,7 @@ module.exports = {
     eth: 50000000000, // 50 Gwei,
     xrp: 50000000000,
     duc: 10000 * 1000, // 10k sat/b
-    ducx: 50000000000,
+    ducx: 50000000000
   },
 
   MIN_TX_FEE: {
@@ -18,7 +18,7 @@ module.exports = {
     duc: 0,
     eth: 0,
     xrp: 0,
-    ducx: 0,
+    ducx: 0
   },
 
   MAX_TX_FEE: {
@@ -27,7 +27,7 @@ module.exports = {
     duc: 0.05 * 1e8,
     eth: 1 * 1e18, // 1 eth
     xrp: 1 * 1e6, // 1 xrp
-    ducx: 1 * 1e18, // 1 eth
+    ducx: 1 * 1e18 // 1 eth
   },
 
   MAX_TX_SIZE_IN_KB: {
@@ -36,7 +36,7 @@ module.exports = {
     duc: 100,
     eth: 500,
     xrp: 1000,
-    ducx: 500,
+    ducx: 500
   },
 
   // ETH
@@ -68,128 +68,128 @@ module.exports = {
         name: 'urgent',
         nbBlocks: 2,
         multiplier: 1.5,
-        defaultValue: 75000,
+        defaultValue: 75000
       },
       {
         name: 'priority',
         nbBlocks: 2,
-        defaultValue: 50000,
+        defaultValue: 50000
       },
       {
         name: 'normal',
         nbBlocks: 3,
-        defaultValue: 30000,
+        defaultValue: 30000
       },
       {
         name: 'economy',
         nbBlocks: 6,
-        defaultValue: 25000,
+        defaultValue: 25000
       },
       {
         name: 'superEconomy',
         nbBlocks: 24,
-        defaultValue: 10000,
-      },
+        defaultValue: 10000
+      }
     ],
     duc: [
       {
         name: 'urgent',
         nbBlocks: 2,
         multiplier: 1.5,
-        defaultValue: 75000,
+        defaultValue: 75000
       },
       {
         name: 'priority',
         nbBlocks: 2,
-        defaultValue: 50000,
+        defaultValue: 50000
       },
       {
         name: 'normal',
         nbBlocks: 3,
-        defaultValue: 30000,
+        defaultValue: 30000
       },
       {
         name: 'economy',
         nbBlocks: 6,
-        defaultValue: 25000,
+        defaultValue: 25000
       },
       {
         name: 'superEconomy',
         nbBlocks: 24,
-        defaultValue: 10000,
-      },
+        defaultValue: 10000
+      }
     ],
     bch: [
       {
         name: 'normal',
         nbBlocks: 2,
-        defaultValue: 2000,
-      },
+        defaultValue: 2000
+      }
     ],
     eth: [
       {
         name: 'urgent',
         nbBlocks: 1,
-        defaultValue: 10000000000,
+        defaultValue: 10000000000
       },
       {
         name: 'priority',
         nbBlocks: 2,
-        defaultValue: 5000000000,
+        defaultValue: 5000000000
       },
       {
         name: 'normal',
         nbBlocks: 3,
-        defaultValue: 1000000000,
+        defaultValue: 1000000000
       },
       {
         name: 'economy',
         nbBlocks: 4,
-        defaultValue: 1000000000,
+        defaultValue: 1000000000
       },
       {
         name: 'superEconomy',
         nbBlocks: 4,
-        defaultValue: 1000000000,
-      },
+        defaultValue: 1000000000
+      }
     ],
     xrp: [
       {
         name: 'normal',
         nbBlocks: 1, // 3 seconds
-        defaultValue: 12,
-      },
+        defaultValue: 12
+      }
     ],
     ducx: [
       {
         name: 'urgent',
         nbBlocks: 1, // < 2 min
         multiplier: 1.1,
-        defaultValue: 3000000000,
+        defaultValue: 3000000000
       },
       {
         name: 'priority',
         nbBlocks: 2, // 3 min
-        defaultValue: 2500000000,
+        defaultValue: 2500000000
       },
       {
         name: 'normal',
         nbBlocks: 3, // 5 min
-        defaultValue: 2000000000,
+        defaultValue: 2000000000
       },
       {
         name: 'economy',
         nbBlocks: 4, // 10 minutes
         multiplier: 0.9,
-        defaultValue: 1500000000,
+        defaultValue: 1500000000
       },
       {
         name: 'superEconomy',
         nbBlocks: 4, // 15 minutes
         multiplier: 0.8,
-        defaultValue: 1000000000,
-      },
-    ],
+        defaultValue: 1000000000
+      }
+    ]
   },
 
   // How many levels to fallback to if the value returned by the network for a given nbBlocks is -1
@@ -253,7 +253,7 @@ module.exports = {
       delayAfter: 8, // begin slowing down responses after the 3rd request
       delayMs: 3000, // slow down subsequent responses by 3 seconds per request
       max: 30, // start blocking after 20 request
-      message: 'Too many wallets created from this IP, please try again after an hour',
+      message: 'Too many wallets created from this IP, please try again after an hour'
     },
     estimateFee: {
       windowMs: 60 * 10 * 1000, // 10 min window
@@ -261,8 +261,8 @@ module.exports = {
       delayMs: 300, // slow down subsequent responses by 3 seconds per request
 
       max: 10, // start blocking after 200 request
-      message: 'Too many request',
-    },
+      message: 'Too many request'
+    }
 
     // otherPosts: {
     //   windowMs: 60 * 60 * 1000, // 1 hour window
@@ -284,5 +284,5 @@ module.exports = {
 
   NEW_BLOCK_THROTTLE_TIME_MIN: 5,
 
-  BROADCAST_RETRY_TIME: 350, // ms
+  BROADCAST_RETRY_TIME: 350 // ms
 };

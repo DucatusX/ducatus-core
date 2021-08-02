@@ -76,7 +76,7 @@ export class DucChain extends BtcChain implements IChain {
     switch (txp.addressType) {
       case Constants.SCRIPT_TYPES.P2WSH:
       case Constants.SCRIPT_TYPES.P2SH:
-        _.each(txp.inputs, (i) => {
+        _.each(txp.inputs, i => {
           $.checkState(i.publicKeys, 'Inputs should include public keys');
           t.from(i, i.publicKeys, txp.requiredSignatures);
         });
@@ -87,13 +87,13 @@ export class DucChain extends BtcChain implements IChain {
         break;
     }
 
-    _.each(txp.outputs, (o) => {
+    _.each(txp.outputs, o => {
       $.checkState(o.script || o.toAddress, 'Output should have either toAddress or script specified');
       if (o.script) {
         t.addOutput(
           new DucatuscoreLib.Transaction.Output({
             script: o.script,
-            satoshis: o.amount,
+            satoshis: o.amount
           })
         );
       } else {
@@ -113,8 +113,8 @@ export class DucChain extends BtcChain implements IChain {
         return order >= t.outputs.length;
       });
       $.checkState(t.outputs.length == outputOrder.length);
-      t.sortOutputs((outputs) => {
-        return _.map(outputOrder, (i) => {
+      t.sortOutputs(outputs => {
+        return _.map(outputOrder, i => {
           return outputs[i];
         });
       });
@@ -136,7 +136,7 @@ export class DucChain extends BtcChain implements IChain {
     let i = 0;
     const x = new DucatuscoreLib.HDPublicKey(xpub);
 
-    _.each(signatures, (signatureHex) => {
+    _.each(signatures, signatureHex => {
       try {
         const signature = DucatuscoreLib.crypto.Signature.fromString(signatureHex);
         const pub = x.deriveChild(inputPaths[i]).publicKey;
@@ -146,7 +146,7 @@ export class DucChain extends BtcChain implements IChain {
           sigtype:
             // tslint:disable-next-line:no-bitwise
             DucatuscoreLib.crypto.Signature.SIGHASH_ALL | DucatuscoreLib.crypto.Signature.SIGHASH_FORKID,
-          publicKey: pub,
+          publicKey: pub
         };
         tx.inputs[i].addSignature(tx, s);
         i++;

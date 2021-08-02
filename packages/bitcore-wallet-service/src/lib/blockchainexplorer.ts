@@ -12,29 +12,29 @@ const PROVIDERS = {
   v8: {
     btc: {
       livenet: 'https://api.bitpay.com',
-      testnet: 'https://api.bitpay.com',
+      testnet: 'https://api.bitpay.com'
     },
     bch: {
       livenet: 'https://api.bitpay.com',
-      testnet: 'https://api.bitpay.com',
+      testnet: 'https://api.bitpay.com'
     },
     duc: {
       livenet: 'https://ducapi.rocknblock.io',
-      testnet: 'https://ducapi.rocknblock.io',
+      testnet: 'https://ducapi.rocknblock.io'
     },
     eth: {
       livenet: 'https://api-eth.bitcore.io',
-      testnet: 'https://api-eth.bitcore.io',
+      testnet: 'https://api-eth.bitcore.io'
     },
     xrp: {
       livenet: 'https://api-xrp.bitcore.io',
-      testnet: 'https://api-xrp.bitcore.io',
+      testnet: 'https://api-xrp.bitcore.io'
     },
     ducx: {
       livenet: 'https://ducapi.rocknblock.io',
-      testnet: 'https://ducapi.rocknblock.io',
-    },
-  },
+      testnet: 'https://ducapi.rocknblock.io'
+    }
+  }
 };
 
 export function BlockChainExplorer(opts) {
@@ -66,7 +66,7 @@ export function BlockChainExplorer(opts) {
         url,
         apiPrefix: opts.apiPrefix,
         userAgent: opts.userAgent,
-        addressFormat: opts.addressFormat,
+        addressFormat: opts.addressFormat
       });
 
     default:

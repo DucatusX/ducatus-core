@@ -19,7 +19,7 @@ const fiatCodes = {
   NGN: 1,
   BRL: 1,
   ARS: 1,
-  AUD: 1,
+  AUD: 1
 };
 
 const customCoins = ['duc', 'ducx'];
@@ -38,7 +38,7 @@ export class FiatRateService {
 
     async.parallel(
       [
-        (done) => {
+        done => {
           if (opts.storage) {
             this.storage = opts.storage;
             done();
@@ -46,9 +46,9 @@ export class FiatRateService {
             this.storage = new Storage();
             this.storage.connect(opts.storageOpts, done);
           }
-        },
+        }
       ],
-      (err) => {
+      err => {
         if (err) {
           log.error(err);
         }
@@ -73,7 +73,7 @@ export class FiatRateService {
   }
 
   _fetch(cb?) {
-    cb = cb || function () {};
+    cb = cb || function() {};
     const coins = ['btc', 'bch', 'eth', 'xrp', 'duc', 'ducx'];
 
     //    async.each(this.providers, (provider, next) => {
@@ -90,7 +90,7 @@ export class FiatRateService {
             log.warn('Error retrieving data for ' + provider.name + coin, err);
             return next2();
           }
-          this.storage.storeFiatRate(coin, res, (err) => {
+          this.storage.storeFiatRate(coin, res, err => {
             if (err) {
               log.warn('Error storing data for ' + provider.name, err);
             }
@@ -110,7 +110,7 @@ export class FiatRateService {
     this.request.get(
       {
         url,
-        json: true,
+        json: true
       },
       (err, res, body) => {
         if (err || !body) {
@@ -131,7 +131,7 @@ export class FiatRateService {
           return cb(new Error('No parse function for provider ' + provider.name));
         }
         try {
-          const rates = _.filter(provider.parseFn(bodyRates), (x) => fiatCodes[x.code]);
+          const rates = _.filter(provider.parseFn(bodyRates), x => fiatCodes[x.code]);
           return cb(null, rates);
         } catch (e) {
           return cb(e);
@@ -160,7 +160,7 @@ export class FiatRateService {
           return cb(null, {
             ts: +ts,
             rate: rate ? rate.value : undefined,
-            fetchedOn: rate ? rate.ts : undefined,
+            fetchedOn: rate ? rate.ts : undefined
           });
         });
       },

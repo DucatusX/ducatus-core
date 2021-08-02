@@ -29,7 +29,7 @@ export class XrpChain implements IChain {
       lockedConfirmedAmount: activatedLocked,
       availableAmount: balance - activatedLocked,
       availableConfirmedAmount: confirmed - activatedLocked,
-      byAddress: [],
+      byAddress: []
     };
     return convertedBalance;
   }
@@ -55,8 +55,8 @@ export class XrpChain implements IChain {
               {
                 address: addresses[0].address,
                 path: addresses[0].path,
-                amount: convertedBalance.totalAmount,
-              },
+                amount: convertedBalance.totalAmount
+              }
             ];
             convertedBalance.byAddress = byAddress;
           }
@@ -76,7 +76,7 @@ export class XrpChain implements IChain {
         amountBelowFee: 0,
         amount: availableAmount - fee,
         feePerKb: opts.feePerKb,
-        fee,
+        fee
       });
     });
   }
@@ -118,10 +118,10 @@ export class XrpChain implements IChain {
   buildTx(txp) {
     const { destinationTag, outputs } = txp;
     const chain = 'XRP';
-    const recipients = outputs.map((output) => {
+    const recipients = outputs.map(output => {
       return {
         amount: output.amount,
-        address: output.toAddress,
+        address: output.toAddress
       };
     });
     const unsignedTxs = [];
@@ -131,7 +131,7 @@ export class XrpChain implements IChain {
         tag: destinationTag ? Number(destinationTag) : undefined,
         chain,
         nonce: Number(txp.nonce) + Number(index),
-        recipients: [recipients[index]],
+        recipients: [recipients[index]]
       });
       unsignedTxs.push(rawTx);
     }
@@ -146,7 +146,7 @@ export class XrpChain implements IChain {
       getFee: () => {
         return txp.fee;
       },
-      getChangeOutput: () => null,
+      getChangeOutput: () => null
     };
   }
 
@@ -225,7 +225,7 @@ export class XrpChain implements IChain {
       const signed = Transactions.applySignature({
         chain,
         tx: unsignedTxs[index],
-        signature: signatures[index],
+        signature: signatures[index]
       });
       signedTxs.push(signed);
 

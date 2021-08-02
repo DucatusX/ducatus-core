@@ -69,15 +69,15 @@ export class Copayer {
     x.requestPubKeys = [
       {
         key: opts.requestPubKey,
-        signature: opts.signature,
-      },
+        signature: opts.signature
+      }
     ];
 
     const derivationStrategy = opts.derivationStrategy || Constants.DERIVATION_STRATEGIES.BIP45;
     if (AddressManager.supportsCopayerBranches(derivationStrategy)) {
       x.addressManager = AddressManager.fromObj({
         derivationStrategy,
-        copayerIndex: opts.copayerIndex,
+        copayerIndex: opts.copayerIndex
       });
     }
 
@@ -102,8 +102,8 @@ export class Copayer {
       x.requestPubKeys = [
         {
           key: x.requestPubKey,
-          signature: x.signature,
-        },
+          signature: x.signature
+        }
       ];
       x.version = 2;
     } else {

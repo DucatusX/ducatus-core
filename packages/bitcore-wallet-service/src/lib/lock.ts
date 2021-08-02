@@ -24,7 +24,7 @@ export class Lock {
 
     opts.lockTime = opts.lockTime || Defaults.LOCK_EXE_TIME;
 
-    this.storage.acquireLock(token, Date.now() + opts.lockTime, (err) => {
+    this.storage.acquireLock(token, Date.now() + opts.lockTime, err => {
       // Lock taken?
       if (err && err.message && err.message.indexOf('E11000 ') !== -1) {
         // Lock expired?
@@ -50,7 +50,7 @@ export class Lock {
 
         // Lock available
       } else {
-        return cb(null, (icb) => {
+        return cb(null, icb => {
           if (!icb) icb = () => {};
           this.storage.releaseLock(token, icb);
         });
@@ -65,7 +65,7 @@ export class Lock {
       if (err == 'LOCKED') return cb(Errors.WALLET_BUSY);
       if (err) return cb(err);
 
-      const _cb = function () {
+      const _cb = function() {
         cb.apply(null, arguments);
         release();
       };

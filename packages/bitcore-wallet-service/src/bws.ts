@@ -37,7 +37,7 @@ if (config.https) {
     serverOpts.ca = [
       fs.readFileSync(config.CAinter1),
       fs.readFileSync(config.CAinter2),
-      fs.readFileSync(config.CAroot),
+      fs.readFileSync(config.CAroot)
     ];
   }
 }
@@ -55,7 +55,7 @@ function startInstance() {
     ? serverModule.createServer(serverOpts, expressApp.app)
     : serverModule.Server(expressApp.app);
 
-  expressApp.start(config, (err) => {
+  expressApp.start(config, err => {
     console.log(config);
     if (err) {
       log.error('Could not start BWS instance', err);
@@ -82,7 +82,7 @@ if (config.cluster && cluster.isMaster) {
   }
 
   // Listen for dying workers
-  cluster.on('exit', (worker) => {
+  cluster.on('exit', worker => {
     // Replace the dead worker,
     log.error('Worker ' + worker.id + ' died :(');
     cluster.fork();

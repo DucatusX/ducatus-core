@@ -11,7 +11,7 @@ module.exports = (wallet, appName, appVersion) => {
       dismissible: true,
       category: 'critical',
       app: 'bitpay',
-      priority: 2,
+      priority: 2
     });
   }
   if (wallet.network == 'livenet') {
@@ -23,7 +23,7 @@ module.exports = (wallet, appName, appVersion) => {
       dismissible: true,
       category: 'critical',
       app: 'bitpay',
-      priority: 1,
+      priority: 1
     });
   }
   return serverMessages;

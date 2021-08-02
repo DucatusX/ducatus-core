@@ -33,14 +33,14 @@ const BASE = {
   BCH: `https://api.bitcore.io/api/${coin}/${network}`,
   ETH: `https://api-eth.bitcore.io/api/${coin}/${network}`,
   DUC: `https://ducapi.rocknblock.io/api/${coin}/${network}`,
-  DUCX: `https://ducapi.rocknblock.io/api/${coin}/${network}`,
+  DUCX: `https://ducapi.rocknblock.io/api/${coin}/${network}`
 };
 let baseUrl = BASE[coin];
 console.log('[v8tool.ts.37:baseUrl:]', baseUrl); // TODO
 
 let client = new Client({
   baseUrl,
-  authKey: authKeyObj,
+  authKey: authKeyObj
 });
 
 // utxos
@@ -61,7 +61,7 @@ request.get(
   {
     headers: { 'x-signature': signature },
     body: payload,
-    json: true,
+    json: true
   },
   (err, req, body) => {
     if (err) {

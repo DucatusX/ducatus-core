@@ -8,14 +8,14 @@ const Bitcore = require('bitcore-lib');
 const Bitcore_ = {
   btc: Bitcore,
   bch: require('bitcore-lib-cash'),
-  duc: require('ducatuscore-lib'),
+  duc: require('ducatuscore-lib')
 };
 
 export class Utils {
   static getMissingFields(obj, args) {
     args = [].concat(args);
     if (!_.isObject(obj)) return args;
-    const missing = _.filter(args, (arg) => {
+    const missing = _.filter(args, arg => {
       return !obj.hasOwnProperty(arg);
     });
     return missing;
@@ -99,93 +99,93 @@ export class Utils {
       btc: {
         toSatoshis: 100000000,
         maxDecimals: 6,
-        minDecimals: 2,
+        minDecimals: 2
       },
       bit: {
         toSatoshis: 100,
         maxDecimals: 0,
-        minDecimals: 0,
+        minDecimals: 0
       },
       sat: {
         toSatoshis: 1,
         maxDecimals: 0,
-        minDecimals: 0,
+        minDecimals: 0
       },
       bch: {
         toSatoshis: 100000000,
         maxDecimals: 6,
-        minDecimals: 2,
+        minDecimals: 2
       },
       duc: {
         toSatoshis: 100000000,
         maxDecimals: 6,
-        minDecimals: 2,
+        minDecimals: 2
       },
       eth: {
         toSatoshis: 1e18,
         maxDecimals: 6,
-        minDecimals: 2,
+        minDecimals: 2
       },
       xrp: {
         toSatoshis: 1e6,
         maxDecimals: 6,
-        minDecimals: 2,
+        minDecimals: 2
       },
       usdc: {
         toSatoshis: 1e6,
         maxDecimals: 6,
-        minDecimals: 2,
+        minDecimals: 2
       },
       pax: {
         toSatoshis: 1e18,
         maxDecimals: 6,
-        minDecimals: 2,
+        minDecimals: 2
       },
       gusd: {
         toSatoshis: 1e2,
         maxDecimals: 6,
-        minDecimals: 2,
+        minDecimals: 2
       },
       ducx: {
         toSatoshis: 1e18,
         maxDecimals: 6,
-        minDecimals: 2,
+        minDecimals: 2
       },
       jamasy: {
         toSatoshis: 1e8,
         maxDecimals: 8,
-        minDecimals: 2,
+        minDecimals: 2
       },
       nuyasa: {
         toSatoshis: 1e8,
         maxDecimals: 8,
-        minDecimals: 2,
+        minDecimals: 2
       },
       sunoba: {
         toSatoshis: 1e8,
         maxDecimals: 8,
-        minDecimals: 2,
+        minDecimals: 2
       },
       dscmed: {
         toSatoshis: 1e8,
         maxDecimals: 8,
-        minDecimals: 2,
+        minDecimals: 2
       },
       pog1: {
         toSatoshis: 1e8,
         maxDecimals: 8,
-        minDecimals: 2,
+        minDecimals: 2
       },
       wde: {
         toSatoshis: 1e8,
         maxDecimals: 8,
-        minDecimals: 2,
+        minDecimals: 2
       },
       mdxb: {
         toSatoshis: 1e8,
         maxDecimals: 8,
-        minDecimals: 2,
-      },
+        minDecimals: 2
+      }
     };
 
     $.shouldBeNumber(satoshis);
@@ -217,14 +217,14 @@ export class Utils {
     return (
       Utils.formatAmount(amount, 'btc', {
         minDecimals: 8,
-        maxDecimals: 8,
+        maxDecimals: 8
       }) + 'btc'
     );
   }
 
   static formatUtxos(utxos) {
     if (_.isEmpty(utxos)) return 'none';
-    return _.map([].concat(utxos), (i) => {
+    return _.map([].concat(utxos), i => {
       const amount = Utils.formatAmountInBtc(i.satoshis);
       const confirmations = i.confirmations ? i.confirmations + 'c' : 'u';
       return amount + '/' + confirmations;

@@ -18,14 +18,14 @@ export class BtcChain implements IChain {
     server._getUtxosForCurrentWallet(
       {
         coin: opts.coin,
-        addresses: opts.addresses,
+        addresses: opts.addresses
       },
       (err, utxos) => {
         if (err) return cb(err);
 
         const balance = {
           ...server._totalizeUtxos(utxos),
-          byAddress: [],
+          byAddress: []
         };
 
         // Compute balance by address
@@ -34,11 +34,11 @@ export class BtcChain implements IChain {
           byAddress[key] = {
             address: key,
             path: value.path,
-            amount: 0,
+            amount: 0
           };
         });
 
-        _.each(utxos, (utxo) => {
+        _.each(utxos, utxo => {
           byAddress[utxo.address].amount += utxo.satoshis;
         });
 
@@ -62,14 +62,14 @@ export class BtcChain implements IChain {
         utxosBelowFee: 0,
         amountBelowFee: 0,
         utxosAboveMaxSize: 0,
-        amountAboveMaxSize: 0,
+        amountAboveMaxSize: 0
       };
 
       let inputs = _.reject(utxos, 'locked');
       if (!!opts.excludeUnconfirmedUtxos) {
         inputs = _.filter(inputs, 'confirmations');
       }
-      inputs = _.sortBy(inputs, (input) => {
+      inputs = _.sortBy(inputs, input => {
         return -input.satoshis;
       });
 
@@ -86,14 +86,14 @@ export class BtcChain implements IChain {
           network: wallet.network,
           walletM: wallet.m,
           walletN: wallet.n,
-          feePerKb,
+          feePerKb
         });
 
         const baseTxpSize = txp.getEstimatedSize();
         const sizePerInput = txp.getEstimatedSizeForSingleInput();
         const feePerInput = (sizePerInput * txp.feePerKb) / 1000;
 
-        const partitionedByAmount = _.partition(inputs, (input) => {
+        const partitionedByAmount = _.partition(inputs, input => {
           return input.satoshis > feePerInput;
         });
 
@@ -182,7 +182,7 @@ export class BtcChain implements IChain {
   }
 
   getFee(server, wallet, opts) {
-    return new Promise((resolve) => {
+    return new Promise(resolve => {
       server._getFeePerKb(wallet, opts, (err, feePerKb) => {
         return resolve({ feePerKb });
       });
@@ -201,7 +201,7 @@ export class BtcChain implements IChain {
     switch (txp.addressType) {
       case Constants.SCRIPT_TYPES.P2WSH:
       case Constants.SCRIPT_TYPES.P2SH:
-        _.each(txp.inputs, (i) => {
+        _.each(txp.inputs, i => {
           $.checkState(i.publicKeys, 'Inputs should include public keys');
           t.from(i, i.publicKeys, txp.requiredSignatures);
         });
@@ -212,13 +212,13 @@ export class BtcChain implements IChain {
         break;
     }
 
-    _.each(txp.outputs, (o) => {
+    _.each(txp.outputs, o => {
       $.checkState(o.script || o.toAddress, 'Output should have either toAddress or script specified');
       if (o.script) {
         t.addOutput(
           new this.bitcoreLib.Transaction.Output({
             script: o.script,
-            satoshis: o.amount,
+            satoshis: o.amount
           })
         );
       } else {
@@ -238,8 +238,8 @@ export class BtcChain implements IChain {
         return order >= t.outputs.length;
       });
       $.checkState(t.outputs.length == outputOrder.length);
-      t.sortOutputs((outputs) => {
-        return _.map(outputOrder, (i) => {
+      t.sortOutputs(outputs => {
+        return _.map(outputOrder, i => {
           return outputs[i];
         });
       });
@@ -265,7 +265,7 @@ export class BtcChain implements IChain {
     const serializationOpts = {
       disableIsFullySigned: true,
       disableSmallFees: true,
-      disableLargeFees: true,
+      disableLargeFees: true
     };
     if (_.isEmpty(txp.inputPaths)) return Errors.NO_INPUT_PATHS;
 
@@ -289,20 +289,20 @@ export class BtcChain implements IChain {
   checkTxUTXOs(server, txp, opts, cb) {
     server.logd('Rechecking UTXOs availability for publishTx');
 
-    const utxoKey = (utxo) => {
+    const utxoKey = utxo => {
       return utxo.txid + '|' + utxo.vout;
     };
 
     server._getUtxosForCurrentWallet(
       {
-        addresses: txp.inputs,
+        addresses: txp.inputs
       },
       (err, utxos) => {
         if (err) return cb(err);
 
         const txpInputs = _.map(txp.inputs, utxoKey);
         const utxosIndex = _.keyBy(utxos, utxoKey);
-        const unavailable = _.some(txpInputs, (i) => {
+        const unavailable = _.some(txpInputs, i => {
           const utxo = utxosIndex[i];
           return !utxo || utxo.locked;
         });
@@ -359,7 +359,7 @@ export class BtcChain implements IChain {
     let i = 0;
     const x = new this.bitcoreLib.HDPublicKey(xpub);
 
-    _.each(signatures, (signatureHex) => {
+    _.each(signatures, signatureHex => {
       try {
         const signature = this.bitcoreLib.crypto.Signature.fromString(signatureHex);
         const pub = x.deriveChild(inputPaths[i]).publicKey;
@@ -369,7 +369,7 @@ export class BtcChain implements IChain {
           sigtype:
             // tslint:disable-next-line:no-bitwise
             this.bitcoreLib.crypto.Signature.SIGHASH_ALL | this.bitcoreLib.crypto.Signature.SIGHASH_FORKID,
-          publicKey: pub,
+          publicKey: pub
         };
         tx.inputs[i].addSignature(tx, s);
         i++;

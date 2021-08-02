@@ -88,7 +88,7 @@ export class TxProposalLegacy {
   static Types = {
     SIMPLE: 'simple',
     MULTIPLEOUTPUTS: 'multiple_outputs',
-    EXTERNAL: 'external',
+    EXTERNAL: 'external'
   };
 
   static fromObj(obj) {
@@ -119,7 +119,7 @@ export class TxProposalLegacy {
     x.txid = obj.txid;
     x.broadcastedOn = obj.broadcastedOn;
     x.inputPaths = obj.inputPaths;
-    x.actions = _.map(obj.actions, function (action) {
+    x.actions = _.map(obj.actions, function(action) {
       return TxProposalAction.fromObj(action);
     });
     x.outputOrder = obj.outputOrder;
@@ -163,7 +163,7 @@ export class TxProposalLegacy {
 
   getTotalAmount() {
     if (this.type == TxProposalLegacy.Types.MULTIPLEOUTPUTS || this.type == TxProposalLegacy.Types.EXTERNAL) {
-      return _.map(this.outputs, 'amount').reduce(function (total, n) {
+      return _.map(this.outputs, 'amount').reduce(function(total, n) {
         return total + n;
       }, 0);
     } else {
@@ -177,7 +177,7 @@ export class TxProposalLegacy {
 
   getApprovers() {
     return _.map(
-      _.filter(this.actions, (a) => {
+      _.filter(this.actions, a => {
         return a.type == 'accept';
       }),
       'copayerId'
@@ -186,7 +186,7 @@ export class TxProposalLegacy {
 
   getActionBy(copayerId) {
     return _.find(this.actions, {
-      copayerId,
+      copayerId
     });
   }
 
@@ -196,7 +196,7 @@ export class TxProposalLegacy {
       type,
       signatures,
       xpub,
-      comment,
+      comment
     });
     this.actions.push(action);
     this._updateStatus();

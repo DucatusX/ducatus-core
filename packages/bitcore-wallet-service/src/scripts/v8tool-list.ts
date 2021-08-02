@@ -34,14 +34,14 @@ const BASE = {
   BCH: `https://api.bitcore.io/api/${coin}/${network}`,
   ETH: `https://api-eth.bitcore.io/api/${coin}/${network}`,
   DUC: `https://ducapi.rocknblock.io/api/${coin}/${network}`,
-  DUCX: `https://ducapi.rocknblock.io/api/${coin}/${network}`,
+  DUCX: `https://ducapi.rocknblock.io/api/${coin}/${network}`
 };
 
 let baseUrl = BASE[coin];
 
 let client = new Client({
   baseUrl,
-  authKey: authKeyObj,
+  authKey: authKeyObj
 });
 
 // utxos
@@ -60,10 +60,10 @@ var acum = '';
 
 let r = requestStream.get(url, {
   headers: { 'x-signature': signature },
-  json: true,
+  json: true
 });
 
-r.on('data', (raw) => {
+r.on('data', raw => {
   acum = acum + raw.toString();
 });
 
@@ -71,7 +71,7 @@ r.on('end', () => {
   let txs = [],
     unconf = [],
     err;
-  _.each(acum.split(/\r?\n/), (rawTx) => {
+  _.each(acum.split(/\r?\n/), rawTx => {
     if (!rawTx) return;
 
     let tx;
