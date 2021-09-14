@@ -1,6 +1,5 @@
 var Providers = {
-  BitPay: require('./bitpay'),
-  Ducatus: require('./ducatus')
+  BitPay: require('./bitpay')
   //  Bitstamp: require('./bitstamp'), // no longer used
 };
 

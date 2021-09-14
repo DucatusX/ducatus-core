@@ -1,17 +1,11 @@
 #!/usr/bin/env node
 import * as fs from 'fs';
 import 'source-map-support/register';
+import logger from './lib/logger';
 
 import { ExpressApp } from './lib/expressapp';
-import { findConfig } from './utils/findConfig';
 
-// const config = require('./config');
-const viewConfig = findConfig();
-const config = viewConfig && viewConfig !== undefined ? viewConfig : require('./config');
-const log = require('npmlog');
-log.debug = log.verbose;
-log.disableColor();
-
+const config = require('./config');
 const port = process.env.BWS_PORT || config.port || 3232;
 const cluster = require('cluster');
 const serverModule = config.https ? require('https') : require('http');
@@ -42,9 +36,6 @@ if (config.https) {
   }
 }
 
-if (config.cluster && !config.lockOpts.lockerServer)
-  throw new Error('When running in cluster mode, locker server need to be configured');
-
 if (config.cluster && !config.messageBrokerOpts.messageBrokerServer)
   throw new Error('When running in cluster mode, message broker server need to be configured');
 
@@ -56,16 +47,15 @@ function startInstance() {
     : serverModule.Server(expressApp.app);
 
   expressApp.start(config, err => {
-    console.log(config);
     if (err) {
-      log.error('Could not start BWS instance', err);
+      logger.error('Could not start BWS instance', err);
       return;
     }
 
     server.listen(port);
 
     const instanceInfo = cluster.worker ? ' [Instance:' + cluster.worker.id + ']' : '';
-    log.info('BWS running ' + instanceInfo);
+    logger.info('BWS running ' + instanceInfo);
     return;
   });
 }
@@ -74,7 +64,7 @@ if (config.cluster && cluster.isMaster) {
   // Count the machine's CPUs
   const instances = config.clusterInstances || require('os').cpus().length;
 
-  log.info('Starting ' + instances + ' instances');
+  logger.info('Starting ' + instances + ' instances');
 
   // Create a worker for each CPU
   for (let i = 0; i < instances; i += 1) {
@@ -84,11 +74,11 @@ if (config.cluster && cluster.isMaster) {
   // Listen for dying workers
   cluster.on('exit', worker => {
     // Replace the dead worker,
-    log.error('Worker ' + worker.id + ' died :(');
+    logger.error('Worker ' + worker.id + ' died :(');
     cluster.fork();
   });
   // Code to run if we're in a worker process
 } else {
-  log.info('Listening on port: ' + port);
+  logger.info('Listening on port: ' + port);
   startInstance();
 }

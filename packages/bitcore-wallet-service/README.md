@@ -12,7 +12,7 @@ Bitcore Wallet Service facilitates multisig HD wallets creation and operation th
 
 BWS can usually be installed within minutes and accommodates all the needed infrastructure for peers in a multisig wallet to communicate and operate – with minimum server trust.
 
-See [ducatus-wallet-client](https://github.com/bitpay/bitcore/tree/master/packages/ducatus-wallet-client) for the _official_ client library that communicates to BWS and verifies its response. Also check [bitcore-wallet](https://github.com/bitpay/bitcore/tree/master/packages/bitcore-wallet) for a simple CLI wallet implementation that relies on BWS.
+See [bitcore-wallet-client](https://github.com/bitpay/bitcore/tree/master/packages/bitcore-wallet-client) for the _official_ client library that communicates to BWS and verifies its response. Also check [bitcore-wallet](https://github.com/bitpay/bitcore/tree/master/packages/bitcore-wallet) for a simple CLI wallet implementation that relies on BWS.
 
 BWS is been used in production enviroments for [Copay Wallet](https://copay.io), [Bitpay App wallet](https://bitpay.com/wallet) and others.
 
@@ -29,7 +29,7 @@ More about BWS at https://blog.bitpay.com/announcing-the-bitcore-wallet-suite/
 
 This will launch the BWS service (with default settings) at `http://localhost:3232/bws/api`.
 
-BWS needs mongoDB. You can configure the connection at `config.js`
+BWS needs mongoDB. You can configure the connection at `bws.config.js`
 
 BWS supports SSL and Clustering. For a detailed guide on installing BWS with extra features see [Installing BWS](https://github.com/bitpay/bitcore/blob/master/packages/bitcore-wallet-service/installation.md).
 
@@ -55,7 +55,7 @@ BWS can be used with PM2 with the provided `app.js` script:
 
 ## Using SSL
 
-You can add your certificates at the config.js using:
+You can add your certificates at the bws.config.js using:
 
 ```json
   https: true,
@@ -88,7 +88,7 @@ The are plenty example creating and sending proposals in the `/test/integration`
 
 ### Requirements
 
-- bitcore-node running on https://ducapi.rocknblock.io
+- bitcore-node running on http://localhost:3000
 - bws running locally on http://localhost:3232/bws/api
 - mongod running
 - copay running on port: 8100
@@ -122,9 +122,9 @@ The are plenty example creating and sending proposals in the `/test/integration`
         }
 ```
 
-**bitcore-wallet-service/config.js**
+**bitcore-wallet-service/bws.config.js**
 
-2. Point testnet to https://ducapi.rocknblock.io in BWS/config.js and set regtestEnabled to true.
+2. Point testnet to http://localhost:3000 in BWS/bws.config.js and set regtestEnabled to true.
 
 ```
 blockchainExplorerOpts: {
@@ -133,8 +133,8 @@ blockchainExplorerOpts: {
         url: 'https://api.bitcore.io'
       },
       testnet: {
-        // set url to https://ducapi.rocknblock.io here
-        url: 'https://ducapi.rocknblock.io',
+        // set url to http://localhost:3000 here
+        url: 'http://localhost:3000',
         // set regtestEnabled to true here
         regtestEnabled: true
       }
@@ -213,7 +213,7 @@ In order to access a wallet, clients are required to send the headers:
 
 Identity is the Peer-ID, this will identify the peer and its wallet. Signature is the current request signature, using `requestSigningKey`, the `m/1/1` derivative of the Extended Private Key.
 
-See [Bitcore Wallet Client](https://github.com/bitpay/bitcore/tree/master/packages/ducatus-wallet-client) for implementation details.
+See [Bitcore Wallet Client](https://github.com/bitpay/bitcore/tree/master/packages/bitcore-wallet-client) for implementation details.
 
 ## GET Endpoints
 
@@ -221,7 +221,7 @@ See [Bitcore Wallet Client](https://github.com/bitpay/bitcore/tree/master/packag
 
 Returns:
 
-- Wallet object. (see [fields on the source code](https://github.com/bitpay/bitcore/blob/master/packages/bitcore-wallet-service/lib/model/wallet.js)).
+- Wallet object. (see [fields on the source code](https://github.com/bitpay/bitcore/blob/master/packages/bitcore-wallet-service/src/lib/model/wallet.ts)).
 
 ### `/v1/txhistory/`: Get Wallet's transaction history
 
@@ -248,7 +248,7 @@ Returns:
 
 Returns:
 
-- List of pending TX Proposals. (see [fields on the source code](https://github.com/bitpay/bitcore/blob/master/packages/bitcore-wallet-service/lib/model/txproposal.js))
+- List of pending TX Proposals. (see [fields on the source code](https://github.com/bitpay/bitcore/blob/master/packages/bitcore-wallet-service/src/lib/model/txproposal.ts))
 
 - Uses cashaddr without prefix for BCH
 
@@ -260,7 +260,7 @@ Optional Arguments:
 
 Returns:
 
-- List of Addresses object: (https://github.com/bitpay/bitcore/blob/master/packages/bitcore-wallet-service/lib/model/address.js). This call is mainly provided so the client check this addresses for incoming transactions (using a service like [Insight](https://insight.bitcore.io)
+- List of Addresses object: (https://github.com/bitpay/bitcore/blob/master/packages/bitcore-wallet-service/src/lib/model/address.ts). This call is mainly provided so the client check this addresses for incoming transactions (using a service like [Insight](https://insight.bitcore.io)
 - Returns cashaddr without prefix for BCH
 
 ### `/v1/balance/`: Get Wallet's balance
@@ -339,19 +339,19 @@ Required Arguments:
 
 Returns:
 
-- TX Proposal object. (see [fields on the source code](https://github.com/bitpay/bitcore/blob/master/packages/bitcore-wallet-service/lib/model/txproposal.js)). `.id` is probably needed in this case.
+- TX Proposal object. (see [fields on the source code]https://github.com/bitpay/bitcore/blob/master/packages/bitcore-wallet-service/src/lib/model/txproposal.ts)). `.id` is probably needed in this case.
 
 ### `/v2/txproposals/:id/publish`: Publish the previously created `temporary` tx proposal
 
 Returns:
 
-- TX Proposal object. (see [fields on the source code](https://github.com/bitpay/bitcore/blob/master/packages/bitcore-wallet-service/lib/model/txproposal.js)).
+- TX Proposal object. (see [fields on the source code](https://github.com/bitpay/bitcore/blob/master/packages/bitcore-wallet-service/src/lib/model/txproposal.ts)).
 
 ### `/v3/addresses/`: Request a new main address from wallet . (creates an address on normal conditions)
 
 Returns:
 
-- Address object: (https://github.com/bitpay/bitcore/blob/master/packages/bitcore-wallet-service/lib/model/address.js). Note that `path` is returned so client can derive the address independently and check server's response.
+- Address object: (https://github.com/bitpay/bitcore/blob/master/packages/bitcore-wallet-service/src/lib/model/address.ts). Note that `path` is returned so client can derive the address independently and check server's response.
 
 ### `/v1/txproposals/:id/signatures/`: Sign a transaction proposal
 
@@ -361,19 +361,19 @@ Required Arguments:
 
 Returns:
 
-- TX Proposal object. (see [fields on the source code](https://github.com/bitpay/bitcore/blob/master/packages/bitcore-wallet-service/lib/model/txproposal.js)). `.status` is probably needed in this case.
+- TX Proposal object. (see [fields on the source code](https://github.com/bitpay/bitcore/blob/master/packages/bitcore-wallet-service/src/lib/model/txproposal.ts)). `.status` is probably needed in this case.
 
 ### `/v1/txproposals/:id/broadcast/`: Broadcast a transaction proposal
 
 Returns:
 
-- TX Proposal object. (see [fields on the source code](https://github.com/bitpay/bitcore/blob/master/packages/bitcore-wallet-service/lib/model/txproposal.js)). `.status` is probably needed in this case.
+- TX Proposal object. (see [fields on the source code](https://github.com/bitpay/bitcore/blob/master/packages/bitcore-wallet-service/src/lib/model/txproposal.ts)). `.status` is probably needed in this case.
 
 ### `/v1/txproposals/:id/rejections`: Reject a transaction proposal
 
 Returns:
 
-- TX Proposal object. (see [fields on the source code](https://github.com/bitpay/bitcore/blob/master/packages/bitcore-wallet-service/lib/model/txproposal.js)). `.status` is probably needed in this case.
+- TX Proposal object. (see [fields on the source code](https://github.com/bitpay/bitcore/blob/master/packages/bitcore-wallet-service/src/lib/model/txproposal.ts)). `.status` is probably needed in this case.
 
 ### `/v1/addresses/scan`: Start an address scan process looking for activity.
 
@@ -397,7 +397,7 @@ Required Arguments:
 
 Returns:
 
-- TX Proposal object. (see [fields on the source code](https://github.com/bitpay/bitcore/blob/master/packages/bitcore-wallet-service/lib/model/txproposal.js)). `.id` is probably needed in this case.
+- TX Proposal object. (see [fields on the source code](https://github.com/bitpay/bitcore/blob/master/packages/bitcore-wallet-service/src/lib/model/txproposal.ts)). `.id` is probably needed in this case.
 
 ### `/v1/txconfirmations/:txid`: Unsubscribe from transaction `txid` and no longer listen to its confirmation
 

@@ -57,7 +57,10 @@ function Peer(options) {
     this.port = options.port;
   }
 
-  this.network = Networks.get(options.network) || Networks.defaultNetwork;
+  if (options.network && options.network.constructor.name !== 'Network') {
+    options.network = Networks.get(options.network);
+  }
+  this.network = options.network || Networks.defaultNetwork;
 
   if (!this.port) {
     this.port = this.network.port;
@@ -164,7 +167,11 @@ Peer.prototype._addSocketEventHandlers = function() {
       // TODO: handle this case better
       return self.disconnect();
     }
-    self._readMessage();
+    try {
+      self._readMessage();
+    } catch (e) {
+      return self.disconnect();
+    }
   });
 };
 

@@ -2,7 +2,8 @@ var _ = require('lodash');
 var url = require('url');
 var read = require('read')
 var log = require('npmlog');
-var Client = require('ducatuscore-wallet-client').default;
+// TO DO: Bitcore-lib in dependencies,if installed, there will be an error related to duplicate version.
+var Client = require('../../bitcore-wallet-client').default;
 const Key = Client.Key;
 var FileStorage = require('./filestorage');
 var sjcl = require('sjcl');
@@ -25,7 +26,7 @@ var die = Utils.die = function(err) {
 };
 
 Utils.create = function(client, opts) {
-  let key = Key.create();
+  let key = new Key({ seedType: 'new'});
   let cred = key.createCredentials(null, opts);
   client.fromString(cred);
 
@@ -73,11 +74,11 @@ Utils.doLoad = function(client, doNotComplete, walletData, password, filename, c
     let imported = Client.upgradeCredentialsV1(walletData);
     client.fromString(JSON.stringify(imported.credentials));
 
-    key = Key.fromObj(imported.key);
+    key = new Key({'seedType': 'object', 'seedData': imported.key});
   } catch (e) {
     try {
       client.fromObj(walletData.cred);
-      key = Key.fromObj(walletData.key);
+      key = new Key({'seedType': 'object', 'seedData': walletData.key});
     } catch (e) {
       die('Corrupt wallet file:' + e);
     };
@@ -124,7 +125,7 @@ Utils.getClient = function(args, opts, cb) {
     verbose: args.verbose,
     supportStaffWalletId: opts.walletId,
     timeout: 20 * 60 * 1000,
-    //timeout: 1000,
+    // timeout: 1000,
   });
 
   storage.load(function(err, walletData) {
@@ -247,6 +248,7 @@ Utils.UNITS2 = {
 };
 
 Utils.parseAmount = function(text, coin) {
+  if  (!text) return;
   if (!_.isString(text))
     text = text.toString();
 
@@ -278,7 +280,7 @@ Utils.configureCommander = function(program) {
   program
     .version('0.0.1')
     .option('-f, --file <filename>', 'Wallet file')
-    .option('-h, --host <host>', 'Bitcore Wallet Service URL (eg: http://localhost:3001/copay/api')
+    .option('-h, --host <host>', 'Bitcore Wallet Service URL (eg: http://localhost:3232/bws/api ')
     .option('-v, --verbose', 'be verbose')
 
   return program;
@@ -315,8 +317,8 @@ Utils.COIN = {
     maxDecimals: 8,
     minDecimals: 8,
   },
-
-
+ 
+ 
 };
 
 Utils.renderAmount = function(satoshis, coin, opts) {

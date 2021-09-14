@@ -1,3 +1,4 @@
+import * as CWC from 'crypto-wallet-core';
 import _ from 'lodash';
 
 const $ = require('preconditions').singleton();
@@ -8,7 +9,8 @@ const Bitcore = require('bitcore-lib');
 const Bitcore_ = {
   btc: Bitcore,
   bch: require('bitcore-lib-cash'),
-  duc: require('ducatuscore-lib')
+  doge: require('bitcore-lib-doge'),
+  ltc: require('bitcore-lib-ltc')
 };
 
 export class Utils {
@@ -35,7 +37,7 @@ export class Utils {
    * the hash is calculated there? */
   static hashMessage(text, noReverse) {
     $.checkArgument(text);
-    const buf = new Buffer(text);
+    const buf = Buffer.from(text);
     let ret = crypto.Hash.sha256sha256(buf);
     if (!noReverse) {
       ret = new bitcore.encoding.BufferReader(ret).readReverse();
@@ -66,7 +68,7 @@ export class Utils {
     let publicKeyBuffer = publicKey;
     try {
       if (!Buffer.isBuffer(publicKey)) {
-        publicKeyBuffer = new Buffer(publicKey, 'hex');
+        publicKeyBuffer = Buffer.from(publicKey, 'hex');
       }
       return publicKeyBuffer;
     } catch (e) {
@@ -78,7 +80,7 @@ export class Utils {
     try {
       let signatureBuffer = signature;
       if (!Buffer.isBuffer(signature)) {
-        signatureBuffer = new Buffer(signature, 'hex');
+        signatureBuffer = Buffer.from(signature, 'hex');
       }
       return secp256k1.signatureImport(signatureBuffer);
     } catch (e) {
@@ -95,98 +97,14 @@ export class Utils {
   }
 
   static formatAmount(satoshis, unit, opts) {
-    const UNITS = {
-      btc: {
-        toSatoshis: 100000000,
-        maxDecimals: 6,
-        minDecimals: 2
-      },
-      bit: {
-        toSatoshis: 100,
-        maxDecimals: 0,
-        minDecimals: 0
-      },
-      sat: {
-        toSatoshis: 1,
-        maxDecimals: 0,
-        minDecimals: 0
-      },
-      bch: {
-        toSatoshis: 100000000,
-        maxDecimals: 6,
-        minDecimals: 2
-      },
-      duc: {
-        toSatoshis: 100000000,
-        maxDecimals: 6,
-        minDecimals: 2
-      },
-      eth: {
-        toSatoshis: 1e18,
-        maxDecimals: 6,
-        minDecimals: 2
-      },
-      xrp: {
-        toSatoshis: 1e6,
-        maxDecimals: 6,
-        minDecimals: 2
-      },
-      usdc: {
-        toSatoshis: 1e6,
-        maxDecimals: 6,
-        minDecimals: 2
-      },
-      pax: {
-        toSatoshis: 1e18,
-        maxDecimals: 6,
-        minDecimals: 2
-      },
-      gusd: {
-        toSatoshis: 1e2,
-        maxDecimals: 6,
-        minDecimals: 2
-      },
-      ducx: {
-        toSatoshis: 1e18,
-        maxDecimals: 6,
-        minDecimals: 2
-      },
-      jamasy: {
-        toSatoshis: 1e8,
-        maxDecimals: 8,
-        minDecimals: 2
-      },
-      nuyasa: {
-        toSatoshis: 1e8,
-        maxDecimals: 8,
-        minDecimals: 2
-      },
-      sunoba: {
-        toSatoshis: 1e8,
-        maxDecimals: 8,
-        minDecimals: 2
-      },
-      dscmed: {
-        toSatoshis: 1e8,
-        maxDecimals: 8,
-        minDecimals: 2
-      },
-      pog1: {
-        toSatoshis: 1e8,
-        maxDecimals: 8,
-        minDecimals: 2
-      },
-      wde: {
-        toSatoshis: 1e8,
-        maxDecimals: 8,
-        minDecimals: 2
-      },
-      mdxb: {
-        toSatoshis: 1e8,
-        maxDecimals: 8,
-        minDecimals: 2
-      }
-    };
+    const UNITS = Object.entries(CWC.Constants.UNITS).reduce((units, [currency, currencyConfig]) => {
+      units[currency] = {
+        toSatoshis: currencyConfig.toSatoshis,
+        maxDecimals: currencyConfig.short.maxDecimals,
+        minDecimals: currencyConfig.short.minDecimals
+      };
+      return units;
+    }, {} as { [currency: string]: { toSatoshis: number; maxDecimals: number; minDecimals: number } });
 
     $.shouldBeNumber(satoshis);
     $.checkArgument(_.includes(_.keys(UNITS), unit));
@@ -208,6 +126,9 @@ export class Utils {
 
     opts = opts || {};
 
+    if (!UNITS[unit]) {
+      return Number(satoshis).toLocaleString();
+    }
     const u = _.assign(UNITS[unit], opts);
     const amount = (satoshis / u.toSatoshis).toFixed(u.maxDecimals);
     return addSeparators(amount, opts.thousandsSeparator || ',', opts.decimalSeparator || '.', u.minDecimals);
@@ -317,14 +238,19 @@ export class Utils {
       return 'btc';
     } catch (e) {
       try {
-        new Bitcore_['duc'].Address(address);
-        return 'duc';
+        new Bitcore_['bch'].Address(address);
+        return 'bch';
       } catch (e) {
         try {
-          new Bitcore_['bch'].Address(address);
-          return 'bch';
+          new Bitcore_['doge'].Address(address);
+          return 'doge';
         } catch (e) {
-          return;
+          try {
+            new Bitcore_['ltc'].Address(address);
+            return 'ltc';
+          } catch (e) {
+            return;
+          }
         }
       }
     }

@@ -39,7 +39,7 @@ export class WalletAddressModel extends BaseModel<IWalletAddress> {
   async updateCoins(params: { wallet: IWallet; addresses: string[] }) {
     const { wallet, addresses } = params;
     const { chain, network } = wallet;
-    console.log(chain, network);
+
     class AddressInputStream extends Readable {
       addressBatches: string[][];
       index: number;

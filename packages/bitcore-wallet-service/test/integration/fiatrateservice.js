@@ -9,6 +9,9 @@ var should = chai.should();
 var log = require('npmlog');
 log.debug = log.verbose;
 log.level = 'info';
+var Common = require('../../ts_build/lib/common');
+var Defaults = Common.Defaults;
+var Constants = Common.Constants;
 
 var helpers = require('./helpers');
 
@@ -182,9 +185,9 @@ describe('Fiat rate service', function() {
     });
 
     it('should get historical rates from ts to now', function(done) {
-      const coins = ['btc', 'bch', 'eth', 'xrp'];
+      const coins = ['btc', 'bch', 'eth', 'xrp', 'doge', 'ltc'];
       var clock = sinon.useFakeTimers({toFake: ['Date']});
-      async.each([1.00, 2.00, 3.00, 4.00], function(value, next) {
+      async.each([1.00, 2.00, 3.00, 4.00, 5.00], function(value, next) {
         clock.tick(100);
         async.map(
           coins,
@@ -211,23 +214,22 @@ describe('Fiat rate service', function() {
           should.exist(res);
 
           for (const coin of coins) {
-            res[coin].length.should.equal(4);
+            res[coin].length.should.equal(5);
 
-            res[coin][3].ts.should.equal(100);
-            res[coin][3].rate.should.equal(1.00);
-            res[coin][3].fetchedOn.should.equal(100);
-  
-            res[coin][2].ts.should.equal(200);
-            res[coin][2].rate.should.equal(2.00);
-            res[coin][2].fetchedOn.should.equal(200);
-  
-            res[coin][1].ts.should.equal(300);
-            res[coin][1].rate.should.equal(3.00);
-            res[coin][1].fetchedOn.should.equal(300);
-  
-            res[coin][0].ts.should.equal(400);
-            res[coin][0].rate.should.equal(4.00);
-            res[coin][0].fetchedOn.should.equal(400);
+            res[coin][4].ts.should.equal(100);
+            res[coin][4].rate.should.equal(1.00);
+
+            res[coin][3].ts.should.equal(200);
+            res[coin][3].rate.should.equal(2.00);
+
+            res[coin][2].ts.should.equal(300);
+            res[coin][2].rate.should.equal(3.00);
+
+            res[coin][1].ts.should.equal(400);
+            res[coin][1].rate.should.equal(4.00);
+
+            res[coin][0].ts.should.equal(500);
+            res[coin][0].rate.should.equal(5.00);
           }
           clock.restore();
           done();
@@ -258,22 +260,20 @@ describe('Fiat rate service', function() {
           should.not.exist(res['bch']);
           should.not.exist(res['eth']);
           should.not.exist(res['xrp']);
+          should.not.exist(res['doge']);
+          should.not.exist(res['ltc']);
 
           res['btc'][3].ts.should.equal(100);
           res['btc'][3].rate.should.equal(1.00);
-          res['btc'][3].fetchedOn.should.equal(100);
 
           res['btc'][2].ts.should.equal(200);
           res['btc'][2].rate.should.equal(2.00);
-          res['btc'][2].fetchedOn.should.equal(200);
 
           res['btc'][1].ts.should.equal(300);
           res['btc'][1].rate.should.equal(3.00);
-          res['btc'][1].fetchedOn.should.equal(300);
 
           res['btc'][0].ts.should.equal(400);
           res['btc'][0].rate.should.equal(4.00);
-          res['btc'][0].fetchedOn.should.equal(400);
           clock.restore();
           done();
         });
@@ -281,7 +281,7 @@ describe('Fiat rate service', function() {
     });
 
     it('should return current rates if missing opts.ts when fetching historical rates', function(done) {
-      const coins = ['btc', 'bch', 'eth', 'xrp'];
+      const coins = ['btc', 'bch', 'eth', 'xrp', 'doge', 'ltc'];
       var clock = sinon.useFakeTimers({toFake: ['Date']});
       async.each([1.00, 2.00, 3.00, 4.00], function(value, next) {
         clock.tick(11 * 60 * 1000);
@@ -310,7 +310,6 @@ describe('Fiat rate service', function() {
             res[coin].length.should.equal(1);
             res[coin][0].ts.should.equal(2640000);
             res[coin][0].rate.should.equal(4.00);
-            res[coin][0].fetchedOn.should.equal(2640000);
           }
           clock.restore();
           done();
@@ -359,8 +358,8 @@ describe('Fiat rate service', function() {
         rate: 234.56,
       }];
       var bch = [{
-          code: 'USD',
-          rate: 120,
+        code: 'USD',
+        rate: 120,
       }, {
         code: 'EUR',
         rate: 120,
@@ -379,6 +378,20 @@ describe('Fiat rate service', function() {
         code: 'EUR',
         rate: 0.211111,
       }];
+      var doge = [{
+        code: 'USD',
+        rate: 0.05,
+      }, {
+        code: 'EUR',
+        rate: 0.04,
+      }];
+      var ltc = [{
+        code: 'USD',
+        rate: 150,
+      }, {
+        code: 'EUR',
+        rate: 170,
+      }];
 
       request.get.withArgs({
         url: 'https://bitpay.com/api/rates/BTC',
@@ -396,6 +409,14 @@ describe('Fiat rate service', function() {
         url: 'https://bitpay.com/api/rates/XRP',
         json: true
       }).yields(null, null, xrp);
+      request.get.withArgs({
+        url: 'https://bitpay.com/api/rates/DOGE',
+        json: true
+      }).yields(null, null, doge);
+      request.get.withArgs({
+        url: 'https://bitpay.com/api/rates/LTC',
+        json: true
+      }).yields(null, null, ltc);
 
       service._fetch(function(err) {
         should.not.exist(err);
@@ -427,16 +448,185 @@ describe('Fiat rate service', function() {
                 res.fetchedOn.should.equal(100);
                 res.rate.should.equal(0.222222);
                 service.getRate({
-                  code: 'EUR'
+                  code: 'USD',
+                  coin: 'doge',
                 }, function(err, res) {
                   should.not.exist(err);
                   res.fetchedOn.should.equal(100);
-                  res.rate.should.equal(234.56);
-                  clock.restore();
-                  done();
+                  res.rate.should.equal(0.05);
+                  service.getRate({
+                    code: 'USD',
+                    coin: 'ltc',
+                  }, function(err, res) {
+                    should.not.exist(err);
+                    res.fetchedOn.should.equal(100);
+                    res.rate.should.equal(150);
+                    service.getRate({
+                      code: 'EUR'
+                    }, function(err, res) {
+                      should.not.exist(err);
+                      res.fetchedOn.should.equal(100);
+                      res.rate.should.equal(234.56);
+                      clock.restore();
+                      done();
+                    });
+                  });
                 });
               });
             });
+          });
+        });
+      });
+    });
+  });
+
+  describe('#getRates', function() {
+    it('should get the rates of each coin in all supported fiat currencies', function(done) {
+        service.getRates({}, function(err, res) {
+          should.not.exist(err);
+          Object.keys(res).forEach(key=>{
+            res[key].length.should.equal(Defaults.FIAT_CURRENCIES.length);
+          })
+          done();
+        });
+    });
+    it('should get the rates of all coins supported', function(done) {
+      service.getRates({}, function(err, res) {
+        should.not.exist(err);
+        Object.keys(res).length.should.equal( Object.keys(Constants.COINS).length)
+        done();
+      });
+    });
+    it('should get rates of all coins in the specified fiat currency if it is supported', function(done) {
+        service.getRates({
+          code: 'EUR'
+        }, function(err, res) {
+          should.not.exist(err);
+          Object.keys(res).length.should.equal( Object.keys(Constants.COINS).length)
+          Object.keys(res).forEach(key=>{
+            res[key].length.should.equal(1);
+          })
+          done();
+        });
+    });
+    it('should throw error if the specified fiat currency code is not supported', function(done) {
+        service.getRates({
+          code: 'AOA'
+        }, function(err) {
+          should.exist(err);
+          err.should.equal('AOA is not supported');
+          done();
+        });
+    });
+    it('should get rate for specific ts', function(done) {
+      var clock = sinon.useFakeTimers({ toFake: ['Date'] });
+      clock.tick(20);
+      service.storage.storeFiatRate('btc', [{
+        code: 'USD',
+        value: 123.45,
+      }], function(err) {
+        should.not.exist(err);
+        clock.tick(100);
+        service.storage.storeFiatRate('btc', [{
+          code: 'USD',
+          value: 345.67,
+        }], function(err) {
+          should.not.exist(err);
+          service.getRates({
+            coin: 'btc',
+            code: 'USD',
+            ts: 50,
+          }, function(err, res) {
+            should.not.exist(err);
+            Object.keys(res).forEach(key=>{
+              res[key][0].ts.should.equal(50);
+            })
+            clock.restore();
+            done();
+          });
+        });
+      });
+    });
+  });
+
+  describe('#getRatesByCoin', function() {
+    const bchRates = [
+      { code: "USD", value: 268.94 },
+      { code: "INR", value: 19680.35 },
+      { code: "EUR", value: 226.37 },
+      { code: "CAD", value: 352.33 },
+      { code: "COP", value: 1026617.26 },
+      { code: "NGN", value: 104201.93 },
+      { code: "GBP", value: 201.62 },
+      { code: "ARS", value: 19900.21 },
+      { code: "AUD", value: 365.8 },
+      { code: "BRL", value: 1456.93 },
+      { code: "JPY", value: 1124900.43 },
+      { code: "NZD", value: 16119.66 }
+    ]
+    it('should get rates for all the supported fiat currencies of the specified coin', function(done) {
+      service.storage.storeFiatRate('bch', bchRates, function(err) {
+        should.not.exist(err);
+        service.getRatesByCoin({
+          coin: 'bch'
+        }, function(err, res) {
+          should.not.exist(err);
+          res.length.should.equal(bchRates.length);
+          done();
+        });
+      });
+    });
+    it('should get rate for the specified coin and currency if they are supported', function(done) {
+      service.storage.storeFiatRate('bch', bchRates, function(err) {
+        should.not.exist(err);
+        service.getRatesByCoin({
+          coin: 'bch',
+          code: 'EUR'
+        }, function(err, res) {
+          should.not.exist(err);
+          res[0].rate.should.equal(226.37);
+          done();
+        });
+      });
+    });
+    it('should throw error if the specified currency code is not supported', function(done) {
+      service.storage.storeFiatRate('bch', bchRates, function(err) {
+        should.not.exist(err);
+        service.getRatesByCoin({
+          coin: 'bch',
+          code: 'AOA'
+        }, function(err) {
+          should.exist(err);
+          err.should.equal('AOA is not supported');
+          done();
+        });
+      });
+    });
+    it('should get rate for specific ts', function(done) {
+      var clock = sinon.useFakeTimers({ toFake: ['Date'] });
+      clock.tick(20);
+      service.storage.storeFiatRate('btc', [{
+        code: 'USD',
+        value: 123.45,
+      }], function(err) {
+        should.not.exist(err);
+        clock.tick(100);
+        service.storage.storeFiatRate('btc', [{
+          code: 'USD',
+          value: 345.67,
+        }], function(err) {
+          should.not.exist(err);
+          service.getRatesByCoin({
+            coin: 'btc',
+            code: 'USD',
+            ts: 50,
+          }, function(err, res) {
+            should.not.exist(err);
+            res[0].ts.should.equal(50);
+            res[0].rate.should.equal(123.45);
+            res[0].fetchedOn.should.equal(20);
+            clock.restore();
+            done();
           });
         });
       });

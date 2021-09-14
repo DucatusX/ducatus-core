@@ -3,49 +3,6 @@
 module.exports = {
   MIN_FEE_PER_KB: 0,
 
-  MAX_FEE_PER_KB: {
-    btc: 10000 * 1000, // 10k sat/b
-    bch: 10000 * 1000, // 10k sat/b
-    eth: 50000000000, // 50 Gwei,
-    xrp: 50000000000,
-    duc: 10000 * 1000, // 10k sat/b
-    ducx: 50000000000
-  },
-
-  MIN_TX_FEE: {
-    btc: 0,
-    bch: 0,
-    duc: 0,
-    eth: 0,
-    xrp: 0,
-    ducx: 0
-  },
-
-  MAX_TX_FEE: {
-    btc: 0.05 * 1e8,
-    bch: 0.05 * 1e8,
-    duc: 0.05 * 1e8,
-    eth: 1 * 1e18, // 1 eth
-    xrp: 1 * 1e6, // 1 xrp
-    ducx: 1 * 1e18 // 1 eth
-  },
-
-  MAX_TX_SIZE_IN_KB: {
-    btc: 100,
-    bch: 100,
-    duc: 100,
-    eth: 500,
-    xrp: 1000,
-    ducx: 500
-  },
-
-  // ETH
-  DEFAULT_GAS_LIMIT: 200000,
-  MIN_GAS_LIMIT: 21000,
-
-  // XRP has a non-refundable mininum activation fee / balance
-  MIN_XRP_BALANCE: 20000000,
-
   MAX_KEYS: 100,
 
   // Time after which a tx proposal can be erased by any copayer. in seconds
@@ -91,38 +48,11 @@ module.exports = {
         defaultValue: 10000
       }
     ],
-    duc: [
-      {
-        name: 'urgent',
-        nbBlocks: 2,
-        multiplier: 1.5,
-        defaultValue: 75000
-      },
-      {
-        name: 'priority',
-        nbBlocks: 2,
-        defaultValue: 50000
-      },
-      {
-        name: 'normal',
-        nbBlocks: 3,
-        defaultValue: 30000
-      },
-      {
-        name: 'economy',
-        nbBlocks: 6,
-        defaultValue: 25000
-      },
-      {
-        name: 'superEconomy',
-        nbBlocks: 24,
-        defaultValue: 10000
-      }
-    ],
     bch: [
       {
         name: 'normal',
         nbBlocks: 2,
+        multiplier: 1.05, // To fix fees < 1sat/byte
         defaultValue: 2000
       }
     ],
@@ -160,34 +90,38 @@ module.exports = {
         defaultValue: 12
       }
     ],
-    ducx: [
+    doge: [
+      {
+        name: 'normal',
+        nbBlocks: 2,
+        defaultValue: 100000000
+      }
+    ],
+    ltc: [
       {
         name: 'urgent',
-        nbBlocks: 1, // < 2 min
-        multiplier: 1.1,
-        defaultValue: 3000000000
+        nbBlocks: 2,
+        defaultValue: 150000
       },
       {
         name: 'priority',
-        nbBlocks: 2, // 3 min
-        defaultValue: 2500000000
+        nbBlocks: 2,
+        defaultValue: 100000
       },
       {
         name: 'normal',
-        nbBlocks: 3, // 5 min
-        defaultValue: 2000000000
+        nbBlocks: 3,
+        defaultValue: 100000
       },
       {
         name: 'economy',
-        nbBlocks: 4, // 10 minutes
-        multiplier: 0.9,
-        defaultValue: 1500000000
+        nbBlocks: 6,
+        defaultValue: 10000
       },
       {
         name: 'superEconomy',
-        nbBlocks: 4, // 15 minutes
-        multiplier: 0.8,
-        defaultValue: 1000000000
+        nbBlocks: 24,
+        defaultValue: 10000
       }
     ]
   },
@@ -233,7 +167,7 @@ module.exports = {
   // Cache time for blockchain height (in ms)
   // this is actually erased on 'new block' notifications
   // so, 30m seems fine
-  BLOCKHEIGHT_CACHE_TIME: 3 * 60 * 1000,
+  BLOCKHEIGHT_CACHE_TIME: 30 * 60 * 1000,
 
   // Cache time fee levels (in ms)
   FEE_LEVEL_CACHE_DURATION: 6 * 60 * 1000,
@@ -252,7 +186,7 @@ module.exports = {
       windowMs: 60 * 60 * 1000, // hour window
       delayAfter: 8, // begin slowing down responses after the 3rd request
       delayMs: 3000, // slow down subsequent responses by 3 seconds per request
-      max: 30, // start blocking after 20 request
+      max: 15, // start blocking after 20 request
       message: 'Too many wallets created from this IP, please try again after an hour'
     },
     estimateFee: {
@@ -284,5 +218,74 @@ module.exports = {
 
   NEW_BLOCK_THROTTLE_TIME_MIN: 5,
 
-  BROADCAST_RETRY_TIME: 350 // ms
+  BROADCAST_RETRY_TIME: 350, // ms
+
+  /*
+   *      COIN SPECIFIC
+   */
+
+  MAX_TX_SIZE_IN_KB_BTC: 100,
+
+  MAX_TX_SIZE_IN_KB_BCH: 100,
+
+  MAX_TX_SIZE_IN_KB_DOGE: 100,
+
+  // MAX_TX_SIZE_IN_KB_ETH: 500, // not used
+  // MAX_TX_SIZE_IN_KB_XRP: 1000, // not used
+
+  MAX_FEE_PER_KB: {
+    btc: 10000 * 1000, // 10k sat/b
+    bch: 10000 * 1000, // 10k sat/b
+    eth: 1000000000000, // 50 Gwei,
+    xrp: 1000000000000,
+    doge: 100000000 * 100,
+    ltc: 10000 * 1000 // 10k sat/b
+  },
+
+  MIN_TX_FEE: {
+    btc: 0,
+    bch: 0,
+    eth: 0,
+    xrp: 0,
+    doge: 0,
+    ltc: 0
+  },
+
+  MAX_TX_FEE: {
+    btc: 0.05 * 1e8,
+    bch: 0.05 * 1e8,
+    eth: 1 * 1e18, // 1 eth
+    xrp: 1 * 1e6, // 1 xrp
+    doge: 400 * 1e8,
+    ltc: 0.05 * 1e8
+  },
+
+  // ETH
+  DEFAULT_GAS_LIMIT: 60000,
+  DEFAULT_ERC20_GAS_LIMIT: 160000,
+
+  MIN_GAS_LIMIT: 21000,
+
+  // XRP has a non-refundable mininum activation fee / balance
+  MIN_XRP_BALANCE: 20000000,
+
+  // Time to get the latest push notification subscriptions. In ms.
+  PUSH_NOTIFICATION_SUBS_TIME: 10 * 60 * 1000, // 10 min.
+
+  PUSH_NOTIFICATION_LIMIT: 10,
+
+  FIAT_CURRENCIES: [
+    { code: 'USD', name: 'US Dollar' },
+    { code: 'INR', name: 'Indian Rupee' },
+    { code: 'GBP', name: 'Pound Sterling' },
+    { code: 'EUR', name: 'Eurozone Euro' },
+    { code: 'CAD', name: 'Canadian Dollar' },
+    { code: 'COP', name: 'Colombian Peso' },
+    { code: 'NGN', name: 'Nigerian Naira' },
+    { code: 'BRL', name: 'Brazilian Real' },
+    { code: 'ARS', name: 'Argentine Peso' },
+    { code: 'AUD', name: 'Australian Dollar' },
+    { code: 'JPY', name: 'Japanese Yen' },
+    { code: 'NZD', name: 'New Zealand Dollar' }
+  ]
 };

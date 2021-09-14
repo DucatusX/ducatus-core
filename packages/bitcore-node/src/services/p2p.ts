@@ -6,15 +6,14 @@ import { wait } from '../utils/wait';
 import { Config, ConfigService } from './config';
 
 export class P2pManager {
-  workers = new Array<BaseP2PWorker>();
   workerClasses: { [chain: string]: Class<BaseP2PWorker> } = {};
 
   private configService: ConfigService;
-  private p2pWorkers: Array<BaseP2PWorker>;
+  public workers: Array<BaseP2PWorker>;
 
   constructor({ configService = Config } = {}) {
     this.configService = configService;
-    this.p2pWorkers = new Array<BaseP2PWorker>();
+    this.workers = new Array<BaseP2PWorker>();
   }
 
   register(chain: string, worker: Class<BaseP2PWorker<any>>) {
@@ -27,9 +26,10 @@ export class P2pManager {
 
   async stop() {
     logger.info('Stopping P2P Manager');
-    for (const worker of this.p2pWorkers) {
+    for (const worker of this.workers) {
       await worker.stop();
     }
+    this.workers = [];
   }
 
   async start() {
@@ -51,7 +51,7 @@ export class P2pManager {
         network,
         chainConfig
       });
-      this.p2pWorkers.push(p2pWorker);
+      this.workers.push(p2pWorker);
       try {
         p2pWorker.start();
       } catch (e) {
@@ -69,10 +69,10 @@ export class BaseP2PWorker<T extends IBlock = IBlock> {
   protected network = '';
   public isSyncingNode = false;
 
-  constructor(protected params: { chain; network; chainConfig; blockModel: BaseBlock<T> }) {}
-  async start() {}
-  async stop() {}
-  async sync() {}
+  constructor(protected params: { chain; network; chainConfig; blockModel?: BaseBlock<T> }) {}
+  async start(): Promise<any> {}
+  async stop(): Promise<any> {}
+  async sync(): Promise<any> {}
 
   getIsSyncingNode(): boolean {
     if (!this.lastHeartBeat) {
@@ -111,6 +111,7 @@ export class BaseP2PWorker<T extends IBlock = IBlock> {
       if (!this.lastHeartBeat || this.getIsSyncingNode()) {
         this.registerSyncingNode({ primary: true });
       } else {
+        logger.info('Another node is the primary syncing node');
         this.registerSyncingNode({ primary: false });
       }
       await wait(500);

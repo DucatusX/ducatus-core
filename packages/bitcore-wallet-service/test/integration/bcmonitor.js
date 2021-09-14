@@ -2,12 +2,10 @@
 var _ = require('lodash');
 var async = require('async');
 
-const CWC = require('crypto-ducatus-wallet-core');
+const CWC = require('crypto-wallet-core');
 var chai = require('chai');
 var sinon = require('sinon');
 var should = chai.should();
-var log = require('npmlog');
-log.debug = log.verbose;
 
 var { WalletService } = require('../../ts_build/lib/server');
 var { BlockchainMonitor } = require('../../ts_build/lib/blockchainmonitor');
@@ -23,10 +21,10 @@ socket.on = function(eventName, handler) {
 };
 
 describe('Blockchain monitor', function() {
+  this.timeout(5000);
   var server, wallet;
 
   before(function(done) {
-    log.level = 'warn';
     helpers.before(function(res) {
       storage = res.storage;
       blockchainExplorer = res.blockchainExplorer;
@@ -98,7 +96,7 @@ describe('Blockchain monitor', function() {
 
 
     async.each(_.values(collections), (x, icb)=> {
-      storage.db.collection(x).remove({}, icb);
+      storage.db.collection(x).deleteMany({}, icb);
     }, (err) => {
       should.not.exist(err);
       helpers.createAndJoinWallet(2, 3, function(s, w) {

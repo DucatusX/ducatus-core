@@ -4,11 +4,13 @@ const program = require('../ts_build/program');
 const { Wallet } = require('../ts_build/wallet');
 const request = require('request-promise-native');
 const promptly = require('promptly');
-const cwc = require('crypto-ducatus-wallet-core');
+const cwc = require('crypto-wallet-core');
 const libs = {
   BTC: cwc.BitcoreLib,
-  BCH: cwc.BitcoreLibCash
-}
+  BCH: cwc.BitcoreLibCash,
+  DOGE: cwc.BitcoreLibDoge,
+  LTC: cwc.BitcoreLibLtc
+};
 
 program
   .version(require('../package.json').version)
@@ -18,10 +20,11 @@ program
   .option('--from [from]', 'optional - from account for XRP')
   .option('--payProUri [payProUri]', 'REQUIRED - payment protocol URI')
   .option('--token, [token]', 'optional - ERC-20 token to pay with')
+  .option('--storageType [storageType]', 'optional - name of the database to use (Mongo | Level | TextFile)')
   .parse(process.argv);
 
 const main = async () => {
-  const { name, path, token, nonce: inputNonce, from: inputFrom } = program;
+  const { name, path, token, nonce: inputNonce, from: inputFrom, storageType } = program;
   let { payProUri } = program;
   if (payProUri.includes('=')) {
     const split = payProUri.split('=');
@@ -56,11 +59,11 @@ const main = async () => {
 
   //  Payment-Request
   let wallet;
-  wallet = await Wallet.loadWallet({ name, path });
+  wallet = await Wallet.loadWallet({ name, path, storageType });
   const from = inputFrom || await wallet.deriveAddress(0);
   let nonce;
   const { chain } = wallet;
-  if (!['BTC', 'BCH'].includes(chain)) {
+  if (!['BTC', 'BCH', 'DOGE', 'LTC'].includes(chain)) {
     nonce = inputNonce || await wallet.getNonce();
   }
   const currency = token || chain;
@@ -90,18 +93,17 @@ const main = async () => {
       address: to || outputs[0].address,
       amount: value >= 0 ? value : outputs[0].amount
     }];
-    const fee = requiredFeeRate || gasPrice;
+    const feeRate = requiredFeeRate || gasPrice;
     let invoiceID;
     if (outputs) {
       invoiceID = outputs[0].invoiceID;
     }
     const utxos = await wallet.getUtxosArray();
-    const params = { recipients, fee, from, invoiceID, data, value, utxos };
+    const params = { recipients, feeRate, from, invoiceID, data, value, utxos };
     params.nonce = Number(nonce);
     const unsignedTx = await wallet.newTx(params);
-    unsignedTransactions
     console.log(`unsignedRawTx: ${unsignedTx}`);
-  
+
     //  Sign tx
     if (!password) {
       password = await promptly.password('Wallet Password:');
@@ -114,7 +116,7 @@ const main = async () => {
     console.log(`txid: ${txid}`);
 
     let weightedSize;
-    if (['BTC', 'BCH'].includes(chain)) {
+    if (['BTC', 'BCH', 'DOGE', 'LTC'].includes(chain)) {
       const transaction = new libs[chain].Transaction(signedTx);
       weightedSize = transaction._estimateSize();
     }
@@ -141,7 +143,7 @@ const main = async () => {
   const sendPaymentResponse = await request({
     method: 'POST',
     uri: payProUri,
-    json: { chain, currency, transactions: signedTransactions},
+    json: { chain, currency, transactions: signedTransactions },
     headers: {
       'Content-Type' : 'application/payment',
       'x-paypro-version' : '2'

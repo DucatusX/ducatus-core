@@ -1,6 +1,18 @@
 # Bitcore
-![Circle CI](https://circleci.com/gh/bitpay/bitcore/tree/master.svg?style=shield)
 
+
+
+  <p align="center">
+  <img alt="npm" src="https://img.shields.io/npm/v/bitcore-lib">
+  <img alt="GitHub commit activity" src="https://img.shields.io/github/commit-activity/m/bitpay/bitcore">
+  <a href="https://opensource.org/licenses/MIT/" target="_blank"><img alt="MIT License" src="https://img.shields.io/badge/License-MIT-blue.svg" style="display: inherit;"/></a>
+  <img alt="GitHub contributors" src="https://img.shields.io/github/contributors/bitpay/bitcore">
+  <br>
+ <img src="https://circleci.com/gh/bitpay/bitcore.svg?style=shield" alt="master build">
+</p>
+  
+  
+  
 **Infrastructure to build Bitcoin and blockchain-based applications for the next generation of financial technology.**
 
 ## Getting Started
@@ -155,7 +167,7 @@ npm run node
 
 - [Bitcore Node](packages/bitcore-node) - A full node with extended capabilities using Bitcoin Core
 - [Bitcore Wallet](packages/bitcore-wallet) - A command-line based wallet client
-- [Bitcore Wallet Client](packages/ducatus-wallet-client) - A client for the wallet service
+- [Bitcore Wallet Client](packages/bitcore-wallet-client) - A client for the wallet service
 - [Bitcore Wallet Service](packages/bitcore-wallet-service) - A multisig HD service for wallets
 - [Bitpay Wallet](https://github.com/bitpay/copay) - An easy-to-use, multiplatform, multisignature, secure bitcoin wallet
 - [Insight](packages/insight) - A blockchain explorer web user interface
@@ -170,7 +182,7 @@ npm run node
 - [Bitcore Mnemonic](packages/bitcore-mnemonic) - Implements mnemonic code for generating deterministic keys
 - [Bitcore P2P](packages/bitcore-p2p) - The peer-to-peer networking protocol for BTC
 - [Bitcore P2P Cash](packages/bitcore-p2p-cash) - The peer-to-peer networking protocol for BCH
-- [Crypto Wallet Core](packages/crypto-ducatus-wallet-core) - A coin-agnostic wallet library for creating transactions, signing, and address derivation
+- [Crypto Wallet Core](packages/crypto-wallet-core) - A coin-agnostic wallet library for creating transactions, signing, and address derivation
 
 ## Extras
 

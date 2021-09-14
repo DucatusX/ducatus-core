@@ -1,9 +1,7 @@
 import _ from 'lodash';
+import logger from '../logger';
 
 const $ = require('preconditions').singleton();
-const log = require('npmlog');
-log.debug = log.verbose;
-log.disableColor();
 const Common = require('../common');
 const Constants = Common.Constants;
 const Defaults = Common.Defaults;
@@ -11,7 +9,7 @@ import { TxProposalAction } from './txproposalaction';
 
 function throwUnsupportedError() {
   const msg = 'Unsupported operation on this transaction proposal';
-  log.warn('DEPRECATED: ' + msg);
+  logger.warn('DEPRECATED: ' + msg);
   throw new Error(msg);
 }
 
@@ -229,7 +227,7 @@ export class TxProposalLegacy {
   }
 
   setBroadcasted() {
-    $.checkState(this.txid);
+    $.checkState(this.txid, 'Failed state: this.txid at setBroadcasted()');
     this.status = 'broadcasted';
     this.broadcastedOn = Math.floor(Date.now() / 1000);
   }

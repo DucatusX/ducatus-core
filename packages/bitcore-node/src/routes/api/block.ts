@@ -10,6 +10,7 @@ router.get('/', async function(req: Request, res: Response) {
   let { chain, network } = req.params;
   let { sinceBlock, date, limit, since, direction, paging } = req.query;
   if (limit) {
+    // @ts-ignore
     limit = parseInt(limit);
   }
   try {
@@ -21,6 +22,7 @@ router.get('/', async function(req: Request, res: Response) {
       req,
       res
     };
+    // @ts-ignore
     return ChainStateProvider.streamBlocks(payload);
   } catch (err) {
     return res.status(500).send(err);

@@ -3,10 +3,6 @@ class LibProvider {
     BTC: {
       lib: require('bitcore-lib'),
       p2p: require('bitcore-p2p')
-    },
-    DUC: {
-      lib: require('ducatuscore-lib'),
-      p2p: require('ducatuscore-p2p')
     }
   };
 

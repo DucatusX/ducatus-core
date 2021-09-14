@@ -10,6 +10,7 @@ import { CacheTimes } from '../middleware';
 const router = Router({ mergeParams: true });
 
 router.get('/', function(req, res) {
+  // @ts-ignore
   let { chain, network } = req.params;
   let { blockHeight, blockHash, limit, since, direction, paging } = req.query;
   if (!chain || !network) {
@@ -29,6 +30,7 @@ router.get('/', function(req, res) {
   };
 
   if (blockHeight !== undefined) {
+    // @ts-ignore
     payload.args.blockHeight = parseInt(blockHeight);
   }
   if (blockHash !== undefined) {
@@ -38,10 +40,16 @@ router.get('/', function(req, res) {
 });
 
 router.get('/:txId', async (req, res) => {
+  // @ts-ignore
   let { chain, network, txId } = req.params;
   if (typeof txId !== 'string' || !chain || !network) {
     return res.status(400).send('Missing required param');
   }
+  txId = txId
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;');
   chain = chain.toUpperCase();
   network = network.toLowerCase();
   try {
@@ -62,6 +70,7 @@ router.get('/:txId', async (req, res) => {
 
 // Get transaction with input and outputs, assigned to key coins
 router.get('/:txId/populated', async (req, res) => {
+  // @ts-ignore
   let { chain, network, txId } = req.params;
   let txid = txId;
   if (typeof txid !== 'string' || !chain || !network) {
@@ -98,6 +107,7 @@ router.get('/:txId/populated', async (req, res) => {
 });
 
 router.get('/:txId/authhead', async (req, res) => {
+  // @ts-ignore
   let { chain, network, txId } = req.params;
   if (typeof txId !== 'string' || !chain || !network) {
     return res.status(400).send('Missing required param');
@@ -117,6 +127,7 @@ router.get('/:txId/authhead', async (req, res) => {
 });
 
 router.get('/:txid/coins', (req, res, next) => {
+  // @ts-ignore
   let { chain, network, txid } = req.params;
   if (typeof txid !== 'string' || typeof chain !== 'string' || typeof network !== 'string') {
     res.status(400).send('Missing required param');
@@ -134,6 +145,7 @@ router.get('/:txid/coins', (req, res, next) => {
 
 router.post('/send', async function(req, res) {
   try {
+    // @ts-ignore
     let { chain, network } = req.params;
     let { rawTx } = req.body;
     chain = chain.toUpperCase();
@@ -145,7 +157,9 @@ router.post('/send', async function(req, res) {
     });
     return res.send({ txid });
   } catch (err) {
+    // @ts-ignore
     logger.error(err);
+    // @ts-ignore
     return res.status(500).send(err.message);
   }
 });

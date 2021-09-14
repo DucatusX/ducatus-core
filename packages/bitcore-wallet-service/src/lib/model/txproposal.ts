@@ -1,14 +1,12 @@
-import { Transactions } from 'crypto-ducatus-wallet-core';
+import { Transactions } from 'crypto-wallet-core';
 import _ from 'lodash';
-import { ChainService } from '../chain';
+import { ChainService } from '../chain/index';
+import logger from '../logger';
 import { TxProposalLegacy } from './txproposal_legacy';
 import { TxProposalAction } from './txproposalaction';
 
 const $ = require('preconditions').singleton();
 const Uuid = require('uuid');
-const log = require('npmlog');
-log.debug = log.verbose;
-log.disableColor();
 
 const Common = require('../common');
 const Constants = Common.Constants,
@@ -24,6 +22,7 @@ export interface ITxProposal {
   walletId: string;
   creatorId: string;
   coin: string;
+  chain: string;
   network: string;
   message: string;
   payProUrl: string;
@@ -59,14 +58,18 @@ export interface ITxProposal {
   proposalSignature: string;
   proposalSignaturePubKey: string;
   proposalSignaturePubKeySig: string;
+  signingMethod: string;
   lowFees: boolean;
   nonce?: number;
   gasPrice?: number;
   gasLimit?: number; // Backward compatibility for BWC <= 8.9.0
   data?: string; // Backward compatibility for BWC <= 8.9.0
   tokenAddress?: string;
+  multisigContractAddress?: string;
   destinationTag?: string;
   invoiceID?: string;
+  lockUntilBlockHeight?: number;
+  isTokenSwap?: boolean;
 }
 
 export class TxProposal {
@@ -78,6 +81,7 @@ export class TxProposal {
   walletId: string;
   creatorId: string;
   coin: string;
+  chain: string;
   network: string;
   message: string;
   payProUrl: string;
@@ -114,37 +118,45 @@ export class TxProposal {
   proposalSignature: string;
   proposalSignaturePubKey: string;
   proposalSignaturePubKeySig: string;
+  signingMethod: string;
   raw?: Array<string> | string;
   nonce?: number;
   gasPrice?: number;
   gasLimit?: number; // Backward compatibility for BWC <= 8.9.0
   data?: string; // Backward compatibility for BWC <= 8.9.0
   tokenAddress?: string;
-  tokenId?: string;
+  multisigContractAddress?: string;
+  multisigTxId?: string;
   destinationTag?: string;
   invoiceID?: string;
+  lockUntilBlockHeight?: number;
+  isTokenSwap?: boolean;
 
   static create(opts) {
     opts = opts || {};
 
-    $.checkArgument(Utils.checkValueInCollection(opts.coin, Constants.COINS));
     $.checkArgument(Utils.checkValueInCollection(opts.network, Constants.NETWORKS));
 
     const x = new TxProposal();
 
-    // allow creating legacy tx version == 3 only
+    // allow creating legacy tx version == 3 only for testing
     if (opts.version) {
-      $.checkArgument(opts.version === 3);
+      $.checkArgument(opts.version >= 3);
     }
 
-    x.version = opts.version || 4;
+    // x.version = opts.version || 5; // DISABLED 2020-04-07
+    x.version = opts.version || 3;
+    $.checkState(x.version <= 3, 'Failed state: txp version 4 not allowed yet at <create()>');
+
     const now = Date.now();
     x.createdOn = Math.floor(now / 1000);
     x.id = opts.id || Uuid.v4();
     x.walletId = opts.walletId;
     x.creatorId = opts.creatorId;
     x.coin = opts.coin;
+    x.chain = opts.chain;
     x.network = opts.network;
+    x.signingMethod = opts.signingMethod;
     x.message = opts.message;
     x.payProUrl = opts.payProUrl;
     x.changeAddress = opts.changeAddress;
@@ -165,7 +177,10 @@ export class TxProposal {
     x.excludeUnconfirmedUtxos = opts.excludeUnconfirmedUtxos;
 
     x.addressType = opts.addressType || (x.walletN > 1 ? Constants.SCRIPT_TYPES.P2SH : Constants.SCRIPT_TYPES.P2PKH);
-    $.checkState(Utils.checkValueInCollection(x.addressType, Constants.SCRIPT_TYPES));
+    $.checkState(
+      Utils.checkValueInCollection(x.addressType, Constants.SCRIPT_TYPES),
+      'Failed state: addressType not in ScriptTypes at <create()>'
+    );
 
     x.customData = opts.customData;
 
@@ -174,6 +189,12 @@ export class TxProposal {
     x.setInputs(opts.inputs);
     x.fee = opts.fee;
 
+    if (x.version === 4) {
+      x.lockUntilBlockHeight = opts.lockUntilBlockHeight;
+    }
+
+    // Coin specific features
+
     // ETH
     x.gasPrice = opts.gasPrice;
     x.from = opts.from;
@@ -181,7 +202,8 @@ export class TxProposal {
     x.gasLimit = opts.gasLimit; // Backward compatibility for BWC <= 8.9.0
     x.data = opts.data; // Backward compatibility for BWC <= 8.9.0
     x.tokenAddress = opts.tokenAddress;
-    x.tokenId = opts.tokenId;
+    x.isTokenSwap = opts.isTokenSwap;
+    x.multisigContractAddress = opts.multisigContractAddress;
 
     // XRP
     x.destinationTag = opts.destinationTag;
@@ -203,6 +225,7 @@ export class TxProposal {
     x.walletId = obj.walletId;
     x.creatorId = obj.creatorId;
     x.coin = obj.coin || Defaults.COIN;
+    x.chain = obj.chain ? obj.chain : ChainService.getChain(x.coin);
     x.network = obj.network;
     x.outputs = obj.outputs;
     x.amount = obj.amount;
@@ -230,8 +253,11 @@ export class TxProposal {
     x.customData = obj.customData;
 
     x.proposalSignature = obj.proposalSignature;
+    x.signingMethod = obj.signingMethod;
     x.proposalSignaturePubKey = obj.proposalSignaturePubKey;
     x.proposalSignaturePubKeySig = obj.proposalSignaturePubKeySig;
+
+    x.lockUntilBlockHeight = obj.lockUntilBlockHeight;
 
     // ETH
     x.gasPrice = obj.gasPrice;
@@ -240,7 +266,9 @@ export class TxProposal {
     x.gasLimit = obj.gasLimit; // Backward compatibility for BWC <= 8.9.0
     x.data = obj.data; // Backward compatibility for BWC <= 8.9.0
     x.tokenAddress = obj.tokenAddress;
-    x.tokenId = obj.tokenId;
+    x.isTokenSwap = obj.isTokenSwap;
+    x.multisigContractAddress = obj.multisigContractAddress;
+    x.multisigTxId = obj.multisigTxId;
 
     // XRP
     x.destinationTag = obj.destinationTag;
@@ -274,13 +302,7 @@ export class TxProposal {
     }
   }
 
-  /* this will build the Bitcoin-lib tx OR an adaptor for CWC transactions */
-  _buildTx() {
-    $.checkState(Utils.checkValueInCollection(this.addressType, Constants.SCRIPT_TYPES));
-    return ChainService.buildTx(this);
-  }
-
-  _getCurrentSignatures() {
+  getCurrentSignatures() {
     const acceptedActions = _.filter(this.actions, a => {
       return a.type == 'accept';
     });
@@ -293,55 +315,9 @@ export class TxProposal {
     });
   }
 
-  getBitcoreTx() {
-    const t = this._buildTx();
-    const sigs = this._getCurrentSignatures();
-    _.each(sigs, x => {
-      ChainService.addSignaturesToBitcoreTx(this.coin, t, this.inputs, this.inputPaths, x.signatures, x.xpub);
-    });
-
-    return t;
-  }
-
   getRawTx() {
-    const t = this.getBitcoreTx();
-
+    const t = ChainService.getBitcoreTx(this);
     return t.uncheckedSerialize();
-  }
-
-  getEstimatedSizeForSingleInput() {
-    switch (this.addressType) {
-      case Constants.SCRIPT_TYPES.P2PKH:
-        return 147;
-      default:
-      case Constants.SCRIPT_TYPES.P2SH:
-        return this.requiredSignatures * 72 + this.walletN * 36 + 44;
-    }
-  }
-
-  getEstimatedSize() {
-    // Note: found empirically based on all multisig P2SH inputs and within m & n allowed limits.
-    const safetyMargin = 0.02;
-
-    const overhead = 4 + 4 + 9 + 9;
-    const inputSize = this.getEstimatedSizeForSingleInput();
-    const outputSize = 34;
-    const nbInputs = this.inputs.length;
-    const nbOutputs = (_.isArray(this.outputs) ? Math.max(1, this.outputs.length) : 1) + 1;
-
-    const size = overhead + inputSize * nbInputs + outputSize * nbOutputs;
-
-    return parseInt((size * (1 + safetyMargin)).toFixed(0));
-  }
-
-  getEstimatedFee() {
-    $.checkState(_.isNumber(this.feePerKb));
-    const fee = (this.feePerKb * this.getEstimatedSize()) / 1000;
-    return parseInt(fee.toFixed(0));
-  }
-
-  estimateFee() {
-    this.fee = this.getEstimatedFee();
   }
 
   /**
@@ -403,8 +379,16 @@ export class TxProposal {
   sign(copayerId, signatures, xpub) {
     try {
       // Tests signatures are OK
-      const tx = this.getBitcoreTx();
-      ChainService.addSignaturesToBitcoreTx(this.coin, tx, this.inputs, this.inputPaths, signatures, xpub);
+      const tx = ChainService.getBitcoreTx(this);
+      ChainService.addSignaturesToBitcoreTx(
+        this.chain,
+        tx,
+        this.inputs,
+        this.inputPaths,
+        signatures,
+        xpub,
+        this.signingMethod
+      );
       this.addAction(copayerId, 'accept', null, signatures, xpub);
 
       if (this.status == 'accepted') {
@@ -414,7 +398,7 @@ export class TxProposal {
 
       return true;
     } catch (e) {
-      log.debug(e);
+      logger.debug(e);
       return false;
     }
   }
@@ -446,7 +430,7 @@ export class TxProposal {
   }
 
   setBroadcasted() {
-    $.checkState(this.txid);
+    $.checkState(this.txid, 'Failed state: this.txid at <setBroadcasted()>');
     this.status = 'broadcasted';
     this.broadcastedOn = Math.floor(Date.now() / 1000);
   }

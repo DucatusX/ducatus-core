@@ -1,14 +1,12 @@
 import * as async from 'async';
-import { Web3 } from 'crypto-ducatus-wallet-core';
 import _ from 'lodash';
 import * as request from 'request-promise-native';
 import io = require('socket.io-client');
 import { ChainService } from '../chain/index';
+import logger from '../logger';
 import { Client } from './v8/client';
 
 const $ = require('preconditions').singleton();
-const log = require('npmlog');
-log.debug = log.verbose;
 const Common = require('../common');
 const Bitcore = require('bitcore-lib');
 const Bitcore_ = {
@@ -16,8 +14,8 @@ const Bitcore_ = {
   bch: require('bitcore-lib-cash'),
   eth: Bitcore,
   xrp: Bitcore,
-  duc: require('ducatuscore-lib'),
-  ducx: Bitcore
+  doge: require('bitcore-lib-doge'),
+  ltc: require('bitcore-lib-ltc')
 };
 const config = require('../../config');
 const Constants = Common.Constants,
@@ -33,6 +31,7 @@ function v8network(bwsNetwork) {
 }
 
 export class V8 {
+  chain: string;
   coin: string;
   network: string;
   v8network: string;
@@ -52,17 +51,15 @@ export class V8 {
     $.checkArgument(opts.url);
 
     this.apiPrefix = _.isUndefined(opts.apiPrefix) ? '/api' : opts.apiPrefix;
-    this.coin = ChainService.getChain(opts.coin || Defaults.COIN).toLowerCase();
+    this.chain = ChainService.getChain(opts.coin || Defaults.COIN);
+    this.coin = this.chain.toLowerCase();
 
     this.network = opts.network || 'livenet';
     this.v8network = v8network(this.network);
 
     // v8 is always cashaddr
     this.addressFormat = this.coin == 'bch' ? 'cashaddr' : null;
-
-    const coin = this.coin.toUpperCase();
-
-    this.apiPrefix += `/${coin}/${this.v8network}`;
+    this.apiPrefix += `/${this.chain}/${this.v8network}`;
 
     this.host = opts.url;
     this.userAgent = opts.userAgent || 'bws';
@@ -82,7 +79,7 @@ export class V8 {
   }
 
   _getAuthClient(wallet) {
-    $.checkState(wallet.beAuthPrivateKey2);
+    $.checkState(wallet.beAuthPrivateKey2, 'Failed state: wallet.beAuthPrivateKey2 at <_getAuthClient()>');
     return new this.Client({
       baseUrl: this.baseUrl,
       authKey: Bitcore_[this.coin].PrivateKey(wallet.beAuthPrivateKey2)
@@ -122,9 +119,7 @@ export class V8 {
     const client = this._getAuthClient(wallet);
     const payload = {
       name: wallet.id,
-      pubKey: wallet.beAuthPublicKey2,
-      network: this.v8network,
-      chain: this.coin
+      pubKey: wallet.beAuthPublicKey2
     };
     client
       .register({
@@ -139,9 +134,9 @@ export class V8 {
 
   async getBalance(wallet, cb) {
     const client = this._getAuthClient(wallet);
-    const { tokenAddress } = wallet;
+    const { tokenAddress, multisigContractAddress } = wallet;
     client
-      .getBalance({ pubKey: wallet.beAuthPublicKey2, payload: {}, tokenAddress })
+      .getBalance({ pubKey: wallet.beAuthPublicKey2, payload: {}, tokenAddress, multisigContractAddress })
       .then(ret => {
         return cb(null, ret);
       })
@@ -153,7 +148,7 @@ export class V8 {
   }
 
   _transformUtxos(unspent, bcheight) {
-    $.checkState(bcheight > 0, 'No BC height passed to _transformUtxos');
+    $.checkState(bcheight > 0, 'Failed state: No BC height passed to _transformUtxos()');
     const ret = _.map(
       _.reject(unspent, x => {
         return x.spentHeight && x.spentHeight <= -3;
@@ -232,7 +227,7 @@ export class V8 {
     const payload = {
       rawTx,
       network: this.v8network,
-      chain: this.coin.toUpperCase()
+      chain: this.chain
     };
 
     const client = this._getClient();
@@ -246,13 +241,13 @@ export class V8 {
       })
       .catch(err => {
         if (count > 3) {
-          log.error('FINAL Broadcast error:', err);
+          logger.error('FINAL Broadcast error:', err);
           return cb(err);
         } else {
           count++;
           // retry
           setTimeout(() => {
-            log.info('Retrying broadcast after', count * Defaults.BROADCAST_RETRY_TIME);
+            logger.info('Retrying broadcast after', count * Defaults.BROADCAST_RETRY_TIME);
             return this.broadcast(rawTx, cb, count);
           }, count * Defaults.BROADCAST_RETRY_TIME);
         }
@@ -296,9 +291,9 @@ export class V8 {
   getTransactions(wallet, startBlock, cb) {
     console.time('V8 getTxs');
     if (startBlock) {
-      log.debug(`getTxs: startBlock ${startBlock}`);
+      logger.debug(`getTxs: startBlock ${startBlock}`);
     } else {
-      log.debug('getTxs: from 0');
+      logger.debug('getTxs: from 0');
     }
 
     const client = this._getAuthClient(wallet);
@@ -310,7 +305,8 @@ export class V8 {
       pubKey: wallet.beAuthPublicKey2,
       payload: {},
       startBlock: undefined,
-      tokenAddress: wallet.tokenAddress
+      tokenAddress: wallet.tokenAddress,
+      multisigContractAddress: wallet.multisigContractAddress
     };
 
     if (_.isNumber(startBlock)) opts.startBlock = startBlock;
@@ -334,7 +330,7 @@ export class V8 {
         try {
           tx = JSON.parse(rawTx);
         } catch (e) {
-          log.error('v8 error at JSON.parse:' + e + ' Parsing:' + rawTx + ':');
+          logger.error('v8 error at JSON.parse:' + e + ' Parsing:' + rawTx + ':');
           return cb(e);
         }
         // v8 field name differences
@@ -349,7 +345,7 @@ export class V8 {
     });
 
     txStream.on('error', e => {
-      log.error('v8 error:' + e);
+      logger.error('v8 error:' + e);
       broken = true;
       return cb(e);
     });
@@ -396,6 +392,62 @@ export class V8 {
       });
   }
 
+  getMultisigContractInstantiationInfo(opts, cb) {
+    const url = `${this.baseUrl}/ethmultisig/${opts.sender}/instantiation/${opts.txId}`;
+    console.log('[v8.js.378:url:] CHECKING CONTRACT INSTANTIATION INFO', url);
+    this.request
+      .get(url, {})
+      .then(contractInstantiationInfo => {
+        contractInstantiationInfo = JSON.parse(contractInstantiationInfo);
+        return cb(null, contractInstantiationInfo);
+      })
+      .catch(err => {
+        return cb(err);
+      });
+  }
+
+  getMultisigContractInfo(opts, cb) {
+    const url = this.baseUrl + '/ethmultisig/info/' + opts.multisigContractAddress;
+    console.log('[v8.js.378:url:] CHECKING CONTRACT INFO', url);
+    this.request
+      .get(url, {})
+      .then(contractInfo => {
+        contractInfo = JSON.parse(contractInfo);
+        return cb(null, contractInfo);
+      })
+      .catch(err => {
+        return cb(err);
+      });
+  }
+
+  getTokenContractInfo(opts, cb) {
+    const url = this.baseUrl + '/token/' + opts.tokenAddress;
+    console.log('[v8.js.378:url:] CHECKING CONTRACT INFO', url);
+    this.request
+      .get(url, {})
+      .then(contractInfo => {
+        contractInfo = JSON.parse(contractInfo);
+        return cb(null, contractInfo);
+      })
+      .catch(err => {
+        return cb(err);
+      });
+  }
+
+  getMultisigTxpsInfo(opts, cb) {
+    const url = this.baseUrl + '/ethmultisig/txps/' + opts.multisigContractAddress;
+    console.log('[v8.js.378:url:] CHECKING CONTRACT TXPS INFO', url);
+    this.request
+      .get(url, {})
+      .then(multisigTxpsInfo => {
+        multisigTxpsInfo = JSON.parse(multisigTxpsInfo);
+        return cb(null, multisigTxpsInfo);
+      })
+      .catch(err => {
+        return cb(err);
+      });
+  }
+
   estimateFee(nbBlocks, cb) {
     nbBlocks = nbBlocks || [1, 2, 6, 24];
     const result = {};
@@ -412,13 +464,13 @@ export class V8 {
 
               // only process right responses.
               if (!_.isUndefined(ret.blocks) && ret.blocks != x) {
-                log.info(`Ignoring response for ${x}:` + JSON.stringify(ret));
+                logger.info(`Ignoring response for ${x}:` + JSON.stringify(ret));
                 return icb();
               }
 
               result[x] = ret.feerate;
             } catch (e) {
-              log.warn('fee error:', e);
+              logger.warn('fee error:', e);
             }
 
             return icb();
@@ -470,7 +522,7 @@ export class V8 {
   }
 
   initSocket(callbacks) {
-    log.info('V8 connecting socket at:' + this.host);
+    logger.info('V8 connecting socket at:' + this.host);
     // sockets always use the first server on the pull
     const walletsSocket = io.connect(this.host, { transports: ['websocket'] });
 
@@ -490,12 +542,12 @@ export class V8 {
     };
 
     blockSocket.on('connect', () => {
-      log.info(`Connected to block ${this.getConnectionInfo()}`);
-      blockSocket.emit('room', `/${this.coin.toUpperCase()}/${this.v8network}/inv`);
+      logger.info(`Connected to block ${this.getConnectionInfo()}`);
+      blockSocket.emit('room', `/${this.chain}/${this.v8network}/inv`);
     });
 
     blockSocket.on('connect_error', () => {
-      log.error(`Error connecting to ${this.getConnectionInfo()}`);
+      logger.error(`Error connecting to ${this.getConnectionInfo()}`);
     });
 
     blockSocket.on('block', data => {
@@ -503,59 +555,43 @@ export class V8 {
     });
 
     walletsSocket.on('connect', () => {
-      log.info(`Connected to wallets ${this.getConnectionInfo()}`);
-      walletsSocket.emit('room', `/${this.coin.toUpperCase()}/${this.v8network}/wallets`, getAuthPayload(this.host));
+      logger.info(`Connected to wallets ${this.getConnectionInfo()}`);
+      walletsSocket.emit('room', `/${this.chain}/${this.v8network}/wallets`, getAuthPayload(this.host));
     });
 
     walletsSocket.on('connect_error', () => {
-      log.error(`Error connecting to ${this.getConnectionInfo()}  ${this.coin.toUpperCase()}/${this.v8network}`);
+      logger.error(`Error connecting to ${this.getConnectionInfo()}  ${this.chain}/${this.v8network}`);
     });
 
     walletsSocket.on('failure', err => {
-      log.error(`Error joining room ${err.message} ${this.coin.toUpperCase()}/${this.v8network}`);
+      logger.error(`Error joining room ${err.message} ${this.chain}/${this.v8network}`);
     });
 
     walletsSocket.on('coin', data => {
-      const coin = data.coin;
-      // script output, or similar.
-      if (!coin || !coin.address || coin.chain === 'ETH' || coin.chain === 'DUCX') return;
-      const out = {
-        address: coin.address,
-        amount: coin.value
-      };
-      return callbacks.onIncomingPayments({ out, txid: coin.mintTxid });
+      if (!data || !data.coin) return;
+
+      const notification = ChainService.onCoin(this.coin, data.coin);
+      if (!notification) return;
+
+      return callbacks.onIncomingPayments(notification);
     });
 
     walletsSocket.on('tx', data => {
-      const tx = data.tx;
-      // script output, or similar.
-      if (!tx || (tx.chain !== 'ETH' && tx.chain !== 'DUCX')) return;
-      let tokenAddress;
-      let address;
-      let amount;
-      if (tx.abiType && tx.abiType.type === 'ERC20') {
-        tokenAddress = tx.to;
-        address = Web3.utils.toChecksumAddress(tx.abiType.params[0].value);
-        amount = tx.abiType.params[1].value;
-      } else {
-        address = tx.to;
-        amount = tx.value;
-      }
-      const out = {
-        address,
-        amount,
-        tokenAddress
-      };
-      return callbacks.onIncomingPayments({ out, txid: tx.txid });
+      if (!data || !data.tx) return;
+
+      const notification = ChainService.onTx(this.coin, data.tx);
+      if (!notification) return;
+
+      return callbacks.onIncomingPayments(notification);
     });
   }
 }
 
 const _parseErr = (err, res) => {
   if (err) {
-    log.warn('V8 error: ', err);
+    logger.warn('V8 error: ', err);
     return 'V8 Error';
   }
-  log.warn('V8 ' + res.request.href + ' Returned Status: ' + res.statusCode);
+  logger.warn('V8 ' + res.request.href + ' Returned Status: ' + res.statusCode);
   return 'Error querying the blockchain';
 };

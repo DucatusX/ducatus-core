@@ -1,11 +1,11 @@
 {
-  "version": "8.16.4",
+  "version": "8.25.8",
   "prettier": {
     "singleQuote": true,
     "printWidth": 120
   },
   "scripts": {
-    "build": "docker build -t bitcore-node .",
+    "build": "docker build -t bitcore-node . ",
     "watch": "./node_modules/.bin/lerna run watch --parallel",
     "postinstall": "npm run bootstrap && npm run compile",
     "bootstrap": "./node_modules/.bin/lerna bootstrap",
@@ -20,30 +20,35 @@
     "test:ci:build": "docker-compose -f docker-compose.test.yml build",
     "test:ci:unit": "./ci.sh 'npm run lerna:ci:unit'",
     "test:ci:integration": "./ci.sh 'npm run lerna:ci:integration'",
+    "test:ci:coverage": "./ci.sh 'npm run lerna:ci:coverage'",
     "test:bitcore-wallet-service": "cd ./packages/bitcore-wallet-service && npm run test",
     "ci:bitcore-wallet-service": "./ci.sh 'npm run test:bitcore-wallet-service'",
     "test:bitcore-wallet-client": "cd ./packages/bitcore-wallet-client && npm run test",
     "ci:bitcore-wallet-client": "./ci.sh 'npm run test:bitcore-wallet-client'",
-    "test:crypto-rpc": "cd ./packages/crypto-rpc && npm run test",
-    "ci:crypto-rpc": "./ci.sh 'npm run test:crypto-rpc'",
+    "test:bitcore-wallet": "cd ./packages/bitcore-wallet && npm run test",
+    "ci:bitcore-wallet": "./ci.sh 'npm run test:bitcore-wallet'",
+    "test:crypto-wallet-core": "cd ./packages/crypto-wallet-core && npm run test",
+    "ci:crypto-wallet-core": "./ci.sh 'npm run test:crypto-wallet-core'",
     "test:bitcore-node": "cd ./packages/bitcore-node && npm run test",
+    "test:bitcore-node:coverage": "cd ./packages/bitcore-node && npm run coverage",
     "test:bitcore-node:int": "cd ./packages/bitcore-node && npm run test:integration",
     "ci:bitcore-node": "./ci.sh 'npm run test:bitcore-node'",
     "ci:bitcore-node:int": "./ci.sh 'npm run test:bitcore-node:int'",
+    "ci:bitcore-node:coverage": "./ci.sh 'npm run test:bitcore-node:coverage'",
     "test:bitcore-lib": "cd ./packages/bitcore-lib && npm run test",
     "ci:bitcore-lib": "./ci.sh 'npm run test:bitcore-lib'",
-    "test:ducatuscore-lib": "cd ./packages/bitcore-lib && npm run test",
-    "ci:ducatuscore-lib": "./ci.sh 'npm run test:bitcore-lib'",
     "test:bitcore-lib-cash": "cd ./packages/bitcore-lib-cash && npm run test",
     "ci:bitcore-lib-cash": "./ci.sh 'npm run test:bitcore-lib-cash'",
     "test:bitcore-lib-ltc": "cd ./packages/bitcore-lib-ltc && npm run test",
     "ci:bitcore-lib-ltc": "./ci.sh 'npm run test:bitcore-lib-ltc'",
+    "test:bitcore-lib-doge": "cd ./packages/bitcore-lib-doge && npm run test",
+    "ci:bitcore-lib-doge": "./ci.sh 'npm run test:bitcore-lib-doge'",
     "test:bitcore-p2p": "cd ./packages/bitcore-p2p && npm run test",
     "ci:bitcore-p2p": "./ci.sh 'npm run test:bitcore-p2p'",
-    "test:ducatuscore-p2p": "cd ./packages/bitcore-p2p && npm run test",
-    "ci:ducatuscore-p2p": "./ci.sh 'npm run test:bitcore-p2p'",
     "test:bitcore-p2p-cash": "cd ./packages/bitcore-p2p-cash && npm run test",
     "ci:bitcore-p2p-cash": "./ci.sh 'npm run test:bitcore-p2p-cash'",
+    "test:bitcore-p2p-doge": "cd ./packages/bitcore-p2p-doge && npm run test",
+    "ci:bitcore-p2p-doge": "./ci.sh 'npm run test:bitcore-p2p-doge'",
     "test:bitcore-mnemonic": "cd ./packages/bitcore-mnemonic && npm run test",
     "ci:bitcore-mnemonic": "./ci.sh 'npm run test:bitcore-mnemonic'",
     "test:insight": "cd ./packages/insight && npm run test",
@@ -70,7 +75,8 @@
     "typescript-eslint-parser": "^15.0.0"
   },
   "dependencies": {
-    "lerna": "^3.20.2"
+    "lerna": "^3.22.1",
+    "typescript": "^4.0.2"
   },
   "husky": {
     "hooks": {

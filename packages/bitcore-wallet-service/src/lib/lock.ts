@@ -5,10 +5,6 @@ const $ = require('preconditions').singleton();
 const Common = require('./common');
 const Defaults = Common.Defaults;
 const Errors = require('./errors/errordefinitions');
-let log = require('npmlog');
-log.debug = log.verbose;
-log.disableColor();
-
 const ACQUIRE_RETRY_STEP = 50; // ms
 
 export class Lock {
@@ -59,7 +55,7 @@ export class Lock {
   }
 
   runLocked(token, opts, cb, task) {
-    $.shouldBeDefined(token);
+    $.shouldBeDefined(token, 'Failed state: token undefined at <runLocked()>');
 
     this.acquire(token, opts, (err, release) => {
       if (err == 'LOCKED') return cb(Errors.WALLET_BUSY);

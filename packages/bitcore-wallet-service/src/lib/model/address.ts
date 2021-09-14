@@ -1,4 +1,4 @@
-import { Deriver } from 'crypto-ducatus-wallet-core';
+import { Deriver } from 'crypto-wallet-core';
 import _ from 'lodash';
 import { AddressManager } from './addressmanager';
 
@@ -40,7 +40,8 @@ export class Address {
   static Bitcore = {
     btc: require('bitcore-lib'),
     bch: require('bitcore-lib-cash'),
-    duc: require('ducatuscore-lib')
+    doge: require('bitcore-lib-doge'),
+    ltc: require('bitcore-lib-ltc')
   };
 
   static create(opts) {
@@ -111,10 +112,13 @@ export class Address {
         bitcoreAddress = Address.Bitcore[coin].Address.createMultisig(publicKeys, m, network);
         break;
       case Constants.SCRIPT_TYPES.P2WPKH:
-        bitcoreAddress = Address.Bitcore.btc.Address.fromPublicKey(publicKeys[0], network, 'witnesspubkeyhash');
+        bitcoreAddress = Address.Bitcore[coin].Address.fromPublicKey(publicKeys[0], network, 'witnesspubkeyhash');
         break;
       case Constants.SCRIPT_TYPES.P2PKH:
-        $.checkState(_.isArray(publicKeys) && publicKeys.length == 1);
+        $.checkState(
+          _.isArray(publicKeys) && publicKeys.length == 1,
+          'Failed state: publicKeys length < 1 or publicKeys not an array at <_deriveAddress()>'
+        );
 
         if (Address.Bitcore[coin]) {
           bitcoreAddress = Address.Bitcore[coin].Address.fromPublicKey(publicKeys[0], network);

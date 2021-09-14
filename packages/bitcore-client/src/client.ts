@@ -5,7 +5,7 @@ import * as stream from 'stream';
 import { URL } from 'url';
 let usingBrowser = (global as any).window;
 const URLClass = usingBrowser ? usingBrowser.URL : URL;
-const bitcoreLib = require('crypto-ducatus-wallet-core').BitcoreLib;
+const bitcoreLib = require('crypto-wallet-core').BitcoreLib;
 
 export class Client {
   apiUrl: string;
@@ -94,7 +94,7 @@ export class Client {
   }
 
   listTransactions(params) {
-    const { pubKey, startBlock, startDate, endBlock, endDate, includeMempool, payload } = params;
+    const { pubKey, startBlock, startDate, endBlock, endDate, includeMempool, payload, tokenContractAddress } = params;
     let url = `${this.apiUrl}/wallet/${pubKey}/transactions`;
     let query = '';
     if (startBlock) {
@@ -111,6 +111,9 @@ export class Client {
     }
     if (includeMempool) {
       query += 'includeMempool=true';
+    }
+    if (tokenContractAddress) {
+      query += `tokenAddress=${tokenContractAddress}`;
     }
     if (query) {
       url += '?' + query;

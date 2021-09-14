@@ -31,7 +31,7 @@ No baseUrl flag will automatically create a wallet that points to https://api.bi
 To create a wallet to point to local bitcore-node.
 
 ```sh
-./wallet-create --name myregtestwallet --chain BCH --network regtest --baseUrl https://ducapi.rocknblock.io/api
+./wallet-create --name myregtestwallet --chain BCH --network regtest --baseUrl http://localhost:3000/api
 ```
 
 ### Register an Existing Wallet
@@ -45,7 +45,7 @@ Register an existing wallet to point to custom Bitcore API url.
 Or a local Bitcore-node
 
 ```sh
-./wallet-register --name myregtestwallet --baseUrl https://ducapi.rocknblock.io/api
+./wallet-register --name myregtestwallet --baseUrl http://localhost:3000/api
 ```
 
 ### Wallet Address Import
