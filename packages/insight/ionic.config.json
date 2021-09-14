@@ -7,7 +7,7 @@
   "proxies": [
     {
       "path": "/api",
-      "proxyUrl": "https://ducapi.rocknblock.io/api"
+      "proxyUrl": "http://localhost:3000/api"
     }
   ],
   "hooks": {}

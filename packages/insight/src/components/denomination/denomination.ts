@@ -24,25 +24,21 @@ export class DenominationComponent {
     this.showUnits = _.some(
       this.availableNetworks,
       this.api.networkSettings.selectedNetwork
-    );
+    )
+      ? true
+      : false;
     this.units = [
-      this.api.networkSettings.availableNetworks[0].chain,
-      this.api.networkSettings.availableNetworks[1].chain
+      'USD',
+      this.api.networkSettings.selectedNetwork.chain,
+      'm' + this.api.networkSettings.selectedNetwork.chain
     ];
   }
 
   public changeUnit(unit: string): void {
     this.currencySymbol = unit;
-    this.viewCtrl.data = {
-      ...this.viewCtrl.data,
-      config: {
-        chain: this.currencySymbol,
-        network: this.navParams.data.config.network
-      },
-      currencySymbol: this.currencySymbol
-    };
     this.viewCtrl.dismiss({
-      ...this.viewCtrl.data
+      chainNetwork: this.navParams.data.config,
+      currencySymbol: this.currencySymbol
     });
   }
 

@@ -1,5 +1,4 @@
 export * from './home/home';
-export * from './statistic/statistic';
 export * from './address/address';
 export * from './block-detail/block-detail';
 export * from './blocks/blocks';

@@ -1,37 +1,26 @@
-import { HttpClientModule } from '@angular/common/http';
 import { NgModule } from '@angular/core';
 import { IonicModule } from 'ionic-angular';
 import { ComponentsModule } from '../components';
-import { DailyTransactionChartComponentModule } from '../components/daily-transaction-chart/daily-transaction-chart.module';
 import { ErrorComponentModule } from '../components/error/error.module';
 import { FooterComponentModule } from '../components/footer/footer.module';
 import { HeadNavComponentModule } from '../components/head-nav/head-nav.module';
 import { LatestBlocksComponentModule } from '../components/latest-blocks/latest-blocks.module';
-import { PriceChartModule } from '../components/price-card/price-chart/price-chart.module';
 import { BlocksPageModule } from '../pages/blocks/blocks.module';
 import { BroadcastTxPageModule } from './broadcast-tx/broadcast-tx.module';
 import { HomePageModule } from './home/home.module';
-import { StatisticPageModule } from './statistic/statistic.module';
 
 @NgModule({
   declarations: [],
   imports: [
     IonicModule,
-    HttpClientModule,
     ComponentsModule,
     BlocksPageModule,
     BroadcastTxPageModule,
     HomePageModule,
-    StatisticPageModule,
     FooterComponentModule,
     HeadNavComponentModule,
     LatestBlocksComponentModule,
-    PriceChartModule,
-    ErrorComponentModule,
-    DailyTransactionChartComponentModule
-  ],
-  exports: [
-    // CustomComponent,
+    ErrorComponentModule
   ],
   entryComponents: [],
   providers: []

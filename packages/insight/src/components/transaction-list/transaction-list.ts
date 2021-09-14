@@ -1,6 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { Events } from 'ionic-angular';
 import * as _ from 'lodash';
+import { UTXO_CHAINS } from '../../constants';
 import { AddressProvider } from '../../providers/address/address';
 import { ChainNetwork } from '../../providers/api/api';
 import { BlocksProvider } from '../../providers/blocks/blocks';
@@ -9,7 +10,6 @@ import {
   AppEthCoin,
   TxsProvider
 } from '../../providers/transactions/transactions';
-
 @Component({
   selector: 'transaction-list',
   templateUrl: 'transaction-list.html'
@@ -22,6 +22,8 @@ export class TransactionListComponent implements OnInit {
   public queryValue?: string;
   @Input()
   public transactions?: any = [];
+  @Input()
+  public blocktime: any;
   @Input()
   public chainNetwork: ChainNetwork;
   public blockPageNum = 1;
@@ -38,11 +40,7 @@ export class TransactionListComponent implements OnInit {
   public ngOnInit(): void {
     if (this.transactions && this.transactions.length === 0) {
       if (this.queryType === 'blockHash') {
-        if (
-          this.chainNetwork.chain === 'BTC' ||
-          this.chainNetwork.chain === 'BCH' ||
-          this.chainNetwork.chain === 'DUC'
-        ) {
+        if (UTXO_CHAINS.includes(this.chainNetwork.chain)) {
           this.fetchBlockTxCoinInfo(1);
         } else {
           this.txProvider
@@ -57,11 +55,7 @@ export class TransactionListComponent implements OnInit {
       } else if (this.queryType === 'address') {
         const txs: any = [];
 
-        if (
-          this.chainNetwork.chain === 'BTC' ||
-          this.chainNetwork.chain === 'BCH' ||
-          this.chainNetwork.chain === 'DUC'
-        ) {
+        if (UTXO_CHAINS.includes(this.chainNetwork.chain)) {
           this.addrProvider
             .getAddressActivityCoins(this.queryValue, this.chainNetwork)
             .subscribe(
@@ -125,6 +119,10 @@ export class TransactionListComponent implements OnInit {
       tx.vout = txidCoins.outputs.filter(output => output.mintTxid === txid);
       tx.fee = this.txProvider.getFee(tx);
       tx.blockheight = tx.vout[0].mintHeight;
+      tx.blocktime = new Date(tx.blockTime).getTime() / 1000;
+      tx.time = this.blocktime
+        ? this.blocktime
+        : new Date(tx.blockTime).getTime() / 1000;
       tx.valueOut = tx.vout
         .filter(output => output.mintTxid === txid)
         .reduce((a, b) => a + b.value, 0);
@@ -149,7 +147,8 @@ export class TransactionListComponent implements OnInit {
   public loadMore(infiniteScroll) {
     if (
       (this.queryType === 'blockHash' && this.chainNetwork.chain === 'BTC') ||
-      this.chainNetwork.chain === 'BCH'
+      this.chainNetwork.chain === 'BCH' ||
+      this.chainNetwork.chain === 'DOGE'
     ) {
       this.fetchBlockTxCoinInfo(this.blockPageNum);
       this.limit += this.chunkSize;

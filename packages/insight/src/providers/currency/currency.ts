@@ -39,7 +39,6 @@ export class CurrencyProvider {
     // TODO: Change this function to make use of satoshis so that we don't have to do all these roundabout conversions.
     switch (chain) {
       case 'ETH':
-      case 'DUCX':
         value = value * 1e-18;
         break;
       default:

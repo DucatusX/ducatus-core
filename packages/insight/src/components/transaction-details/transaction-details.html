@@ -7,18 +7,14 @@
           <ion-icon name="remove-circle" [hidden]="!expanded" (click)="toggleExpanded()"></ion-icon>
         </span>
         <span>
-          <a (click)="goToTx(tx.txid)">{{ tx.txid }}</a>
+          <a (click)="goToTx(tx.txid)" role="button" tabindex="0">{{ tx.txid }}</a>
         </span>
       </div>
     </ion-col>
-    <ion-col col-5 text-right *ngIf="page === 'transaction'">
-      <ion-note [hidden]="!tx.firstSeenTs">
-        <span translate>first seen on</span>
-        <time>{{ tx.firstSeenTs * 1000 | date:'long' }}</time>
-      </ion-note>
-      <ion-note [hidden]="!tx.blocktime && tx.firstSeenTs">
+    <ion-col col-5 text-right>
+      <ion-note *ngIf="tx.time">
         <span translate>mined on</span>
-        <time>{{ tx.time * 1000 | date:'long' }}</time>
+        <time>{{ tx.time * 1000 | date:'medium' }}</time>
       </ion-note>
     </ion-col>
   </ion-row>
@@ -64,7 +60,7 @@
 
       <ion-list [hidden]="tx.isCoinBase">
         <ion-item *ngFor="let vin of aggregateItems(tx.vin); let i = index ">
-          <button item-start ion-button *ngIf="expanded" (click)="goToTx(vin.items[i].mintTxid, i, false)" clear
+          <button title="Go to Transaction" type="button" tabindex="0" item-start ion-button *ngIf="expanded" (click)="goToTx(vin.items[i].mintTxid, i, false)" clear
             icon-only>
             <ion-icon color="primary" name="ios-arrow-forward"></ion-icon>
           </button>
@@ -72,7 +68,7 @@
           <div class="ellipsis">
             <p>
               <a (click)="goToAddress(vin.address)"
-                [ngClass]="{'disabled-link': getAddress(vin) === 'Unparsed address' }">{{ getAddress(vin) }}</a>
+                [ngClass]="{'disabled-link': getAddress(vin) === 'Unparsed address' }" role="button" tabindex="0">{{ getAddress(vin) }}</a>
             </p>
           </div>
           <div [hidden]="!expanded">
@@ -98,7 +94,7 @@
         <ion-item *ngIf="tx.from">
           <div class="ellipsis">
             <p>
-              <a (click)="goToAddress(tx.from)">{{ tx.from }}</a>
+              <a (click)="goToAddress(tx.from)" role="button" tabindex="0">{{ tx.from }}</a>
             </p>
           </div>
         </ion-item>
@@ -117,7 +113,7 @@
             <div class="ellipsis">
               <p>
                 <a [ngClass]="{'disabled-link': getAddress(vout) === 'Unparsed address' }"
-                  (click)="goToAddress(vout.address)">{{ getAddress(vout) }}</a>
+                  (click)="goToAddress(vout.address)" role="button" tabindex="0">{{ getAddress(vout) }}</a>
               </p>
             </div>
             <div *ngIf="expanded">
@@ -140,8 +136,8 @@
             <span [hidden]="vout.spentTxid">(U)</span>
           </div>
 
-          <button item-end ion-button *ngIf="expanded && vout.spentTxid && vout.spentTxid !== '' " (click)="
-            goToTx(vout.spentTxid, i, true)" clear icon-only>
+          <button title="Go to Transaction" item-end ion-button *ngIf="expanded && vout.spentTxid && vout.spentTxid !== '' " (click)="
+            goToTx(vout.spentTxid, i, true)" clear icon-only type="button" tabindex="0">
             <ion-icon color="primary" name="ios-arrow-forward"></ion-icon>
           </button>
         </ion-item>
@@ -150,7 +146,7 @@
           <div>
             <div class="ellipsis">
               <p>
-                <a (click)="goToAddress(tx.to)">{{ tx.to }}</a>
+                <a (click)="goToAddress(tx.to)" role="button" tabindex="0">{{ tx.to }}</a>
               </p>
             </div>
           </div>

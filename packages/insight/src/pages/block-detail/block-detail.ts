@@ -1,12 +1,12 @@
 import { Component, Injectable } from '@angular/core';
 import { IonicPage, NavParams } from 'ionic-angular';
+import { UTXO_CHAINS } from '../../constants';
 import { ApiProvider, ChainNetwork } from '../../providers/api/api';
 import { BlocksProvider } from '../../providers/blocks/blocks';
 import { CurrencyProvider } from '../../providers/currency/currency';
 import { PriceProvider } from '../../providers/price/price';
 import { RedirProvider } from '../../providers/redir/redir';
 import { TxsProvider } from '../../providers/transactions/transactions';
-
 @Injectable()
 @IonicPage({
   name: 'block-detail',
@@ -54,17 +54,10 @@ export class BlockDetailPage {
     this.blocksProvider.getBlock(this.blockHash, this.chainNetwork).subscribe(
       response => {
         let block;
-        if (
-          this.chainNetwork.chain === 'BTC' ||
-          this.chainNetwork.chain === 'BCH' ||
-          this.chainNetwork.chain === 'DUC'
-        ) {
+        if (UTXO_CHAINS.includes(this.chainNetwork.chain)) {
           block = this.blocksProvider.toUtxoCoinAppBlock(response);
         }
-        if (
-          this.chainNetwork.chain === 'ETH' ||
-          this.chainNetwork.chain === 'DUCX'
-        ) {
+        if (this.chainNetwork.chain === 'ETH') {
           block = this.blocksProvider.toEthAppBlock(response);
         }
         this.block = block;

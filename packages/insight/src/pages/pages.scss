@@ -1,5 +1,4 @@
 .page-content {
-  margin-top: 56px;
   margin-bottom: 36px;
 }
 
@@ -10,8 +9,8 @@
 
 @media (min-width: map-get($grid-breakpoints, lg)) {
   .page-content-grid {
-    padding-right: 5%;
-    padding-left: 5%;
+    padding-right: calc((100% - #{map-get($grid-max-widths, lg)}) / 4);
+    padding-left: calc((100% - #{map-get($grid-max-widths, lg)}) / 4);
   }
 }
 

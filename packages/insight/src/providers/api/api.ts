@@ -1,8 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { Observable } from 'rxjs';
 import { DefaultProvider } from '../../providers/default/default';
-import { Logger } from '../../providers/logger/logger';
 
 import * as _ from 'lodash';
 
@@ -19,16 +18,10 @@ const CurrentEnv = process.env.ENV || 'dev';
 
 const EnvApiHosts: { [env: string]: { [chain: string]: string } } = {
   prod: {
-    default: 'https://ducapi.rocknblock.io/api',
-    // DUCX: 'http://127.0.0.1:3000/api',
-    ETH: 'https://api-eth.bitcore.io/api',
-    BTC: 'https://eth.bitcore.io/api',
-    BCH: 'https://eth.bitcore.io/api'
+    default: 'https://api.bitcore.io/api',
+    ETH: 'https://api-eth.bitcore.io/api'
   },
-  dev: {
-    default: '/api'
-    // DUCX: 'http://192.168.10.177:3000/api'
-  }
+  dev: { default: '/api' }
 };
 
 const CurrentApiHosts = EnvApiHosts[CurrentEnv];
@@ -40,31 +33,25 @@ export class ApiProvider {
     network: this.defaults.getDefault('%NETWORK%')
   };
   public networkSettings = {
-    availableNetworks: [
-      this.defaultNetwork,
-      {
-        network: 'mainnet',
-        chain: 'DUCX'
-      }
-    ],
+    availableNetworks: [this.defaultNetwork],
     selectedNetwork: this.defaultNetwork,
     chainNetworkLookup: {}
   };
 
   public ratesAPI = {
-    btc: 'http://bitpay.com/api/rates',
+    btc: 'https://bitpay.com/api/rates',
     bch: 'https://bitpay.com/api/rates/bch',
+    doge: 'https://bitpay.com/api/rates/doge',
     eth: 'https://bitpay.com/api/rates/eth'
   };
 
   public bwsUrl = {
-    urlPrefix: 'https://ducws.rocknblock.io/bws/api/v1/fiatrates/'
+    urlPrefix: 'https://bws.bitpay.com/bws/api/v1/fiatrates/'
   };
 
   constructor(
     public httpClient: HttpClient,
-    private defaults: DefaultProvider,
-    private logger: Logger
+    private defaults: DefaultProvider
   ) {
     this.getAvailableNetworks().subscribe(data => {
       const newNetworks = data

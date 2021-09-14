@@ -1,9 +1,9 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { ApiProvider, ChainNetwork } from '../api/api';
+import { ApiProvider, ChainNetwork } from '../../providers/api/api';
+import { CurrencyProvider } from '../../providers/currency/currency';
 import { BlocksProvider } from '../blocks/blocks';
-import { CurrencyProvider } from '../currency/currency';
 
 interface CoinsApiResponse {
   inputs: ApiCoin[];
@@ -98,6 +98,9 @@ export interface AppEthCoin {
   txid: string;
   fee: number;
   valueOut: number;
+  height: number;
+  blockheight: number;
+  time: any;
 }
 
 export interface AppInput {
@@ -223,7 +226,10 @@ export class TxsProvider {
       from: coin.from,
       txid: coin.txid,
       fee: coin.fee,
-      valueOut: coin.value
+      valueOut: coin.value,
+      height: parseInt(coin.blockHeight, 10),
+      blockheight: parseInt(coin.blockHeight, 10),
+      time: new Date(coin.blockTime).getTime() / 1000
     };
   }
 
