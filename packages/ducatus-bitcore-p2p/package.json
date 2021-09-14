@@ -1,0 +1,37 @@
+{
+  "name": "@ducatus/bitcore-p2p",
+  "version": "8.9.1",
+  "author": "Ducatus <contact@ducatus.com>  (https://ducatus.com//)",
+  "scripts": {
+    "lint": "gulp lint",
+    "test": "gulp test",
+    "coverage": "gulp coverage",
+    "build": "gulp",
+    "pub": "npm run build && npm publish --access public"
+  },
+  "contributors": [],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/bitpay/bitcore-p2p.git"
+  },
+  "dependencies": {
+    "bloom-filter": "^0.2.0",
+    "buffers": "github:bitpay/node-buffers#v0.1.2-bitpay",
+    "@ducatus/bitcore-lib": "^8.16.3",
+    "socks5-client": "^0.3.6"
+  },
+  "description": "Interface to the litecoin P2P network for litecore",
+  "devDependencies": {
+    "brfs": "^1.2.0",
+    "chai": "~1.10.0",
+    "gulp": "^3.8.10",
+    "sinon": "^1.12.2"
+  },
+  "homepage": "https://github.com/litecoin-project/litecore-p2p#readme",
+  "keywords": [
+    "litecoin",
+    "litecore"
+  ],
+  "license": "MIT",
+  "main": "index.js"
+}
