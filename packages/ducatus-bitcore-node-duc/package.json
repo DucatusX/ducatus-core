@@ -1,0 +1,15 @@
+{
+  "name": "@ducatus/bitcore-node-duc",
+  "version": "1.0.2",
+  "description": "Ducatus module for Bitcore",
+  "main": "index.js",
+  "scripts": {
+    "pub": "npm publish --access public"
+  },
+  "dependencies": {
+    "@ducatus/bitcore-lib": "^8.16.3",
+    "@ducatus/bitcore-p2p": "^8.9.1"
+  },
+  "author": "Ducatus",
+  "license": "ISC"
+}
