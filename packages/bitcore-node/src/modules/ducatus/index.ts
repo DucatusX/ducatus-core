@@ -5,8 +5,8 @@ export default class DucatusModule extends BaseModule {
     super(services);
 
     services.Libs.register('DUC', '@ducatus/bitcore-lib', '@ducatus/bitcore-p2p');
-    services.P2P.register('DUC', services.P2P.get('BTC'));
-    services.CSP.registerService('DUC', services.CSP.get({ chain: 'BTC' }));
-    services.Verification.register('DUC', services.Verification.get('BTC'));
+    services.P2P.register('DUC', services.P2P.get('LTC'));
+    services.CSP.registerService('DUC', services.CSP.get({ chain: 'LTC' }));
+    services.Verification.register('DUC', services.Verification.get('LTC'));
   }
 }
