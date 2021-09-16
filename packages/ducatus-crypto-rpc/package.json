@@ -1,0 +1,44 @@
+{
+  "name": "@ducatus/crypto-rpc",
+  "version": "1.1.0",
+  "description": "Fork rpc wrapper for multiple rpcs",
+  "main": "index.js",
+  "scripts": {
+    "ci:test": "npm run lint && npm run truffle:compile && npm run truffle:migrate && npm run truffle:test && mocha --recursive ./tests",
+    "test": "docker-compose down && docker-compose build && docker-compose run test_runner",
+    "lint": "./node_modules/.bin/eslint .",
+    "truffle:compile": "cd blockchain/ && ../node_modules/.bin/truffle compile",
+    "truffle:test": "cd blockchain/ && ../node_modules/.bin/truffle test",
+    "truffle:migrate": "cd blockchain/ && ../node_modules/.bin/truffle migrate"
+  },
+  "author": "Micah Riggan",
+  "license": "ISC",
+  "prettier": {},
+  "dependencies": {
+    "abi-decoder": "2.4.0",
+    "bitcoind-rpc": "0.8.1",
+    "commander": "2.8.1",
+    "dogecoind-rpc": "0.8.1",
+    "ethereumjs-tx": "1.3.7",
+    "promptly": "0.2.0",
+    "ripple-binary-codec": "0.2.4",
+    "ripple-hashes": "0.3.4",
+    "ripple-lib": "1.6.3",
+    "web3": "1.4.0"
+  },
+  "devDependencies": {
+    "assert": "^1.4.1",
+    "chai": "^4.2.0",
+    "eslint": "^5.16.0",
+    "eslint-config-standard": "^12.0.0",
+    "eslint-plugin-import": "^2.16.0",
+    "eslint-plugin-node": "^8.0.1",
+    "eslint-plugin-prettier": "^3.0.1",
+    "eslint-plugin-promise": "^4.0.1",
+    "eslint-plugin-standard": "^4.0.0",
+    "mocha": "^5.2.0",
+    "prettier": "^1.16.4",
+    "sinon": "^7.3.1",
+    "truffle": "5.0.9"
+  }
+}

@@ -1,0 +1,131 @@
+version: "3"
+
+services:
+
+  test_runner:
+    build:
+      context: .
+      dockerfile: Dockerfile-test
+    depends_on:
+      - bitcoin
+      - bitcoin-cash
+      - parity
+      - dogecoin
+      - rippled
+      - litecoin
+
+  bitcoin:
+    image: ruimarinho/bitcoin-core:0.16
+    ports:
+      - "8333:8333"
+    command:
+      -printtoconsole
+      -regtest=1
+      -txindex=1
+      -listen=1
+      -server=1
+      -irc=0
+      -dnsseed=0
+      -upnp=0
+      -port=8332
+      -rpcport=8333
+      -rpcallowip=172.0.0.0/8
+      -rpcbind=0.0.0.0
+      -rpcuser=cryptorpc
+      -rpcpassword=local321
+    restart: always
+
+
+  bitcoin-cash:
+    image: zquestz/bitcoin-abc:0.21.7
+    ports:
+      - "9333:9333"
+    command:
+      bitcoind
+      -printtoconsole
+      -regtest=1
+      -txindex=1
+      -listen=1
+      -server=1
+      -dnsseed=0
+      -upnp=0
+      -port=9332
+      -rpcport=9333
+      -rpcallowip="172.0.0.0/8"
+      -rpcbind="bitcoin-cash"
+      -deprecatedrpc=generate
+      -discover=0
+      -rpcuser=cryptorpc
+      -rpcpassword=local321
+    restart: always
+
+  dogecoin:
+    image: casperstack/dogecoin
+    ports:
+      - "22555:22555"
+    command:
+      dogecoind
+      -printtoconsole
+      -regtest=1
+      -txindex=1
+      -listen=1
+      -server=1
+      -dnsseed=0
+      -upnp=0
+      -port=22555
+      -rpcport=22555
+      -rpcallowip="172.0.0.0/8"
+      -rpcbind="dogecoin"
+      -deprecatedrpc=generate
+      -discover=0
+      -rpcuser=cryptorpc
+      -rpcpassword=local321
+    restart: always
+
+  parity:
+    image: parity/parity:v2.4.6
+    ports:
+      - "8545:8545"
+    volumes:
+      - ./tests/pw:/data/pw
+    command:
+      --config=dev
+      --jsonrpc-interface=0.0.0.0
+      --jsonrpc-apis=all
+      --network-id=5555
+      --unlock 00a329c0648769a73afac7f9381e08fb43dbea72
+      --password /data/pw
+
+  rippled:
+    build:
+      context: .
+      dockerfile: ./tests/docker/rippled.Dockerfile
+
+  litecoin:
+    image: uphold/litecoin-core:0.16.3
+    ports:
+      - "10333:10333"
+    command:
+      -printtoconsole
+      -regtest=1
+      -txindex=1
+      -listen=1
+      -server=1
+      -irc=0
+      -dnsseed=0
+      -upnp=0
+      -port=10332
+      -rpcport=10333
+      -rpcallowip=172.0.0.0/8
+      -rpcbind="litecoin"
+      -rpcuser=cryptorpc
+      -rpcpassword=local321
+    restart: always
+
+networks:
+  default:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: 172.28.0.0/16
