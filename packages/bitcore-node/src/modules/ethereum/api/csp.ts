@@ -1,4 +1,4 @@
-import { CryptoRpc } from 'crypto-rpc';
+import { CryptoRpc } from '@ducatus/crypto-rpc';
 import { ObjectID } from 'mongodb';
 import { Readable } from 'stream';
 import Web3 from 'web3';

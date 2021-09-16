@@ -38,7 +38,8 @@ export class EthP2pWorker extends BaseP2PWorker<IEthBlock> {
     this.initialSyncComplete = false;
     this.blockModel = blockModel;
     this.txModel = txModel;
-    this.provider = new ETHStateProvider();
+    // Without it there will be no sync ducx
+    this.provider = new ETHStateProvider(chain);
     this.events = new EventEmitter();
     this.invCache = {};
     this.invCacheLimits = {
