@@ -1,6 +1,8 @@
 import { BchValidation } from './bch';
 import { BtcValidation } from './btc';
 import { DogeValidation } from './doge';
+import { DucValidation } from './duc';
+import { DucxValidation } from './ducx';
 import { EthValidation } from './eth';
 import { LtcValidation } from './ltc';
 import { XrpValidation } from './xrp';
@@ -16,7 +18,9 @@ const validation: { [chain: string]: IValidation } = {
   ETH: new EthValidation(),
   XRP: new XrpValidation(),
   DOGE: new DogeValidation(),
-  LTC: new LtcValidation()
+  LTC: new LtcValidation(),
+  DUC: new DucValidation(),
+  DUCX: new DucxValidation()
 };
 
 export class ValidationProxy {

@@ -141,5 +141,27 @@ export let UNITS = {
       maxDecimals: 6,
       minDecimals: 2
     }
-  }
+  },
+  duc: {
+    toSatoshis: 100000000,
+    full: {
+      maxDecimals: 8,
+      minDecimals: 8
+    },
+    short: {
+      maxDecimals: 6,
+      minDecimals: 2
+    }
+  },
+  ducx: {
+    toSatoshis: 1e18,
+    full: {
+      maxDecimals: 8,
+      minDecimals: 8
+    },
+    short: {
+      maxDecimals: 6,
+      minDecimals: 2
+    }
+  },
 };

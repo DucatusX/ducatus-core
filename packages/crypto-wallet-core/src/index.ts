@@ -1,3 +1,4 @@
+import * as DucatusLib from '@ducatus/bitcore-lib';
 import * as BitcoreLib from 'bitcore-lib';
 import * as BitcoreLibCash from 'bitcore-lib-cash';
 import * as BitcoreLibDoge from 'bitcore-lib-doge';
@@ -12,6 +13,7 @@ export {
   BitcoreLibCash,
   BitcoreLibDoge,
   BitcoreLibLtc,
+  DucatusLib,
   Deriver,
   Transactions,
   Validation,

@@ -1,6 +1,8 @@
 import { BchDeriver } from './bch';
 import { BtcDeriver } from './btc';
 import { DogeDeriver } from './doge';
+import { DucDeriver } from './duc';
+import { DucxDeriver } from './ducx';
 import { EthDeriver } from './eth';
 import { LtcDeriver } from './ltc';
 import { Paths } from './paths';
@@ -24,7 +26,9 @@ const derivers: { [chain: string]: IDeriver } = {
   ETH: new EthDeriver(),
   XRP: new XrpDeriver(),
   DOGE: new DogeDeriver(),
-  LTC: new LtcDeriver()
+  LTC: new LtcDeriver(),
+  DUC: new DucDeriver(),
+  DUCX: new DucxDeriver()
 };
 
 export class DeriverProxy {
