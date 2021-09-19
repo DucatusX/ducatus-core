@@ -1,5 +1,5 @@
 import * as async from 'async';
-import { BitcoreLib } from 'crypto-wallet-core';
+import { BitcoreLib } from '@ducatus/crypto-wallet-core';
 import _ from 'lodash';
 import { IChain, INotificationData } from '..';
 import { ClientError } from '../../errors/clienterror';

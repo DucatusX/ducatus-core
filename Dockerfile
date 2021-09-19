@@ -65,8 +65,8 @@ COPY  ./packages/bitcore-wallet/package-lock.json ./packages/bitcore-wallet/pack
 COPY  ./packages/insight/package.json ./packages/insight/package.json
 COPY  ./packages/insight/package-lock.json ./packages/insight/package-lock.json
 
-COPY  ./packages/crypto-wallet-core/package.json ./packages/crypto-wallet-core/package.json
-COPY  ./packages/crypto-wallet-core/package-lock.json ./packages/crypto-wallet-core/package-lock.json
+COPY  ./packages/ducatus-crypto-wallet-core/package.json ./packages/ducatus-crypto-wallet-core/package.json
+COPY  ./packages/ducatus-crypto-wallet-core/package-lock.json ./packages/-ducatus-crypto-wallet-core/package-lock.json
 
 COPY  ./packages/bitcore-lib-ltc/package.json ./packages/bitcore-lib-ltc/package.json
 COPY  ./packages/bitcore-lib-ltc/package-lock.json ./packages/bitcore-lib-ltc/package-lock.json

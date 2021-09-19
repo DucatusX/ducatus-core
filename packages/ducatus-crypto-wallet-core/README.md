@@ -1,4 +1,4 @@
-# Crypto Wallet Core
+# Crypto Wallet Core (Fork Bitcore(v.: 8.25.16) for Ducatus-bitcore) 
 
 **A coin-agnostic wallet library for creating transactions, signing, and address derivation.**
 

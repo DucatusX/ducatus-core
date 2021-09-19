@@ -1,5 +1,5 @@
 import * as async from 'async';
-import { BitcoreLibDoge } from 'crypto-wallet-core';
+import { BitcoreLibDoge } from '@ducatus/crypto-wallet-core';
 import _ from 'lodash';
 import { IChain } from '..';
 import logger from '../../logger';

@@ -7,7 +7,7 @@ import {
   BitcoreLibLtc,
   Deriver,
   Transactions
-} from 'crypto-wallet-core';
+} from '@ducatus/crypto-wallet-core';
 
 import * as _ from 'lodash';
 import { Constants } from './constants';
