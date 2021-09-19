@@ -1,5 +1,5 @@
-import * as Bcrypt from 'bcrypt';
 import { Deriver, Transactions } from '@ducatus/crypto-wallet-core';
+import * as Bcrypt from 'bcrypt';
 import 'source-map-support/register';
 import { Client } from './client';
 import { Encryption } from './encryption';
