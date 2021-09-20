@@ -17,7 +17,7 @@
   "dependencies": {
     "bloom-filter": "^0.2.0",
     "buffers": "github:bitpay/node-buffers#v0.1.2-bitpay",
-    "@ducatus/bitcore-lib": "^8.16.3",
+    "@ducatus/bitcore-lib": "^8.25.11",
     "socks5-client": "^0.3.6"
   },
   "description": "Interface to the litecoin P2P network for litecore",

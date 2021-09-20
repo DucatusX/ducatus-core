@@ -37,6 +37,8 @@
     "ci:bitcore-node:coverage": "./ci.sh 'npm run test:bitcore-node:coverage'",
     "test:bitcore-lib": "cd ./packages/bitcore-lib && npm run test",
     "ci:bitcore-lib": "./ci.sh 'npm run test:bitcore-lib'",
+    "test:ducatus-bitcore-lib": "cd ./packages/ducatus-bitcore-lib && npm run test",
+    "ci:ducatus-bitcore-lib": "./ci.sh 'npm run test:ducatus-bitcore-lib'",
     "test:bitcore-lib-cash": "cd ./packages/bitcore-lib-cash && npm run test",
     "ci:bitcore-lib-cash": "./ci.sh 'npm run test:bitcore-lib-cash'",
     "test:bitcore-lib-ltc": "cd ./packages/bitcore-lib-ltc && npm run test",
