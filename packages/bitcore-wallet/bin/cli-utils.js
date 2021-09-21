@@ -3,7 +3,7 @@ var url = require('url');
 var read = require('read')
 var log = require('npmlog');
 // TO DO: Bitcore-lib in dependencies,if installed, there will be an error related to duplicate version.
-var Client = require('../../bitcore-wallet-client').default;
+var Client = require('../../ducatus-bitcore-wallet-client').default;
 const Key = Client.Key;
 var FileStorage = require('./filestorage');
 var sjcl = require('sjcl');

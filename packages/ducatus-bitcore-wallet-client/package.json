@@ -1,6 +1,6 @@
 {
-  "name": "bitcore-wallet-client",
-  "description": "Client for bitcore-wallet-service",
+  "name": "@ducatus/bitcore-wallet-client",
+  "description": "Client for @ducatus/bitcore-wallet-service",
   "author": "BitPay Inc",
   "version": "8.25.17",
   "license": "MIT",
@@ -73,7 +73,7 @@
     "build": "tsc && npm run lint",
     "clean": "rm -rf ./ts_build",
     "fix": "npm run fix:style && npm run fix:lint",
-    "pub": "npm run build && npm publish",
+    "pub": "npm run build && npm publish --access public",
     "precommit": "npm run fix && npm run lint",
     "lint": "npm run lint:ts && npm run lint:style",
     "lint:ts": "tslint -c ../../tslint.json 'src/**/*.ts'",
