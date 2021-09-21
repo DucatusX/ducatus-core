@@ -1,6 +1,6 @@
 {
   "name": "@ducatus/bitcore-p2p",
-  "version": "8.9.1",
+  "version": "8.9.2",
   "author": "Ducatus <contact@ducatus.com>  (https://ducatus.com//)",
   "scripts": {
     "lint": "gulp lint",
@@ -17,7 +17,7 @@
   "dependencies": {
     "bloom-filter": "^0.2.0",
     "buffers": "github:bitpay/node-buffers#v0.1.2-bitpay",
-    "@ducatus/bitcore-lib": "^8.25.11",
+    "@ducatus/bitcore-lib": "^8.25.12",
     "socks5-client": "^0.3.6"
   },
   "description": "Interface to the litecoin P2P network for litecore",

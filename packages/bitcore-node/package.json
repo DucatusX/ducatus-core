@@ -105,7 +105,7 @@
     "body-parser": "1.18.3",
     "cors": "2.8.4",
     "@ducatus/crypto-rpc": "^1.1.0",
-    "@ducatus/crypto-wallet-core": "^8.25.19",
+    "@ducatus/crypto-wallet-core": "^8.25.20",
     "heapdump": "0.3.12",
     "http": "0.0.0",
     "lodash": "4.17.11",
@@ -125,8 +125,8 @@
     "underscore": "1.8.3",
     "web3": "1.4.0",
     "winston": "3.2.0",
-    "@ducatus/bitcore-lib": "^8.25.11",
-    "@ducatus/bitcore-p2p": "^8.9.1"
+    "@ducatus/bitcore-lib": "^8.25.12",
+    "@ducatus/bitcore-p2p": "^8.9.2"
   },
   "gitHead": "012cc0216a9bc6b195035855bd17149bad41acd1"
 }
