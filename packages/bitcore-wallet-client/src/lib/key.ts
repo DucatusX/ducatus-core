@@ -399,6 +399,10 @@ export class Key {
       coinCode = '3';
     } else if (opts.coin == 'ltc') {
       coinCode = '2';
+    } else if (opts.coin == 'duc') {
+      coinCode = '1025';
+    } else if (opts.coin == 'ducx') {
+      coinCode = '1060';
     } else {
       throw new Error('unknown coin: ' + opts.coin);
     }

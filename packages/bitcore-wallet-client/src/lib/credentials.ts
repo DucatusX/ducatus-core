@@ -210,6 +210,10 @@ export class Credentials {
         coin = '3';
       } else if (this.coin == 'ltc') {
         coin = '2';
+      } else if (this.coin == 'duc') {
+        coin = '1025';
+      } else if (this.coin == 'ducx') {
+        coin = '1060';
       } else {
         throw new Error('unknown coin: ' + this.coin);
       }
@@ -314,7 +318,8 @@ export class Credentials {
       (this.coin === 'btc' ||
         this.coin === 'bch' ||
         this.coin === 'doge' ||
-        this.coin === 'ltc') &&
+        this.coin === 'ltc' ||
+        this.coin === 'duc') &&
       (!this.publicKeyRing || this.publicKeyRing.length != this.n)
     )
       return false;

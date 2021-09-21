@@ -128,6 +128,12 @@ describe('Utils', () => {
       }, {
         args: [104236872412, 'eth'],
         expected: '0.00',
+      }, {
+        args: [104236872411, 'ducx'],
+        expected: '0.00',
+      }, {
+        args: [104236872412, 'ducx'],
+        expected: '0.00',
       }
 
       ];
@@ -186,7 +192,10 @@ describe('Utils', () => {
       }, {
           args: [104236872412, 'eth'],
           expected: '0.00000010',
-        }
+      }, {
+          args: [104236872412, 'ducx'],
+          expected: '0.00000010',
+      }
       ];
 
       _.each(cases, (testCase) => {

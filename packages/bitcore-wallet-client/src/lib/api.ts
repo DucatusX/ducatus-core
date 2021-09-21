@@ -23,7 +23,9 @@ var Bitcore_ = {
   eth: CWC.BitcoreLib,
   xrp: CWC.BitcoreLib,
   doge: CWC.BitcoreLibDoge,
-  ltc: CWC.BitcoreLibLtc
+  ltc: CWC.BitcoreLibLtc,
+  duc: CWC.DucatusLib,
+  ducx: CWC.DucatusLib
 };
 var Mnemonic = require('bitcore-mnemonic');
 var url = require('url');
@@ -70,6 +72,7 @@ export class API extends EventEmitter {
   static BitcoreCash = CWC.BitcoreLibCash;
   static BitcoreDoge = CWC.BitcoreLibDoge;
   static BitcoreLtc = CWC.BitcoreLibLtc;
+  static BitcoreDuc = CWC.DucatusLib;
 
   constructor(opts?) {
     super();
@@ -471,6 +474,9 @@ export class API extends EventEmitter {
     if (coin == 'eth')
       return cb(new Error('ETH not supported for this action'));
 
+    if (coin == 'ducx')
+      return cb(new Error('DUCX not supported for this action'));
+
     var B = Bitcore_[coin];
     var privateKey = B.PrivateKey(privateKey);
     var address = privateKey.publicKey.toAddress().toString(true);
@@ -718,6 +724,23 @@ export class API extends EventEmitter {
         }
         t.uncheckedSerialize = () => signedTxs;
         t.serialize = () => signedTxs;
+        break;
+      case 'DUCX':
+        const ducxUnsignedTxs = t.uncheckedSerialize();
+        const ducxSignedTxs = [];
+        for (let index = 0; index < signatures.length; index++) {
+          const signed = CWC.Transactions.applySignature({
+            chain,
+            tx: ducxUnsignedTxs[index],
+            signature: signatures[index]
+          });
+          ducxSignedTxs.push(signed);
+
+          // bitcore users id for txid...
+          t.id = CWC.Transactions.getHash({ tx: signed, chain, network });
+        }
+        t.uncheckedSerialize = () => ducxSignedTxs;
+        t.serialize = () => ducxSignedTxs;
         break;
       default:
         return this._addSignaturesToBitcoreTxBitcoin(txp, t, signatures, xpub);
@@ -2096,7 +2119,7 @@ export class API extends EventEmitter {
           const weightedSize = [];
 
           let isSegwit =
-            (txp.coin == 'btc' || txp.coin == 'ltc') &&
+            (txp.coin == 'btc' || txp.coin == 'ltc' || txp.coin == 'duc') &&
             (txp.addressType == 'P2WSH' || txp.addressType == 'P2WPKH');
 
           let i = 0;
@@ -2514,6 +2537,7 @@ export class API extends EventEmitter {
   // */
   getNonce(opts, cb) {
     $.checkArgument(opts.coin == 'eth', 'Invalid coin: must be "eth"');
+    $.checkArgument(opts.coin == 'ducx', 'Invalid coin: must be "ducx"');
 
     var qs = [];
     qs.push(`coin=${opts.coin}`);
@@ -2541,6 +2565,15 @@ export class API extends EventEmitter {
     });
   }
 
+  getDucxMultisigContractInstantiationInfo(opts, cb) {
+    var url = '/v1/ducxmultisig/';
+    opts.network = this.credentials.network;
+    this.request.post(url, opts, (err, contractInstantiationInfo) => {
+      if (err) return cb(err);
+      return cb(null, contractInstantiationInfo);
+    });
+  }
+
   // /**
   // * Returns contract info. (owners addresses and required number of confirmations)
   // * @param {string} opts.multisigContractAddress - multisig contract address
@@ -2555,6 +2588,15 @@ export class API extends EventEmitter {
     });
   }
 
+  getDucxMultisigContractInfo(opts, cb) {
+    var url = '/v1/ducxmultisig/info';
+    opts.network = this.credentials.network;
+    this.request.post(url, opts, (err, contractInfo) => {
+      if (err) return cb(err);
+      return cb(null, contractInfo);
+    });
+  }
+
   // /**
   // * Returns contract info. (name symbol precision)
   // * @param {string} opts.tokenAddress - token contract address
@@ -2562,6 +2604,15 @@ export class API extends EventEmitter {
   // */
   getTokenContractInfo(opts, cb) {
     var url = '/v1/token/info';
+    opts.network = this.credentials.network;
+    this.request.post(url, opts, (err, contractInfo) => {
+      if (err) return cb(err);
+      return cb(null, contractInfo);
+    });
+  }
+
+  getDucxTokenContractInfo(opts, cb) {
+    var url = '/v1/ducxtoken/info';
     opts.network = this.credentials.network;
     this.request.post(url, opts, (err, contractInfo) => {
       if (err) return cb(err);
@@ -2834,6 +2885,7 @@ export class API extends EventEmitter {
           }
           let clients = [client];
           // Eth wallet with tokens?
+          // TO DO: chech for ducatusx
           const tokenAddresses = status.preferences.tokenAddresses;
           if (!_.isEmpty(tokenAddresses)) {
             function oneInchGetTokensData() {
@@ -2871,6 +2923,7 @@ export class API extends EventEmitter {
             });
           }
           // Eth wallet with mulsig wallets?
+          // TO DO: chech for ducatusx
           const multisigEthInfo = status.preferences.multisigEthInfo;
           if (!_.isEmpty(multisigEthInfo)) {
             _.each(multisigEthInfo, info => {
@@ -2934,7 +2987,11 @@ export class API extends EventEmitter {
         ['btc', 'livenet', true],
         ['bch', 'livenet', true],
         ['doge', 'livenet', true],
-        ['ltc', 'livenet', true]
+        ['ltc', 'livenet', true],
+        ['duc', 'livenet'],
+        ['duc', 'livenet', true],
+        ['ducx', 'livenet'],
+        ['ducx', 'testnet']
       ];
       if (key.use44forMultisig) {
         //  testing old multi sig

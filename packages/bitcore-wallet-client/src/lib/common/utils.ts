@@ -6,6 +6,7 @@ import {
   BitcoreLibDoge,
   BitcoreLibLtc,
   Deriver,
+  DucatusLib,
   Transactions
 } from '@ducatus/crypto-wallet-core';
 
@@ -24,7 +25,9 @@ const Bitcore_ = {
   eth: Bitcore,
   xrp: Bitcore,
   doge: BitcoreLibDoge,
-  ltc: BitcoreLibLtc
+  ltc: BitcoreLibLtc,
+  duc: DucatusLib,
+  ducx: DucatusLib
 };
 const PrivateKey = Bitcore.PrivateKey;
 const PublicKey = Bitcore.PublicKey;
@@ -39,11 +42,19 @@ export class Utils {
     let normalizedChain = coin.toUpperCase();
 
     // TODO: If in the future we add a new chain that supports custom tokens, check this condition
+    // TO DO: Check for DUCX
     if (
       Constants.ERC20.includes(coin.toLowerCase()) ||
       !Constants.COINS.includes(coin.toLowerCase())
     ) {
       normalizedChain = 'ETH';
+    }
+
+    if (
+      Constants.DRC20.includes(coin.toLowerCase()) ||
+      !Constants.COINS.includes(coin.toLowerCase())
+    ) {
+      normalizedChain = 'DUCX';
     }
     return normalizedChain;
   }
@@ -414,7 +425,7 @@ export class Utils {
 
       return t;
     } else {
-      // ETH ERC20 XRP
+      // ETH ERC20 XRP DUCX DRC20
       const {
         data,
         destinationTag,
@@ -438,15 +449,28 @@ export class Utils {
       }
       const unsignedTxs = [];
       // If it is a token swap its an already created ERC20 transaction so we skip it and go directly to ETH transaction create
-      const isERC20 = tokenAddress && !payProUrl && !isTokenSwap;
-      const isETHMULTISIG = multisigContractAddress;
-      const chain = isETHMULTISIG
-        ? 'ETHMULTISIG'
-        : isERC20
-        ? 'ERC20'
-        : txp.chain
-        ? txp.chain.toUpperCase()
-        : this.getChain(coin);
+      const is20 = tokenAddress && !payProUrl && !isTokenSwap;
+      const isMULTISIG = multisigContractAddress;
+      // TO DO: check coin or this.chain
+      let chain = '';
+      if (isMULTISIG) {
+        if (coin === 'eth') {
+          chain = 'ETHMULTISIG';
+        } else {
+          chain = 'DUCXMULTISIG';
+        }
+      } else if (is20) {
+        if (coin === 'eth') {
+          chain = 'ERC20';
+        } else {
+          chain = 'DRC20';
+        }
+      } else if (txp.chain) {
+        chain = txp.chain.toUpperCase();
+      } else {
+        chain = this.getChain(coin);
+      }
+
       for (let index = 0; index < recipients.length; index++) {
         const rawTx = Transactions.create({
           ...txp,

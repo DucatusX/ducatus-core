@@ -36,5 +36,16 @@ describe('Verifier', function() {
         publicKeys: ['0237b0bb7a8288d38ed49a524b5dc98cff3eb5ca824c9f9dc0dfdb3d9cd600f299']
       }).should.be.true;
     });
+
+    it('should verify a DUCX  address', () => {
+      let cred = aKey.createCredentials(null, { coin: 'ducx', network: 'livenet', account: 0, n: 1 });
+      cred.addWalletInfo('id', 'name', 1, 1, 'copayer');
+
+      Verifier.checkAddress(cred, {
+        address: '0xAf697Fda0c66AF7e6f7A16bd265AC31A26FA3939',
+        path: 'm/0/0',
+        publicKeys: ['0255096a23e8f39083d495ca9a2d903d3c38fdd0301d27fa92a24b55bf5dbf7366']
+      }).should.be.true;
+    });
   });
 });

@@ -33,10 +33,13 @@ export const Constants = {
     'gusd',
     'busd',
     'dai',
-    'wbtc'
+    'wbtc',
+    'duc',
+    'ducx'
   ],
   ERC20: ['usdc', 'pax', 'gusd', 'busd', 'dai', 'wbtc'],
-  UTXO_COINS: ['btc', 'bch', 'doge', 'ltc'],
+  DRC20: [],
+  UTXO_COINS: ['btc', 'bch', 'doge', 'ltc', 'duc'],
   TOKEN_OPTS: CWC.Constants.TOKEN_OPTS,
   UNITS: CWC.Constants.UNITS
 };
