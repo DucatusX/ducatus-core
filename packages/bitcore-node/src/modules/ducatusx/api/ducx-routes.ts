@@ -36,7 +36,7 @@ DucxRoutes.get('/api/DUCX/:network/token/:tokenAddress', async (req, res) => {
   }
 });
 
-DucxRoutes.get('/api/DUCX/:network/ethmultisig/info/:multisigContractAddress', async (req, res) => {
+DucxRoutes.get('/api/DUCX/:network/ducxmultisig/info/:multisigContractAddress', async (req, res) => {
   const { network, multisigContractAddress } = req.params;
   try {
     const multisigInfo = await Gnosis.getMultisigEthInfo(network, multisigContractAddress);
@@ -46,7 +46,7 @@ DucxRoutes.get('/api/DUCX/:network/ethmultisig/info/:multisigContractAddress', a
   }
 });
 
-DucxRoutes.get('/api/DUCX/:network/ethmultisig/:sender/instantiation/:txId', async (req, res) => {
+DucxRoutes.get('/api/DUCX/:network/ducxmultisig/:sender/instantiation/:txId', async (req, res) => {
   const { network, sender, txId } = req.params;
   try {
     const multisigInstantiationInfo = await Gnosis.getMultisigContractInstantiationInfo(network, sender, txId);
@@ -56,7 +56,7 @@ DucxRoutes.get('/api/DUCX/:network/ethmultisig/:sender/instantiation/:txId', asy
   }
 });
 
-DucxRoutes.get('/api/DUCX/:network/ethmultisig/txps/:multisigContractAddress', async (req, res) => {
+DucxRoutes.get('/api/DUCX/:network/ducxmultisig/txps/:multisigContractAddress', async (req, res) => {
   const { network, multisigContractAddress } = req.params;
   try {
     const multisigTxpsInfo = await Gnosis.getMultisigTxpsInfo(network, multisigContractAddress);
@@ -66,7 +66,7 @@ DucxRoutes.get('/api/DUCX/:network/ethmultisig/txps/:multisigContractAddress', a
   }
 });
 
-DucxRoutes.get('/api/DUCX/:network/ethmultisig/transactions/:multisigContractAddress', async (req, res) => {
+DucxRoutes.get('/api/DUCX/:network/ducxmultisig/transactions/:multisigContractAddress', async (req, res) => {
   let { network, multisigContractAddress } = req.params;
   const chain = 'DUCX';
   try {
