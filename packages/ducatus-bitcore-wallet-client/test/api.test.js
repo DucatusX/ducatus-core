@@ -308,6 +308,7 @@ blockchainExplorerMock.broadcast = (raw, cb) => {
     // btc/bch
     return cb(null, hash);
   } catch (e) {
+    // TO DO: Check DUCX
     // try eth
     hash = CWC.Transactions.getHash({
       tx: raw[0],
@@ -956,6 +957,47 @@ describe('client API', function() {
           '0xeb068504a817c80082520894a062a07a0a56beb2872b12f388f511d694626730870dd764300b800080018080'
         ]);
       });
+
+      it('should build an ducx txp correctly', () => {
+        const toAddress = '0xa062a07a0a56beb2872b12f388f511d694626730';
+        const key = new Key({ seedData: masterPrivateKey, seedType: 'extendedPrivateKey' });
+        const path = "m/44'/1060'/0'";
+        const publicKeyRing = [
+          {
+            xPubKey: new Bitcore.HDPrivateKey(masterPrivateKey).deriveChild(path).toString()
+          }
+        ];
+
+        const from = Utils.deriveAddress('P2PKH', publicKeyRing, 'm/0/0', 1, 'livenet', 'ducx');
+
+        const txp = {
+          version: 3,
+          from: from.address,
+          coin: 'ducx',
+          outputs: [
+            {
+              toAddress: toAddress,
+              amount: 3896000000000000,
+              gasLimit: 21000,
+              message: 'first output'
+            }
+          ],
+          requiredSignatures: 1,
+          outputOrder: [0, 1, 2],
+          fee: 420000000000000,
+          nonce: 6,
+          gasPrice: 20000000000,
+          derivationStrategy: 'BIP44',
+          addressType: 'P2PKH',
+          amount: 3896000000000000
+        };
+        var t = Utils.buildTx(txp);
+        const rawTxp = t.uncheckedSerialize();
+        rawTxp.should.deep.equal([
+          '0xed068504a817c80082520894a062a07a0a56beb2872b12f388f511d694626730870dd764300b8000808267738080'
+        ]);
+      });
+
       it('should protect from creating excessive fee DOGE', () => {
         var toAddress = 'msj42CCGruhRsFrGATiUuh25dtxYtnpbTx';
         var changeAddress = 'msj42CCGruhRsFrGATiUuh25dtxYtnpbTx';
@@ -1573,6 +1615,47 @@ describe('client API', function() {
         ];
         signatures.should.deep.equal(expectedSignatures);
       });
+
+      it('should sign ducx proposal correctly', () => {
+        const toAddress = '0xa062a07a0a56beb2872b12f388f511d694626730';
+        var key = new Key({ seedData: masterPrivateKey, seedType: 'extendedPrivateKey' });
+        const path = "m/44'/1060'/0'";
+        const publicKeyRing = [
+          {
+            xPubKey: new Bitcore.HDPrivateKey(masterPrivateKey).deriveChild(path).toString()
+          }
+        ];
+
+        const from = Utils.deriveAddress('P2PKH', publicKeyRing, 'm/0/0', 1, 'livenet', 'ducx');
+
+        const txp = {
+          version: 3,
+          from: from.address,
+          coin: 'ducx',
+          outputs: [
+            {
+              toAddress: toAddress,
+              amount: 3896000000000000,
+              gasLimit: 21000,
+              message: 'first output'
+            }
+          ],
+          requiredSignatures: 1,
+          outputOrder: [0, 1, 2],
+          fee: 420000000000000,
+          nonce: 6,
+          gasPrice: 20000000000,
+          derivationStrategy: 'BIP44',
+          addressType: 'P2PKH',
+          amount: 3896000000000000
+        };
+        const signatures = key.sign(path, txp);
+        const expectedSignatures = [
+          '0xe319463db90efc3a615c39a3e53ae8e97d850ef447f01e492af22aa6969a8d0c3f088f284f36e1435e52c2b2ef8392c5240cad33b37c3fccd01e9a10f54e29261b'
+        ];
+        signatures.should.deep.equal(expectedSignatures);
+      });
+
       it('should sign BCH proposal correctly', () => {
         var toAddress = 'msj42CCGruhRsFrGATiUuh25dtxYtnpbTx';
         var changeAddress = 'msj42CCGruhRsFrGATiUuh25dtxYtnpbTx';
@@ -3214,6 +3297,66 @@ describe('client API', function() {
         );
       });
     });
+    // TO DO: check after bws
+    // describe('DUCX testnet address creation', () => {
+    //   it('should be able to create address in 1-of-1 wallet DUCX', done => {
+    //     var xPriv =
+    //       'xprv9s21ZrQH143K3GJpoapnV8SFfukcVBSfeCficPSGfubmSFDxo1kuHnLisriDvSnRRuL2Qrg5ggqHKNVpxR86QEC8w35uxmGoggxtQTPvfUu';
+    //     let k  = new Key({ seedData: xPriv, seedType: 'extendedPrivateKey'});
+
+    //     clients[0].fromString(
+    //       k.createCredentials(null, {
+    //         coin: 'ducx',
+    //         network: 'livenet',
+    //         account: 0,
+    //         n: 1
+    //       })
+    //     );
+    //     clients[0].createWallet(
+    //       'mywallet',
+    //       'creator',
+    //       1,
+    //       1,
+    //       {
+    //         network: 'livenet',
+    //         coin: 'ducx'
+    //       },
+    //       err => {
+    //         should.not.exist(err);
+    //         clients[0].createAddress((err, x0) => {
+    //           clients[1].fromString(
+    //             k.createCredentials(null, {
+    //               coin: 'ducx',
+    //               network: 'testnet',
+    //               account: 0,
+    //               n: 1
+    //             })
+    //           );
+
+    //           clients[1].createWallet(
+    //             'mywallet',
+    //             'creator',
+    //             1,
+    //             1,
+    //             {
+    //               network: 'testnet',
+    //               coin: 'ducx'
+    //             },
+    //             err => {
+    //               should.not.exist(err);
+    //               clients[1].createAddress((err, x1) => {
+    //                 clients[0].credentials.copayerId.should.not.equal(clients[1].credentials.copayerId);
+    //                 // in DUCX, same account address for livenet and testnet should match
+    //                 x1.address.should.equal(x0.address);
+    //                 done();
+    //               });
+    //             }
+    //           );
+    //         });
+    //       }
+    //     );
+    //   });
+    // });
   });
 
   describe('Notifications', () => {
@@ -5455,6 +5598,51 @@ describe('client API', function() {
       });
     });
 
+    // TO DO: check after BWS
+    // it('Send and broadcast in 1-1 wallet DUCX', done => {
+    //   helpers.createAndJoinWallet(clients, keys, 1, 1, { coin: 'ducx' }, w => {
+    //     clients[0].createAddress((err, x0) => {
+    //       should.not.exist(err);
+    //       should.exist(x0.address);
+    //       //blockchainExplorerMock.setUtxo(x0, 1, 1);
+    //       var opts = {
+    //         outputs: [
+    //           {
+    //             amount: 10000000,
+    //             toAddress: '0x37d7B3bBD88EFdE6a93cF74D2F5b0385D3E3B08A',
+    //             message: 'output 0',
+    //             gasLimit: 21000
+    //           }
+    //         ],
+    //         message: 'hello',
+    //         feePerKb: 100e2
+    //       };
+    //       helpers.createAndPublishTxProposal(clients[0], opts, (err, txp) => {
+    //         should.not.exist(err);
+    //         txp.requiredRejections.should.equal(1);
+    //         txp.requiredSignatures.should.equal(1);
+    //         txp.status.should.equal('pending');
+    //         txp.outputs[0].message.should.equal('output 0');
+    //         txp.message.should.equal('hello');
+    //         let signatures = keys[0].sign(clients[0].getRootPath(), txp);
+    //         clients[0].pushSignatures(txp, signatures, (err, txp) => {
+    //           should.not.exist(err);
+    //           txp.status.should.equal('accepted');
+    //           txp.outputs[0].message.should.equal('output 0');
+    //           txp.message.should.equal('hello');
+    //           clients[0].broadcastTxProposal(txp, (err, txp) => {
+    //             should.not.exist(err);
+    //             txp.status.should.equal('broadcasted');
+    //             txp.txid.should.contain('0x');
+    //             txp.message.should.equal('hello');
+    //             done();
+    //           });
+    //         });
+    //       });
+    //     });
+    //   });
+    // });
+
     it('Send and broadcast in 2-3 wallet', done => {
       helpers.createAndJoinWallet(clients, keys, 2, 3, {}, w => {
         clients[0].createAddress((err, x0) => {
@@ -6489,6 +6677,51 @@ describe('client API', function() {
         });
       });
 
+      // it('should be able to gain access to tokens wallets from mnemonic ducx', done => {
+      //   helpers.createAndJoinWallet(clients, keys, 1, 1, { coin: 'ducx' }, () => {
+      //     var words = keys[0].get(null, true).mnemonic;
+      //     var walletName = clients[0].credentials.walletName;
+      //     var copayerName = clients[0].credentials.copayerName;
+
+      //     clients[0].savePreferences(
+      //       {
+      //         tokenAddresses: [
+      //           '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+      //           '0x056fd409e1d7a124bd7017459dfea2f387b6d5cd'
+      //         ]
+      //       },
+      //       err => {
+      //         should.not.exist(err);
+      //         Client.serverAssistedImport(
+      //           { words },
+      //           {
+      //             clientFactory: () => {
+      //               return helpers.newClient(app);
+      //             }
+      //           },
+      //           (err, k, c) => {
+      //             // the ducx wallet + 2 tokens.
+      //             c.length.should.equal(3);
+      //             let recoveryClient = c[0];
+      //             recoveryClient.openWallet(err => {
+      //               should.not.exist(err);
+      //               recoveryClient.credentials.walletName.should.equal(walletName);
+      //               recoveryClient.credentials.copayerName.should.equal(copayerName);
+      //               recoveryClient.credentials.coin.should.equal('ducx');
+      //               let recoveryClient2 = c[2];
+      //               recoveryClient2.openWallet(err => {
+      //                 should.not.exist(err);
+      //                 recoveryClient2.credentials.coin.should.equal('gusd');
+      //                 done();
+      //               });
+      //             });
+      //           }
+      //         );
+      //       }
+      //     );
+      //   });
+      // });
+
       it('should be able to gain access to tokens wallets from mnemonic (Case 2)', done => {
         helpers.createAndJoinWallet(clients, keys, 1, 1, { coin: 'eth' }, () => {
           var words = keys[0].get(null, true).mnemonic;
@@ -6526,6 +6759,43 @@ describe('client API', function() {
         });
       });
 
+      // it('should be able to gain access to tokens wallets from mnemonic (Case 2)', done => {
+      //   helpers.createAndJoinWallet(clients, keys, 1, 1, { coin: 'ducx' }, () => {
+      //     var words = keys[0].get(null, true).mnemonic;
+      //     var walletName = clients[0].credentials.walletName;
+      //     var copayerName = clients[0].credentials.copayerName;
+
+      //     clients[0].savePreferences({ tokenAddresses: ['0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48'] }, err => {
+      //       should.not.exist(err);
+      //       Client.serverAssistedImport(
+      //         { words },
+      //         {
+      //           clientFactory: () => {
+      //             return helpers.newClient(app);
+      //           }
+      //         },
+      //         (err, k, c) => {
+      //           // the ducx wallet + 1 token.
+      //           c.length.should.equal(2);
+      //           let recoveryClient = c[0];
+      //           recoveryClient.openWallet(err => {
+      //             should.not.exist(err);
+      //             recoveryClient.credentials.walletName.should.equal(walletName);
+      //             recoveryClient.credentials.copayerName.should.equal(copayerName);
+      //             recoveryClient.credentials.coin.should.equal('ducx');
+      //             let recoveryClient2 = c[1];
+      //             recoveryClient2.openWallet(err => {
+      //               should.not.exist(err);
+      //               recoveryClient2.credentials.coin.should.equal('usdc');
+      //               done();
+      //             });
+      //           });
+      //         }
+      //       );
+      //     });
+      //   });
+      // });
+
       it('should not fail to gain access to eth wallet with unknown tokens addresses from mnemonic (Case 3)', done => {
         helpers.createAndJoinWallet(clients, keys, 1, 1, { coin: 'eth' }, () => {
           var words = keys[0].get(null, true).mnemonic;
@@ -6556,6 +6826,38 @@ describe('client API', function() {
           });
         });
       });
+
+      // TO DO: check afer BWS
+      // it('should not fail to gain access to ducx wallet with unknown tokens addresses from mnemonic (Case 3)', done => {
+      //   helpers.createAndJoinWallet(clients, keys, 1, 1, { coin: 'ducx' }, () => {
+      //     var words = keys[0].get(null, true).mnemonic;
+      //     var walletName = clients[0].credentials.walletName;
+      //     var copayerName = clients[0].credentials.copayerName;
+
+      //     clients[0].savePreferences({ tokenAddresses: ['0x9da9bc12b19b22d7c55798f722a1b6747ae9a710'] }, err => {
+      //       should.not.exist(err);
+      //         Client.serverAssistedImport(
+      //         { words },
+      //         {
+      //           clientFactory: () => {
+      //             return helpers.newClient(app);
+      //           }
+      //         },
+      //         (err, k, c) => {
+      //           // the ducx wallet + 1 unknown token addresses on preferences.
+      //           c.length.should.equal(1);
+      //           let recoveryClient = c[0];
+      //           recoveryClient.openWallet(err => {
+      //             should.not.exist(err);
+      //             recoveryClient.credentials.walletName.should.equal(walletName);
+      //             recoveryClient.credentials.copayerName.should.equal(copayerName);
+      //             recoveryClient.credentials.coin.should.equal('ducx');
+      //             done();
+      //           });
+      //         })
+      //     });
+      //   });
+      // });
 
       it('should be able to gain access to two TESTNET btc/bch 1-1 wallets from mnemonic', done => {
         let key = new Key({ seedType: 'new' });
