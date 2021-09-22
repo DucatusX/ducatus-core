@@ -27,7 +27,7 @@ const Bitcore_ = {
   doge: BitcoreLibDoge,
   ltc: BitcoreLibLtc,
   duc: DucatusLib,
-  ducx: DucatusLib
+  ducx: BitcoreLib
 };
 const PrivateKey = Bitcore.PrivateKey;
 const PublicKey = Bitcore.PublicKey;

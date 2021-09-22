@@ -2,7 +2,7 @@ import { IDeriver } from '..';
 
 import utils from 'web3-utils';
 
-const BitcoreLib = require('@ducatus/bitcore-lib');
+const BitcoreLib = require('bitcore-lib');
 
 export class DucxDeriver implements IDeriver {
   padTo32(msg) {

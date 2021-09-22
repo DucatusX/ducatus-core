@@ -105,7 +105,7 @@
     "body-parser": "1.18.3",
     "cors": "2.8.4",
     "@ducatus/crypto-rpc": "^1.1.0",
-    "@ducatus/crypto-wallet-core": "^8.25.20",
+    "@ducatus/crypto-wallet-core": "^8.25.21",
     "heapdump": "0.3.12",
     "http": "0.0.0",
     "lodash": "4.17.11",

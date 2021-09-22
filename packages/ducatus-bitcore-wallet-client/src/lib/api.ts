@@ -25,7 +25,7 @@ var Bitcore_ = {
   doge: CWC.BitcoreLibDoge,
   ltc: CWC.BitcoreLibLtc,
   duc: CWC.DucatusLib,
-  ducx: CWC.DucatusLib
+  ducx: CWC.BitcoreLib
 };
 var Mnemonic = require('bitcore-mnemonic');
 var url = require('url');
