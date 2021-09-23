@@ -123,7 +123,61 @@ module.exports = {
         nbBlocks: 24,
         defaultValue: 10000
       }
-    ]
+    ],
+    duc: [
+      {
+        name: 'urgent',
+        nbBlocks: 2,
+        defaultValue: 150000
+      },
+      {
+        name: 'priority',
+        nbBlocks: 2,
+        defaultValue: 100000
+      },
+      {
+        name: 'normal',
+        nbBlocks: 3,
+        defaultValue: 100000
+      },
+      {
+        name: 'economy',
+        nbBlocks: 6,
+        defaultValue: 10000
+      },
+      {
+        name: 'superEconomy',
+        nbBlocks: 24,
+        defaultValue: 10000
+      }
+    ],
+    ducx: [
+      {
+        name: 'urgent',
+        nbBlocks: 1,
+        defaultValue: 10000000000
+      },
+      {
+        name: 'priority',
+        nbBlocks: 2,
+        defaultValue: 5000000000
+      },
+      {
+        name: 'normal',
+        nbBlocks: 3,
+        defaultValue: 1000000000
+      },
+      {
+        name: 'economy',
+        nbBlocks: 4,
+        defaultValue: 1000000000
+      },
+      {
+        name: 'superEconomy',
+        nbBlocks: 4,
+        defaultValue: 1000000000
+      }
+    ],
   },
 
   // How many levels to fallback to if the value returned by the network for a given nbBlocks is -1
@@ -265,6 +319,12 @@ module.exports = {
   DEFAULT_ERC20_GAS_LIMIT: 160000,
 
   MIN_GAS_LIMIT: 21000,
+
+  // DUCX
+  DEFAULT_DUCX_GAS_LIMIT: 60000,
+  DEFAULT_DRC20_GAS_LIMIT: 160000,
+
+  MIN_DUCX_GAS_LIMIT: 21000,
 
   // XRP has a non-refundable mininum activation fee / balance
   MIN_XRP_BALANCE: 20000000,

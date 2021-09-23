@@ -34,7 +34,9 @@ const BASE = {
   ETH: `https://api-eth.bitcore.io/api/${coin}/${network}`,
   XRP: `https://api-xrp.bitcore.io/api/${coin}/${network}`,
   DOGE: `https://api.bitcore.io/api/${coin}/${network}`,
-  LTC: `https://api.bitcore.io/api/${coin}/${network}`
+  LTC: `https://api.bitcore.io/api/${coin}/${network}`,
+  DUC: `https://ducapi.rocknblock.io/api/${coin}/${network}`,
+  DUCX: `https://ducapi.rocknblock.io/api/${coin}/${network}`
 };
 let baseUrl = BASE[coin];
 console.log('[v8tool.ts.37:baseUrl:]', baseUrl); // TODO

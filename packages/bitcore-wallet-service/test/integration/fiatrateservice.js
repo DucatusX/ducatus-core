@@ -392,6 +392,22 @@ describe('Fiat rate service', function() {
         code: 'EUR',
         rate: 170,
       }];
+      var duc = {
+        DUC: {
+          USD: 101
+        },
+        DUCX: {
+          USD: 102
+        }
+      };
+      var ducx = {
+        DUC: {
+          USD: 101
+        },
+        DUCX: {
+          USD: 102
+        }
+      };
 
       request.get.withArgs({
         url: 'https://bitpay.com/api/rates/BTC',
@@ -417,6 +433,14 @@ describe('Fiat rate service', function() {
         url: 'https://bitpay.com/api/rates/LTC',
         json: true
       }).yields(null, null, ltc);
+      request.get.withArgs({
+        url: 'https://rates.ducatuscoins.com/api/v1/rates/',
+        json: true
+      }).yields(null, null, ducx);
+      request.get.withArgs({
+        url: 'https://rates.ducatuscoins.com/api/v1/rates/',
+        json: true
+      }).yields(null, null, duc);
 
       service._fetch(function(err) {
         should.not.exist(err);
@@ -462,13 +486,29 @@ describe('Fiat rate service', function() {
                     res.fetchedOn.should.equal(100);
                     res.rate.should.equal(150);
                     service.getRate({
-                      code: 'EUR'
-                    }, function(err, res) {
+                      code: 'USD',
+                      coin: 'duc',
+                    },function(err, res) {
                       should.not.exist(err);
                       res.fetchedOn.should.equal(100);
-                      res.rate.should.equal(234.56);
-                      clock.restore();
-                      done();
+                      res.rate.should.equal(101);
+                      service.getRate({
+                        code: 'USD',
+                        coin: 'ducx',
+                      }, function(err, res) {
+                        should.not.exist(err);
+                        res.fetchedOn.should.equal(100);
+                        res.rate.should.equal(102);
+                        service.getRate({
+                          code: 'EUR'
+                        }, function(err, res) {
+                          should.not.exist(err);
+                          res.fetchedOn.should.equal(100);
+                          res.rate.should.equal(234.56);
+                          clock.restore();
+                          done();
+                        });
+                      });
                     });
                   });
                 });

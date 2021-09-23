@@ -156,7 +156,7 @@ export class PushNotificationsService {
     if (notification.type === 'NewIncomingTx') {
       notifType.filename = notification.data.network === 'testnet' ? notifType.filename[0] : notifType.filename[1];
     } else if (notification.type === 'NewOutgoingTx') {
-      // Handle zero amount ETH transactions to contract addresses
+      // Handle zero amount ETH & DUCX transactions to contract addresses
       notifType.filename = notification.data.amount !== 0 ? notifType.filename[0] : notifType.filename[1];
     } else if (notification.type === 'TxConfirmation') {
       if (notification.data && !notification.data.amount) {
@@ -389,7 +389,9 @@ export class PushNotificationsService {
       gusd: 'GUSD',
       busd: 'BUSD',
       wbtc: 'WBTC',
-      dai: 'DAI'
+      dai: 'DAI',
+      duc: 'DUC',
+      DUCX: 'DUCX'
     };
     const data = _.cloneDeep(notification.data);
     data.subjectPrefix = _.trim(this.subjectPrefix + ' ');

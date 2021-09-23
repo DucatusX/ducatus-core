@@ -15,7 +15,9 @@ const Bitcore_ = {
   eth: Bitcore,
   xrp: Bitcore,
   doge: require('bitcore-lib-doge'),
-  ltc: require('bitcore-lib-ltc')
+  ltc: require('bitcore-lib-ltc'),
+  duc: require('@ducatus/bitcore-lib'),
+  ducx: Bitcore
 };
 const config = require('../../config');
 const Constants = Common.Constants,
@@ -391,7 +393,7 @@ export class V8 {
         return cb(err);
       });
   }
-
+  // TO DO DUCX mulisig
   getMultisigContractInstantiationInfo(opts, cb) {
     const url = `${this.baseUrl}/ethmultisig/${opts.sender}/instantiation/${opts.txId}`;
     console.log('[v8.js.378:url:] CHECKING CONTRACT INSTANTIATION INFO', url);

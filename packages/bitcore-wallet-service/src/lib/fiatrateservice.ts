@@ -8,6 +8,8 @@ const Common = require('./common');
 const Defaults = Common.Defaults;
 const Constants = Common.Constants;
 import logger from './logger';
+const customCoins = ['duc', 'ducx'];
+
 export class FiatRateService {
   request: request.RequestAPI<any, any, any>;
   defaultProvider: any;
@@ -57,13 +59,18 @@ export class FiatRateService {
 
   _fetch(cb?) {
     cb = cb || function() {};
-    const coins = ['btc', 'bch', 'eth', 'xrp', 'doge', 'ltc'];
-    const provider = this.providers[0];
+    const coins = ['btc', 'bch', 'eth', 'xrp', 'doge', 'ltc', 'duc', 'ducx'];
 
     //    async.each(this.providers, (provider, next) => {
     async.each(
       coins,
       (coin, next2) => {
+        let provider = this.providers[0];
+        // Ducatus custom provider
+        if (customCoins.includes(coin)) {
+          provider = this.providers[1];
+        }
+
         this._retrieve(provider, coin, (err, res) => {
           if (err) {
             logger.warn('Error retrieving data for ' + provider.name + coin, err);
@@ -84,14 +91,25 @@ export class FiatRateService {
 
   _retrieve(provider, coin, cb) {
     logger.debug(`Fetching data for ${provider.name} / ${coin} `);
+    let url = provider.url + coin.toUpperCase();
+
+    if (customCoins.includes(coin)) {
+        url = provider.url;
+    }
+
     this.request.get(
       {
-        url: provider.url + coin.toUpperCase(),
+        url,
         json: true
       },
       (err, res, body) => {
         if (err || !body) {
           return cb(err);
+        }
+        let bodyRates = body;
+
+        if (customCoins.includes(coin)) {
+          bodyRates = [{ code: 'USD', name: 'US Dollar', rate: body[coin.toUpperCase()].USD }];
         }
 
         logger.debug(`Data for ${provider.name} /  ${coin} fetched successfully`);
@@ -100,7 +118,7 @@ export class FiatRateService {
           return cb(new Error('No parse function for provider ' + provider.name));
         }
         try {
-          const rates = _.filter(provider.parseFn(body), x => _.some(Defaults.FIAT_CURRENCIES, ['code', x.code]));
+          const rates = _.filter(provider.parseFn(bodyRates), x => _.some(Defaults.FIAT_CURRENCIES, ['code', x.code]));
           return cb(null, rates);
         } catch (e) {
           return cb(e);
@@ -253,7 +271,7 @@ export class FiatRateService {
     // Oldest date in timestamp range in epoch number ex. 24 hours ago
     const now = Date.now() - Defaults.FIAT_RATE_FETCH_INTERVAL * 60 * 1000;
     const ts = _.isNumber(opts.ts) ? opts.ts : now;
-    const coins = ['btc', 'bch', 'eth', 'xrp', 'doge', 'ltc'];
+    const coins = ['btc', 'bch', 'eth', 'xrp', 'doge', 'ltc', 'duc', 'ducx'];
 
     async.map(
       coins,

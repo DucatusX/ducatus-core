@@ -41,7 +41,9 @@ const errors = {
   WALLET_NOT_COMPLETE: 'Wallet is not complete',
   WALLET_NOT_FOUND: 'Wallet not found',
   WALLET_NEED_SCAN: 'Wallet needs addresses scan',
-  WRONG_SIGNING_METHOD: 'Wrong signed method for coin/network'
+  WRONG_SIGNING_METHOD: 'Wrong signed method for coin/network',
+  INSUFFICIENT_DUCX_FEE: 'Your linked DUCX wallet does not have enough DUCX for fee',
+  LOCKED_DUCX_FEE: 'Your linked DUCX wallet does not have enough DUCX for fee',
 };
 
 const errorObjects = _.fromPairs(

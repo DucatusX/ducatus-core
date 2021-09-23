@@ -3,6 +3,8 @@ import { WalletService } from '../server';
 import { BchChain } from './bch';
 import { BtcChain } from './btc';
 import { DogeChain } from './doge';
+import { DucChain } from './duc';
+import { DucxChain } from './ducx';
 import { EthChain } from './eth';
 import { LtcChain } from './ltc';
 import { XrpChain } from './xrp';
@@ -72,7 +74,9 @@ const chain: { [chain: string]: IChain } = {
   ETH: new EthChain(),
   XRP: new XrpChain(),
   DOGE: new DogeChain(),
-  LTC: new LtcChain()
+  LTC: new LtcChain(),
+  DUC: new DucChain(),
+  DUCX: new DucxChain()
 };
 
 class ChainProxy {
@@ -86,6 +90,10 @@ class ChainProxy {
     if (Constants.ERC20[normalizedChain]) {
       normalizedChain = 'ETH';
     }
+    if (Constants.DRC20[normalizedChain]) {
+      normalizedChain = 'DUCX';
+    }
+
     return normalizedChain;
   }
 

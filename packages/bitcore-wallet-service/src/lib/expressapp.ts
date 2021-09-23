@@ -1158,6 +1158,7 @@ export class ExpressApp {
     router.get('/v1/nonce/:address', (req, res) => {
       getServerWithAuth(req, res, async server => {
         const opts = {
+          // TO DO: error for null coin
           coin: req.query.coin || 'eth',
           network: req.query.network || 'livenet',
           address: req.params['address']

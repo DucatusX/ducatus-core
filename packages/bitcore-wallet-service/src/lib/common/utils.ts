@@ -10,7 +10,8 @@ const Bitcore_ = {
   btc: Bitcore,
   bch: require('bitcore-lib-cash'),
   doge: require('bitcore-lib-doge'),
-  ltc: require('bitcore-lib-ltc')
+  ltc: require('bitcore-lib-ltc'),
+  duc: require('@ducatus/bitcore-lib')
 };
 
 export class Utils {
@@ -231,7 +232,7 @@ export class Utils {
     if (!value || !_.isString(value)) return false;
     return _.includes(_.values(collection), value);
   }
-
+  // TO DO: why?
   static getAddressCoin(address) {
     try {
       new Bitcore_['btc'].Address(address);
@@ -249,8 +250,13 @@ export class Utils {
             new Bitcore_['ltc'].Address(address);
             return 'ltc';
           } catch (e) {
-            return;
-          }
+            try {
+              new Bitcore_['duc'].Address(address);
+              return 'duc';
+            } catch (e) {
+              return;
+            }
+          } 
         }
       }
     }

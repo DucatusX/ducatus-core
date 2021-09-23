@@ -195,7 +195,7 @@ export class TxProposal {
 
     // Coin specific features
 
-    // ETH
+    // ETH & DUCX
     x.gasPrice = opts.gasPrice;
     x.from = opts.from;
     x.nonce = opts.nonce;
@@ -259,7 +259,7 @@ export class TxProposal {
 
     x.lockUntilBlockHeight = obj.lockUntilBlockHeight;
 
-    // ETH
+    // ETH & DUCX
     x.gasPrice = obj.gasPrice;
     x.from = obj.from;
     x.nonce = obj.nonce;

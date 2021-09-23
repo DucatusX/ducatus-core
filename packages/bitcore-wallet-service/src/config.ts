@@ -85,6 +85,19 @@ const Config = () => {
           url: 'https://api.bitcore.io'
         }
       },
+      duc: {
+        livenet: {
+          url: 'https://ducapi.rocknblock.io'
+        }
+      },
+      ducx: {
+        livenet: {
+          url: 'https://ducapi.rocknblock.io'
+        },
+        testnet: {
+          url: 'https://ducapi.rocknblock.io'
+        }
+      },
       socketApiKey: 'socketApiKey'
     },
     pushNotificationsOpts: {

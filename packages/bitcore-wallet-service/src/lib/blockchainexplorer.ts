@@ -30,6 +30,13 @@ const PROVIDERS = {
     ltc: {
       livenet: 'https://api.bitpay.com',
       testnet: 'https://api.bitpay.com'
+    },
+    duc: {
+      livenet: 'https://ducapi.rocknblock.io'
+    },
+    ducx: {
+      livenet: 'https://ducapi.rocknblock.io',
+      testnet: 'https://ducapi.rocknblock.io'
     }
   }
 };
