@@ -177,7 +177,7 @@ module.exports = {
         nbBlocks: 4,
         defaultValue: 1000000000
       }
-    ],
+    ]
   },
 
   // How many levels to fallback to if the value returned by the network for a given nbBlocks is -1

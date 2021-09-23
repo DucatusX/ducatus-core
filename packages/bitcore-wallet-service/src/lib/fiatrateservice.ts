@@ -94,7 +94,7 @@ export class FiatRateService {
     let url = provider.url + coin.toUpperCase();
 
     if (customCoins.includes(coin)) {
-        url = provider.url;
+      url = provider.url;
     }
 
     this.request.get(

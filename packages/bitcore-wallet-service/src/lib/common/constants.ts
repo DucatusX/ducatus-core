@@ -28,8 +28,7 @@ module.exports = {
     WBTC: 'wbtc'
   },
 
-  DRC20: {
-  },
+  DRC20: {},
 
   UTXO_COINS: {
     BTC: 'btc',
