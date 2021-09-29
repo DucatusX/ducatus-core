@@ -22,7 +22,8 @@ const Bitcore_ = {
   eth: Bitcore,
   xrp: Bitcore,
   doge: require('bitcore-lib-doge'),
-  ltc: require('bitcore-lib-ltc')
+  ltc: require('bitcore-lib-ltc'),
+  duc: require('@ducatus/bitcore-lib')
 };
 
 const { WalletService } = require('../../ts_build/lib/server');
@@ -48,7 +49,8 @@ const TO_SAT = {
   'usdc': 1e6,
   'xrp': 1e6,
   'doge': 1e8,
-  'ltc': 1e8
+  'ltc': 1e8,
+  'duc': 1e8
 };
 
 const TOKENS = ['0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48', '0x056fd409e1d7a124bd7017459dfea2f387b6d5cd'];
@@ -3826,6 +3828,13 @@ describe('Wallet service', function() {
       addr: 'LUDZDsJHVwgZBc5HdfbbBgqU6hJZwWNseV',
       lockedFunds: 0,
       flags: {},
+    },
+    {
+      coin: 'duc',
+      key: 'id44duc',
+      addr: 'LuaEVV9qhtx3ZAvxxYyr3EMjZnnSakd1B4',
+      lockedFunds: 0,
+      flags: {},
     }
   ];
 
@@ -3876,7 +3885,8 @@ describe('Wallet service', function() {
               eth:8000,
               xrp:8000,
               doge:1e8,
-              ltc:8000
+              ltc:8000,
+              duc:8000
             }
             let amount = coinAmount[coin];
             var txOpts = {
@@ -3964,7 +3974,7 @@ describe('Wallet service', function() {
               });
             });
           });
-          if(coin === 'btc' || coin === 'bch' || coin === 'doge' || coin === 'ltc') {
+          if(coin === 'btc' || coin === 'bch' || coin === 'doge' || coin === 'ltc' || coin === 'duc') {
             it('should fail to create BTC/BCH tx for invalid amount', function(done) {
               var txOpts = {
                 outputs: [{
@@ -4020,25 +4030,28 @@ describe('Wallet service', function() {
 
 
           if( ! flags.noUtxoTests ) {
-            it('should fail to create tx for address of different network', function(done) {
-              helpers.stubUtxos(server, wallet, 1, function() {
-                var txOpts = {
-                  outputs: [{
-                    toAddress: 'myE38JHdxmQcTJGP1ZiX4BiGhDxMJDvLJD',
-                    amount: 1e8
-                  }],
-                  feePerKb: 100e2,
-                };
-                txOpts = Object.assign(txOpts, flags);
-                server.createTx(txOpts, function(err, tx) {
-                  should.not.exist(tx);
-                  should.exist(err);
-                  err.code.should.equal('INCORRECT_ADDRESS_NETWORK');
-                  err.message.should.equal('Incorrect address network');
-                  done();
+            if ( coin !== 'duc' ) {
+              // ducatus has only one network
+              it('should fail to create tx for address of different network', function(done) {
+                helpers.stubUtxos(server, wallet, 1, function() {
+                  var txOpts = {
+                    outputs: [{
+                      toAddress: 'myE38JHdxmQcTJGP1ZiX4BiGhDxMJDvLJD',
+                      amount: 1e8
+                    }],
+                    feePerKb: 100e2,
+                  };
+                  txOpts = Object.assign(txOpts, flags);
+                  server.createTx(txOpts, function(err, tx) {
+                    should.not.exist(tx);
+                    should.exist(err);
+                    err.code.should.equal('INCORRECT_ADDRESS_NETWORK');
+                    err.message.should.equal('Incorrect address network');
+                    done();
+                  });
                 });
               });
-            });
+            }
             it('should be able to create tx with inputs argument', function(done) {
               helpers.stubUtxos(server, wallet, [1, 3, 2], function(utxos) {
                 server.getUtxos({}, function(err, utxos) {
@@ -4401,7 +4414,8 @@ describe('Wallet service', function() {
                 eth:0.8,
                 xrp:0.8,
                 doge:1,
-                ltc: 0.8
+                ltc: 0.8,
+                duc: 0.8
               }
               var txp1, txp2;
               var txOpts = {
@@ -4596,6 +4610,11 @@ describe('Wallet service', function() {
                 expected = 200e2;
                 expectedNormal = 200e2;
                 break;
+              case 'duc':
+                level = 'normal';
+                expected = 200e2;
+                expectedNormal = 200e2;
+                break;
               default:
                 level = 'economy';
                 expected = 180e2;
@@ -4670,7 +4689,8 @@ describe('Wallet service', function() {
             eth:8000,
             xrp:8000,
             doge:1e8,
-            ltc: 8000
+            ltc: 8000,
+            duc: 8000
           }
           let amount = coinAmount[coin];
           helpers.stubUtxos(server, wallet, [1, 2], function() {
@@ -4708,7 +4728,8 @@ describe('Wallet service', function() {
             xrp: 7000,
             eth: 210000000,
             doge: 1e8,
-            ltc: 7000
+            ltc: 7000,
+            duc: 7000
           }
           helpers.stubUtxos(server, wallet, [1, 2], { coin }, function() {
             var max = 3 * ts - coinFee[coin]; // Fees for this tx at 100bits/kB = 7000 sat
@@ -4759,7 +4780,8 @@ describe('Wallet service', function() {
             eth:0.5,
             xrp:0.5,
             doge:1,
-            ltc:0.5
+            ltc:0.5,
+            duc:0.5
           }
           helpers.stubUtxos(server, wallet, 2, { coin }, function() {
             var cwcStub = sandbox.stub(CWC.Transactions, 'create');
@@ -4784,6 +4806,11 @@ describe('Wallet service', function() {
               message: 'dummy exception'
             });
             var bitcoreStub = sandbox.stub(CWC.BitcoreLibLtc, 'Transaction');
+            bitcoreStub.throws({
+              name: 'dummy',
+              message: 'dummy exception'
+            });
+            var bitcoreStub = sandbox.stub(CWC.DucatusLib, 'Transaction');
             bitcoreStub.throws({
               name: 'dummy',
               message: 'dummy exception'
@@ -5064,7 +5091,7 @@ describe('Wallet service', function() {
           });
 
 
-          if(coin !== 'doge' && coin !== 'ltc') { // TODO
+          if(coin !== 'doge' && coin !== 'ltc' && coin !== 'duc') { // TODO
           it('should accept a tx proposal signed with a custom key', function(done) {
             var reqPrivKey = new Bitcore.PrivateKey();
             var reqPubKey = reqPrivKey.toPublicKey().toString();

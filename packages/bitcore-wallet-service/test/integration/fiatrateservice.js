@@ -185,7 +185,7 @@ describe('Fiat rate service', function() {
     });
 
     it('should get historical rates from ts to now', function(done) {
-      const coins = ['btc', 'bch', 'eth', 'xrp', 'doge', 'ltc'];
+      const coins = ['btc', 'bch', 'eth', 'xrp', 'doge', 'ltc', 'duc'];
       var clock = sinon.useFakeTimers({toFake: ['Date']});
       async.each([1.00, 2.00, 3.00, 4.00, 5.00], function(value, next) {
         clock.tick(100);
@@ -262,6 +262,7 @@ describe('Fiat rate service', function() {
           should.not.exist(res['xrp']);
           should.not.exist(res['doge']);
           should.not.exist(res['ltc']);
+          should.not.exist(res['duc']);
 
           res['btc'][3].ts.should.equal(100);
           res['btc'][3].rate.should.equal(1.00);
@@ -281,7 +282,7 @@ describe('Fiat rate service', function() {
     });
 
     it('should return current rates if missing opts.ts when fetching historical rates', function(done) {
-      const coins = ['btc', 'bch', 'eth', 'xrp', 'doge', 'ltc'];
+      const coins = ['btc', 'bch', 'eth', 'xrp', 'doge', 'ltc', 'duc'];
       var clock = sinon.useFakeTimers({toFake: ['Date']});
       async.each([1.00, 2.00, 3.00, 4.00], function(value, next) {
         clock.tick(11 * 60 * 1000);

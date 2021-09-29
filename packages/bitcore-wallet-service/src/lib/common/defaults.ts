@@ -293,7 +293,9 @@ module.exports = {
     eth: 1000000000000, // 50 Gwei,
     xrp: 1000000000000,
     doge: 100000000 * 100,
-    ltc: 10000 * 1000 // 10k sat/b
+    ltc: 10000 * 1000, // 10k sat/b
+    duc: 10000 * 1000,
+    ducx: 1000000000000
   },
 
   MIN_TX_FEE: {
@@ -302,7 +304,9 @@ module.exports = {
     eth: 0,
     xrp: 0,
     doge: 0,
-    ltc: 0
+    ltc: 0,
+    duc: 0,
+    ducx: 0
   },
 
   MAX_TX_FEE: {
@@ -311,7 +315,9 @@ module.exports = {
     eth: 1 * 1e18, // 1 eth
     xrp: 1 * 1e6, // 1 xrp
     doge: 400 * 1e8,
-    ltc: 0.05 * 1e8
+    ltc: 0.05 * 1e8,
+    duc: 0.05 * 1e8,
+    ducx: 1 * 1e18
   },
 
   // ETH
