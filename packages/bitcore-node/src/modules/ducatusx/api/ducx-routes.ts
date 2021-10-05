@@ -1,7 +1,6 @@
 import { Router } from 'express';
 import logger from '../../../logger';
 import { ETH } from '../../ethereum/api/csp';
-import { Gnosis } from '../../ethereum/api/gnosis';
 export const DucxRoutes = Router();
 
 DucxRoutes.get('/api/DUCX/:network/address/:address/txs/count', async (req, res) => {
@@ -33,53 +32,5 @@ DucxRoutes.get('/api/DUCX/:network/token/:tokenAddress', async (req, res) => {
     res.json(tokenInfo);
   } catch (err) {
     res.status(500).send(err);
-  }
-});
-
-DucxRoutes.get('/api/DUCX/:network/ducxmultisig/info/:multisigContractAddress', async (req, res) => {
-  const { network, multisigContractAddress } = req.params;
-  try {
-    const multisigInfo = await Gnosis.getMultisigEthInfo(network, multisigContractAddress);
-    res.json(multisigInfo);
-  } catch (err) {
-    res.status(500).send(err);
-  }
-});
-
-DucxRoutes.get('/api/DUCX/:network/ducxmultisig/:sender/instantiation/:txId', async (req, res) => {
-  const { network, sender, txId } = req.params;
-  try {
-    const multisigInstantiationInfo = await Gnosis.getMultisigContractInstantiationInfo(network, sender, txId);
-    res.json(multisigInstantiationInfo);
-  } catch (err) {
-    res.status(500).send(err);
-  }
-});
-
-DucxRoutes.get('/api/DUCX/:network/ducxmultisig/txps/:multisigContractAddress', async (req, res) => {
-  const { network, multisigContractAddress } = req.params;
-  try {
-    const multisigTxpsInfo = await Gnosis.getMultisigTxpsInfo(network, multisigContractAddress);
-    res.json(multisigTxpsInfo);
-  } catch (err) {
-    res.status(500).send(err);
-  }
-});
-
-DucxRoutes.get('/api/DUCX/:network/ducxmultisig/transactions/:multisigContractAddress', async (req, res) => {
-  let { network, multisigContractAddress } = req.params;
-  const chain = 'DUCX';
-  try {
-    return await Gnosis.streamGnosisWalletTransactions({
-      chain,
-      network,
-      multisigContractAddress,
-      wallet: {} as any,
-      req,
-      res,
-      args: req.query
-    });
-  } catch (err) {
-    return res.status(500).send(err);
   }
 });

@@ -35,10 +35,17 @@ export const Constants = {
     'dai',
     'wbtc',
     'duc',
-    'ducx'
+    'ducx',
+    'jamasy',
+    'nuyasa',
+    'sunoba',
+    'dscmed',
+    'pog1',
+    'wde',
+    'mdxb'
   ],
   ERC20: ['usdc', 'pax', 'gusd', 'busd', 'dai', 'wbtc'],
-  DRC20: [],
+  DRC20: ['jamasy', 'nuyasa', 'sunoba', 'dscmed', 'pog1', 'wde', 'mdxb'],
   UTXO_COINS: ['btc', 'bch', 'doge', 'ltc', 'duc'],
   TOKEN_OPTS: CWC.Constants.TOKEN_OPTS,
   UNITS: CWC.Constants.UNITS

@@ -163,5 +163,82 @@ export let UNITS = {
       maxDecimals: 6,
       minDecimals: 2
     }
+  },
+  jamasy: {
+    toSatoshis: 1e8,
+    full: {
+      maxDecimals: 8,
+      minDecimals: 8
+    },
+    short: {
+      maxDecimals: 8,
+      minDecimals: 2
+    }
+  },
+  nuyasa: {
+    toSatoshis: 1e8,
+    full: {
+      maxDecimals: 8,
+      minDecimals: 8
+    },
+    short: {
+      maxDecimals: 8,
+      minDecimals: 2
+    }
+  },
+  sunoba: {
+    toSatoshis: 1e8,
+    full: {
+      maxDecimals: 8,
+      minDecimals: 8
+    },
+    short: {
+      maxDecimals: 8,
+      minDecimals: 2
+    }
+  },
+  dscmed: {
+    toSatoshis: 1e8,
+    full: {
+      maxDecimals: 8,
+      minDecimals: 8
+    },
+    short: {
+      maxDecimals: 8,
+      minDecimals: 2
+    }
+  },
+  pog1: {
+    toSatoshis: 1e8,
+    full: {
+      maxDecimals: 8,
+      minDecimals: 8
+    },
+    short: {
+      maxDecimals: 8,
+      minDecimals: 2
+    }
+  },
+  wde: {
+    toSatoshis: 1e8,
+    full: {
+      maxDecimals: 8,
+      minDecimals: 8
+    },
+    short: {
+      maxDecimals: 8,
+      minDecimals: 2
+    }
+  },
+  mdxb: {
+    toSatoshis: 1e8,
+    full: {
+      maxDecimals: 8,
+      minDecimals: 8
+    },
+    short: {
+      maxDecimals: 8,
+      minDecimals: 2
+    }
   }
 };

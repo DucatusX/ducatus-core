@@ -2565,15 +2565,6 @@ export class API extends EventEmitter {
     });
   }
 
-  getDucxMultisigContractInstantiationInfo(opts, cb) {
-    var url = '/v1/ducxmultisig/';
-    opts.network = this.credentials.network;
-    this.request.post(url, opts, (err, contractInstantiationInfo) => {
-      if (err) return cb(err);
-      return cb(null, contractInstantiationInfo);
-    });
-  }
-
   // /**
   // * Returns contract info. (owners addresses and required number of confirmations)
   // * @param {string} opts.multisigContractAddress - multisig contract address
@@ -2581,15 +2572,6 @@ export class API extends EventEmitter {
   // */
   getMultisigContractInfo(opts, cb) {
     var url = '/v1/ethmultisig/info';
-    opts.network = this.credentials.network;
-    this.request.post(url, opts, (err, contractInfo) => {
-      if (err) return cb(err);
-      return cb(null, contractInfo);
-    });
-  }
-
-  getDucxMultisigContractInfo(opts, cb) {
-    var url = '/v1/ducxmultisig/info';
     opts.network = this.credentials.network;
     this.request.post(url, opts, (err, contractInfo) => {
       if (err) return cb(err);
@@ -2612,7 +2594,7 @@ export class API extends EventEmitter {
   }
 
   getDucxTokenContractInfo(opts, cb) {
-    var url = '/v1/ducxtoken/info';
+    var url = '/v1/ducx-token/info';
     opts.network = this.credentials.network;
     this.request.post(url, opts, (err, contractInfo) => {
       if (err) return cb(err);
