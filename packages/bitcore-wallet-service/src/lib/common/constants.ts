@@ -57,7 +57,7 @@ module.exports = {
     LIVENET: 'livenet',
     TESTNET: 'testnet'
   },
-  
+
   ADDRESS_FORMATS: ['copay', 'cashaddr', 'legacy', 'ducatus'],
 
   SCRIPT_TYPES: {

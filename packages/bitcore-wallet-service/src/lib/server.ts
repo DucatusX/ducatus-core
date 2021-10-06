@@ -1175,7 +1175,7 @@ export class WalletService {
       if (wallet.coin != 'eth' && wallet.coin != 'ducx') {
         opts.tokenAddresses = null;
       }
-      
+
       if (wallet.coin != 'eth') {
         opts.multisigEthInfo = null;
       }
