@@ -40,7 +40,6 @@ describe('Chain DUC', () => {
     });
 
     it('should create a valid unsigned bitcore TX', () => { 
-      // TO DO: sig problem
       const txp = TxProposal.fromObj(signedTxp);
       const t = ChainService.getBitcoreTx(txp, { signed: false } );
       should.exist(t);

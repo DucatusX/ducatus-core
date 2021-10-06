@@ -16,7 +16,14 @@ module.exports = {
     DAI: 'dai',
     WBTC: 'wbtc',
     DUC: 'duc',
-    DUCX: 'ducx'
+    DUCX: 'ducx',
+    JAMASY: 'jamasy',
+    NUYASA: 'nuyasa',
+    SUNOBA: 'sunoba',
+    DSCMED: 'dscmed',
+    POG1: 'pog1',
+    WDE: 'wde',
+    MDXB: 'mdxb'
   },
 
   ERC20: {
@@ -28,7 +35,15 @@ module.exports = {
     WBTC: 'wbtc'
   },
 
-  DRC20: {},
+  DRC20: {
+    JAMASY: 'jamasy',
+    NUYASA: 'nuyasa',
+    SUNOBA: 'sunoba',
+    DSCMED: 'dscmed',
+    POG1: 'pog1',
+    WDE: 'wde',
+    MDXB: 'mdxb'
+  },
 
   UTXO_COINS: {
     BTC: 'btc',
@@ -42,8 +57,8 @@ module.exports = {
     LIVENET: 'livenet',
     TESTNET: 'testnet'
   },
-
-  ADDRESS_FORMATS: ['copay', 'cashaddr', 'legacy'],
+  
+  ADDRESS_FORMATS: ['copay', 'cashaddr', 'legacy', 'ducatus'],
 
   SCRIPT_TYPES: {
     P2SH: 'P2SH',

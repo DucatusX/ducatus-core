@@ -371,7 +371,7 @@ helpers.stubUtxos = function(server, wallet, amounts, opts, cb) {
     return cb();
   }
 
-  if (wallet.coin == 'eth') {
+  if (wallet.coin == 'eth' || wallet.coin == 'ducx') {
     amounts = _.isArray(amounts) ? amounts : [amounts];
     let conf =  _.sum(_.map(amounts, x =>  Number((x*1e18).toFixed(0))));
     blockchainExplorer.getBalance = sinon.stub().callsArgWith(1, null, {unconfirmed:0, confirmed: conf, balance: conf });
@@ -585,13 +585,19 @@ helpers.clientSign = function(txp, derivedXPrivKey) {
   switch(txp.coin) {
     case 'eth':
     case 'xrp':
+    case 'ducx':
 
       // For eth => account, 0, change = 0
       const priv =  xpriv.derive('m/0/0').privateKey;
       const privKey = priv.toString('hex');
       let tx = ChainService.getBitcoreTx(txp).uncheckedSerialize();
       const isERC20 = txp.tokenAddress && !txp.payProUrl;
-      const chain = isERC20 ? 'ERC20' : ChainService.getChain(txp.coin);
+      let chain = isERC20 ? 'ERC20' : ChainService.getChain(txp.coin);
+
+      if ( txp.coin === 'ducx' && isERC20 ) {
+        chain = 'DRC20';
+      }
+
       tx = typeof tx === 'string'? [tx] : tx;
       signatures = [];
       for (const rawTx of tx) {

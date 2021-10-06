@@ -116,7 +116,7 @@ export class Client {
       json: true
     });
   }
-  // TO DO: check ducxmultisig
+
   listTransactions(params) {
     const {
       pubKey,

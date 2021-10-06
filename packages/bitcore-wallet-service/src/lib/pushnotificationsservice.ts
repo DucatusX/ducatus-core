@@ -391,7 +391,14 @@ export class PushNotificationsService {
       wbtc: 'WBTC',
       dai: 'DAI',
       duc: 'DUC',
-      DUCX: 'DUCX'
+      ducx: 'DUCX',
+      jamasy: 'JAMASY',
+      nuyasa: 'NUYASA',
+      sunoba: 'SUNOBA',
+      dscmed: 'DSCMED',
+      pog1: 'POG1',
+      wde: 'WDE',
+      mdxb: 'MDXB'
     };
     const data = _.cloneDeep(notification.data);
     data.subjectPrefix = _.trim(this.subjectPrefix + ' ');

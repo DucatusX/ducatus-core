@@ -50,10 +50,13 @@ const TO_SAT = {
   'xrp': 1e6,
   'doge': 1e8,
   'ltc': 1e8,
-  'duc': 1e8
+  'duc': 1e8,
+  'ducx': 1e18,
+  'jamasy': 1e6
 };
 
 const TOKENS = ['0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48', '0x056fd409e1d7a124bd7017459dfea2f387b6d5cd'];
+const DUCX_TOKENS = ['0xa9cb8e18e4c2c0a1c9bf4367e7115165ed7e41f0', '0xb7a7221e37d12a8ea92468f283422b16dbc364d9'];
 
 describe('Wallet service', function() {
 
@@ -771,7 +774,7 @@ describe('Wallet service', function() {
       });
     });
 
-    ['eth','xrp'].forEach(c => {
+    ['eth', 'xrp', 'ducx'].forEach(c => {
       it(`should  fail to create a multisig ${c}  wallet`, function(done) {
         var opts = {
           coin: c,
@@ -793,8 +796,6 @@ describe('Wallet service', function() {
           done();
         });
       });
-
-
     });
 
 
@@ -1668,6 +1669,25 @@ describe('Wallet service', function() {
       });
     });
 
+    it('should get status including extended info with tokens(DUCX)', function(done) {
+      helpers.createAndJoinWallet(1, 1, { coin: 'ducx' }, function(s, w) {
+        s.savePreferences({
+          email: 'dummy@dummy.com',
+          tokenAddresses: DUCX_TOKENS,
+        }, function(err) {
+          should.not.exist(err);
+          s.getStatus({
+            includeExtendedInfo: true
+          }, function(err, status) {
+            should.not.exist(err);
+            should.exist(status);
+            status.preferences.tokenAddresses.should.deep.equal(DUCX_TOKENS);
+            done();
+          });
+        });
+      });
+    });
+
     it('should get status after tx creation', function(done) {
       helpers.stubUtxos(server, wallet, [1, 2], function() {
         var txOpts = {
@@ -2337,6 +2357,116 @@ describe('Wallet service', function() {
       });
     });
 
+    describe('DUCX', function() {
+      var server, wallet;
+
+      describe('BIP44 livenet', function() {
+        beforeEach(function(done) {
+          helpers.createAndJoinWallet(1, 1, { coin: 'ducx' }, function(s, w) {
+            server = s;
+            wallet = w;
+            done();
+          });
+        });
+
+        it('should create address ', function(done) {
+          server.createAddress({}, function(err, address) {
+            should.not.exist(err);
+            should.exist(address);
+            address.walletId.should.equal(wallet.id);
+            address.network.should.equal('livenet');
+            address.address.should.equal('0xE299d49C2cf9BfaFb7C6E861E80bb8c83f961622');
+            address.isChange.should.be.false;
+            address.coin.should.equal('ducx');
+            address.path.should.equal('m/0/0');
+            server.getNotifications({}, function(err, notifications) {
+              should.not.exist(err);
+              var notif = _.find(notifications, {
+                type: 'NewAddress'
+              });
+              should.exist(notif);
+              notif.data.address.should.equal(address.address);
+              done();
+            });
+          });
+        });
+
+        it('should not create  new addresses ', function(done) {
+          server.createAddress({}, function(err, address) {
+            should.not.exist(err);
+            address.walletId.should.equal(wallet.id);
+            address.network.should.equal('livenet');
+            address.address.should.equal('0xE299d49C2cf9BfaFb7C6E861E80bb8c83f961622');
+            server.createAddress({}, function(err, address) {
+              should.not.exist(err);
+              should.exist(address);
+              address.walletId.should.equal(wallet.id);
+              address.network.should.equal('livenet');
+              address.path.should.equal('m/0/0');
+              address.address.should.equal('0xE299d49C2cf9BfaFb7C6E861E80bb8c83f961622');
+              address.isChange.should.be.false;
+              address.coin.should.equal('ducx');
+              done();
+            });
+          });
+        });
+      });
+
+      describe('BIP44 testnet (with storage transformation)', function() {
+        beforeEach(function(done) {
+          helpers.createAndJoinWallet(1, 1, { coin: 'ducx', network: 'testnet' }, function(s, w) {
+            server = s;
+            wallet = w;
+            done();
+          });
+        });
+
+        it('should create  addresses', function(done) {
+          server.createAddress({}, function(err, address) {
+            should.not.exist(err);
+            address.walletId.should.equal(wallet.id);
+            address.path.should.equal('m/0/0');
+            address.network.should.equal('testnet');
+            address.address.should.equal('0xE299d49C2cf9BfaFb7C6E861E80bb8c83f961622');
+            server.createAddress({}, function(err, address) {
+              should.not.exist(err);
+              should.exist(address);
+              address.walletId.should.equal(wallet.id);
+              address.network.should.equal('testnet');
+              address.path.should.equal('m/0/0');
+              address.address.should.equal('0xE299d49C2cf9BfaFb7C6E861E80bb8c83f961622');
+              address.isChange.should.be.false;
+              address.coin.should.equal('ducx');
+
+              // main addresses should transfrom addresses
+              server.getMainAddresses({}, function(err, addresses) {
+                should.not.exist(err);
+                addresses.length.should.equal(1);
+                addresses[0].address.should.equal('0xE299d49C2cf9BfaFb7C6E861E80bb8c83f961622');
+                done();
+              });
+            });
+          });
+        });
+
+        it('should sync  addresses with transformed strings', function(done) {
+          server.createAddress({}, function(err, address) {
+            should.not.exist(err);
+            address.walletId.should.equal(wallet.id);
+            address.path.should.equal('m/0/0');
+            address.network.should.equal('testnet');
+            address.address.should.equal('0xE299d49C2cf9BfaFb7C6E861E80bb8c83f961622');
+            server.syncWallet(wallet, function(err) {
+              should.not.exist(err);
+              var calls = blockchainExplorer.addAddresses.getCalls();
+              calls[0].args[1].should.deep.equal(['0xE299d49C2cf9BfaFb7C6E861E80bb8c83f961622']);
+              done();
+            });
+          });
+        });
+      });
+    });
+
     describe('XRP', function() {
       var server, wallet;
 
@@ -2597,9 +2727,108 @@ describe('Wallet service', function() {
         });
       });
     });
+  });
+
+  describe('Preferences tokens(DUCX)', function() {
+    var server, wallet;
+    beforeEach(function(done) {
+      helpers.createAndJoinWallet(1, 1, { coin: 'ducx' }, function(s, w) {
+        server = s;
+        wallet = w;
+        done();
+      });
+    });
+
+    it('should save & retrieve preferences', function(done) {
+      server.savePreferences({
+        email: 'dummy@dummy.com',
+        language: 'es',
+        unit: 'bit',
+        dummy: 'ignored',
+        tokenAddresses: DUCX_TOKENS,
+      }, function(err) {
+        should.not.exist(err);
+        server.getPreferences({}, function(err, preferences) {
+          should.not.exist(err);
+          should.exist(preferences);
+          preferences.email.should.equal('dummy@dummy.com');
+          preferences.language.should.equal('es');
+          preferences.unit.should.equal('bit');
+          preferences.tokenAddresses.should.deep.equal(DUCX_TOKENS);
+          should.not.exist(preferences.dummy);
+          done();
+        });
+      });
+    });
 
 
+    it('should concatenate token preferences', function(done) {
+      server.savePreferences({
+        email: 'dummy@dummy.com',
+        language: 'es',
+        unit: 'bit',
+        dummy: 'ignored',
+        tokenAddresses: [DUCX_TOKENS[0]],
+      }, function(err) {
+        should.not.exist(err);
+        server.getPreferences({}, function(err, preferences) {
+          should.not.exist(err);
+          preferences.tokenAddresses.should.deep.equal([DUCX_TOKENS[0]]);
+          server.savePreferences({
+            email: 'dummy@dummy.com',
+            language: 'es',
+            unit: 'bit',
+            dummy: 'ignored',
+            tokenAddresses: [DUCX_TOKENS[1]],
+          }, function(err) {
+            server.getPreferences({}, function(err, preferences) {
+              should.not.exist(err);
+              should.exist(preferences);
+              preferences.email.should.equal('dummy@dummy.com');
+              preferences.language.should.equal('es');
+              preferences.unit.should.equal('bit');
+              preferences.tokenAddresses.should.deep.equal(DUCX_TOKENS);
+              should.not.exist(preferences.dummy);
+              done();
+            });
+          });
+        });
+      });
+    });
 
+    it('should concatenate token preferences (case2)', function(done) {
+      server.savePreferences({
+        email: 'dummy@dummy.com',
+        language: 'es',
+        unit: 'bit',
+        dummy: 'ignored',
+        tokenAddresses: [DUCX_TOKENS[0]],
+      }, function(err) {
+        should.not.exist(err);
+        server.getPreferences({}, function(err, preferences) {
+          should.not.exist(err);
+          preferences.tokenAddresses.should.deep.equal([DUCX_TOKENS[0]]);
+          server.savePreferences({
+            email: 'dummy@dummy.com',
+            language: 'es',
+            unit: 'bit',
+            dummy: 'ignored',
+            tokenAddresses: DUCX_TOKENS,
+          }, function(err) {
+            server.getPreferences({}, function(err, preferences) {
+              should.not.exist(err);
+              should.exist(preferences);
+              preferences.email.should.equal('dummy@dummy.com');
+              preferences.language.should.equal('es');
+              preferences.unit.should.equal('bit');
+              preferences.tokenAddresses.should.deep.equal(DUCX_TOKENS);
+              should.not.exist(preferences.dummy);
+              done();
+            });
+          });
+        });
+      });
+    });
   });
 
 
@@ -3788,12 +4017,12 @@ describe('Wallet service', function() {
       flags: {},
     },
     {
-        coin: 'bch',
-        key: 'id44bch',
-        addr: 'qpgjyj728rhu4gca2dqfzlpl8acnhzequshhgvev53',
-        lockedFunds: 0,
-        flags: {},
-      },
+      coin: 'bch',
+      key: 'id44bch',
+      addr: 'qpgjyj728rhu4gca2dqfzlpl8acnhzequshhgvev53',
+      lockedFunds: 0,
+      flags: {},
+    },
     {
       coin: 'bch',
       key: 'id44bch',
@@ -3835,7 +4064,14 @@ describe('Wallet service', function() {
       addr: 'LuaEVV9qhtx3ZAvxxYyr3EMjZnnSakd1B4',
       lockedFunds: 0,
       flags: {},
-    }
+    },
+    {
+      coin: 'ducx',
+      key: 'id44ducx',
+      addr: '0x37d7B3bBD88EFdE6a93cF74D2F5b0385D3E3B08A',
+      lockedFunds: 0,
+      flags: { noChange: true, noUtxoTests: true, },
+    },
   ];
 
   _.each(testSet, function(x) {
@@ -3886,7 +4122,8 @@ describe('Wallet service', function() {
               xrp:8000,
               doge:1e8,
               ltc:8000,
-              duc:8000
+              duc:8000,
+              ducx:8000
             }
             let amount = coinAmount[coin];
             var txOpts = {
@@ -3918,7 +4155,7 @@ describe('Wallet service', function() {
               tx.outputs[0].toAddress.should.equal(addressStr);
               tx.outputs[0].amount.should.equal(amount);
 
-              if(coin == 'eth') {
+              if(coin == 'eth' || coin == 'ducx') {
                 tx.gasPrice.should.equal(12300);
                 tx.nonce.should.equal('5');
                 tx.outputs.should.deep.equal([{
@@ -3993,6 +4230,22 @@ describe('Wallet service', function() {
             });
           } else if(coin === 'eth') {
             it('should not fail to create ETH chain based tx for 0 amount', function(done) {
+              var txOpts = {
+                outputs: [{
+                  toAddress: addressStr,
+                  amount: 0,
+                }],
+                feePerKb: 2000000000,
+              };
+              txOpts = Object.assign(txOpts, flags);
+              server.createTx(txOpts, function(err, tx) {
+                should.not.exist(err);
+                should.exist(tx);
+                done();
+              });
+            });
+          } else if (coin === 'ducx') {
+            it('should not fail to create DUCX chain based tx for 0 amount', function(done) {
               var txOpts = {
                 outputs: [{
                   toAddress: addressStr,
@@ -4415,7 +4668,8 @@ describe('Wallet service', function() {
                 xrp:0.8,
                 doge:1,
                 ltc: 0.8,
-                duc: 0.8
+                duc: 0.8,
+                ducx: 0.8
               }
               var txp1, txp2;
               var txOpts = {
@@ -4579,6 +4833,13 @@ describe('Wallet service', function() {
                 3: 1e9,    // normal ETH
                 4: 1e9     // economy/superEconomy ETH
               }, null, coin);
+            } else if (coin === 'ducx') {
+              helpers.stubFeeLevels({
+                1: 10e9,   // urgent DUCX
+                2: 5e9,    // priority DUCX
+                3: 1e9,    // normal DUCX
+                4: 1e9     // economy/superEconomy DUCX
+              }, null, coin);
             } else if (coin === 'xrp') {
               helpers.stubFeeLevels({
                 1: 12
@@ -4595,6 +4856,11 @@ describe('Wallet service', function() {
                 expected = 1e9;
                 expectedNormal = 1e9;
                 break;
+              case 'ducx':
+                  level = 'normal';
+                  expected = 1e9;
+                  expectedNormal = 1e9;
+                  break;
               case 'xrp':
                 level = 'normal';
                 expected = 12;
@@ -4690,7 +4956,8 @@ describe('Wallet service', function() {
             xrp:8000,
             doge:1e8,
             ltc: 8000,
-            duc: 8000
+            duc: 8000,
+            ducx:8000
           }
           let amount = coinAmount[coin];
           helpers.stubUtxos(server, wallet, [1, 2], function() {
@@ -4729,7 +4996,8 @@ describe('Wallet service', function() {
             eth: 210000000,
             doge: 1e8,
             ltc: 7000,
-            duc: 7000
+            duc: 7000,
+            ducx: 210000000,
           }
           helpers.stubUtxos(server, wallet, [1, 2], { coin }, function() {
             var max = 3 * ts - coinFee[coin]; // Fees for this tx at 100bits/kB = 7000 sat
@@ -4737,7 +5005,7 @@ describe('Wallet service', function() {
               outputs: [{
                 toAddress: addressStr,
                 amount: max,
-                gasLimit: (coin == 'eth') ? 21000 : null
+                gasLimit: (coin == 'eth' || coin == 'ducx') ? 21000 : null
               }],
               feePerKb: 100e2,
               from: fromAddr,
@@ -4781,7 +5049,8 @@ describe('Wallet service', function() {
             xrp:0.5,
             doge:1,
             ltc:0.5,
-            duc:0.5
+            duc:0.5,
+            ducx:0.5
           }
           helpers.stubUtxos(server, wallet, 2, { coin }, function() {
             var cwcStub = sandbox.stub(CWC.Transactions, 'create');
@@ -4962,7 +5231,7 @@ describe('Wallet service', function() {
                     server.getBalance({}, function(err, balance) {
                       should.not.exist(err);
                       balance.totalAmount.should.equal(3.6 * TO_SAT[coin]);
-                      if(coin == 'eth') {
+                      if(coin == 'eth' || coin == 'ducx') {
                         balance.lockedAmount.should.equal(2300000000000000000);
                       } else {
                         balance.lockedAmount.should.equal(3.6 * TO_SAT[coin]);
@@ -4987,7 +5256,7 @@ describe('Wallet service', function() {
               txOpts = Object.assign(txOpts, flags);
               helpers.createAndPublishTx(server, txOpts, TestData.copayers[0].privKey_1H_0, function(tx) {
                 should.exist(tx);
-                txOpts.outputs[0].amount = TO_SAT[coin] * ((coin == 'eth') ? 2.2 : 1.8);
+                txOpts.outputs[0].amount = TO_SAT[coin] * ((coin == 'eth' || coin == 'ducx') ? 2.2 : 1.8);
                 txOpts = Object.assign(txOpts, flags);
                 server.createTx(txOpts, function(err, tx) {
 
@@ -4999,7 +5268,7 @@ describe('Wallet service', function() {
                     server.getBalance({}, function(err, balance) {
                       should.not.exist(err);
                       balance.totalAmount.should.equal(3.6 * TO_SAT[coin]);
-                      if(coin != 'eth') {
+                      if(coin != 'eth' && coin != 'ducx') {
                         var amountInputs = _.sumBy(txs[0].inputs, 'satoshis');
                         balance.lockedAmount.should.equal(amountInputs);
                         balance.lockedAmount.should.be.below(balance.totalAmount);
@@ -5024,7 +5293,7 @@ describe('Wallet service', function() {
                 amount: null,
                 gasLimit: 21000
               }],
-              feePerKb: (coin == 'eth') ? 1e8 : 10000,
+              feePerKb: (coin == 'eth' || coin == 'ducx') ? 1e8 : 10000,
               sendMax: true,
               from: fromAddr,
             };
@@ -5564,6 +5833,7 @@ describe('Wallet service', function() {
           Defaults.MAX_TX_SIZE_IN_KB_BTC = 2;
           Defaults.MAX_TX_SIZE_IN_KB_ETH = 2;
           Defaults.MAX_TX_SIZE_IN_KB_XRP = 2;
+          Defaults.MAX_TX_SIZE_IN_KB_DUCX = 2;
 
 
             helpers.stubUtxos(server, wallet, [100].concat(_.range(1, 20, 0)), function() {
@@ -5907,6 +6177,121 @@ describe('Wallet service', function() {
     beforeEach(function(done) {
       helpers.createAndJoinWallet(1, 1, {
         coin: 'eth',
+      }, function(s, w) {
+        server = s;
+        wallet = w;
+        done();
+      });
+    });
+
+
+    it('should allow to create a TX with fee and no inputs', function(done) {
+      helpers.stubFeeLevels({
+      });
+      server.createAddress({}, from => {
+        helpers.stubUtxos(server, wallet, [1, 2], function() {
+          let amount = 0.8 * 1e8;
+          var txOpts = {
+            outputs: [{
+              toAddress: '0x37d7B3bBD88EFdE6a93cF74D2F5b0385D3E3B08A',
+              amount: amount,
+            }],
+            from,
+            message: 'some message',
+            customData: 'some custom data',
+            fee: 252000000000000,
+          };
+          txOpts = Object.assign(txOpts);
+          server.createTx(txOpts, function(err, tx) {
+            should.not.exist(err);
+            should.exist(tx);
+            tx.outputs.should.deep.equal([{
+              toAddress: '0x37d7B3bBD88EFdE6a93cF74D2F5b0385D3E3B08A',
+              gasLimit: 21000,
+              amount: amount,
+            }]);
+            tx.gasPrice.should.equal(12000000000);
+            tx.outputs[0].gasLimit.should.equal(21000);
+            (tx.gasPrice * tx.outputs[0].gasLimit).should.equal(txOpts.fee);
+            done();
+          });
+        });
+      });
+    });
+
+    it('should allow to create a TX with multiple outputs and set the correct fee', function(done) {
+      helpers.stubFeeLevels({
+      });
+      server.createAddress({}, from => {
+        helpers.stubUtxos(server, wallet, [1, 2], function() {
+          let amount = 0;
+          var txOpts = {
+            outputs: [{
+              toAddress: '0x37d7B3bBD88EFdE6a93cF74D2F5b0385D3E3B08A',
+              amount: amount,
+            },{
+              toAddress: '0x37d7B3bBD88EFdE6a93cF74D2F5b0385D3E3B08A',
+              amount: amount,
+            }],
+            from,
+            message: 'some message',
+            customData: 'some custom data'
+          };
+          txOpts = Object.assign(txOpts);
+          server.createTx(txOpts, function(err, tx) {
+            should.not.exist(err);
+            should.exist(tx);
+            tx.outputs.should.deep.equal([{
+              toAddress: '0x37d7B3bBD88EFdE6a93cF74D2F5b0385D3E3B08A',
+              gasLimit: 21000,
+              amount: amount
+            },{
+              toAddress: '0x37d7B3bBD88EFdE6a93cF74D2F5b0385D3E3B08A',
+              gasLimit: 21000,
+              amount: amount
+            }]);
+            tx.gasPrice.should.equal(1000000000);
+            tx.outputs[0].gasLimit.should.equal(21000);
+            (tx.gasPrice * tx.outputs[0].gasLimit).should.equal(21000000000000);
+            done();
+          });
+        });
+      });
+    });
+
+    it('should fail if not enough available amount to cover fees', function(done) {
+      helpers.stubFeeLevels({
+      });
+      server.createAddress({}, from => {
+        helpers.stubUtxos(server, wallet, [1, 2], function() {
+          let amount = 2.1 * 1e18;
+          var txOpts = {
+            outputs: [{
+              toAddress: '0x37d7B3bBD88EFdE6a93cF74D2F5b0385D3E3B08A',
+              amount: amount,
+            }],
+            from,
+            message: 'some message',
+            customData: 'some custom data',
+            fee: 1 * 1e18
+          };
+          txOpts = Object.assign(txOpts);
+          server.createTx(txOpts, function(err, txp) {
+            should.exist(err);
+            should.not.exist(txp);
+            err.code.should.equal('INSUFFICIENT_FUNDS_FOR_FEE');
+            done();
+          });
+        });
+      });
+    });
+  });
+
+  describe('#createTX DUCX Only tests', () => {
+    var server, wallet;
+    beforeEach(function(done) {
+      helpers.createAndJoinWallet(1, 1, {
+        coin: 'ducx',
       }, function(s, w) {
         server = s;
         wallet = w;
@@ -7044,6 +7429,7 @@ describe('Wallet service', function() {
       Defaults.MAX_TX_SIZE_IN_KB_BTC =2;
       Defaults.MAX_TX_SIZE_IN_KB_ETH =2;
       Defaults.MAX_TX_SIZE_IN_KB_XRP =2;
+      Defaults.MAX_TX_SIZE_IN_KB_DUCX =2;
         helpers.stubUtxos(server, wallet, _.range(1, 10, 0), function() {
           server.getSendMaxInfo({
             feePerKb: 10000,
@@ -7918,6 +8304,112 @@ describe('Wallet service', function() {
       });
     });
 
+    describe('1-of-1 (BIP44 DUCX)', function() {
+      var server, wallet, txpid;
+
+      beforeEach(function(done) {
+        helpers.createAndJoinWallet(1, 1, { coin: 'ducx' }, function(s, w) {
+          server = s;
+          wallet = w;
+
+          server.createAddress({}, function(err, from) {
+            should.not.exist(err);
+            helpers.stubUtxos(server, wallet, [3], function() {
+              var txOpts = {
+                outputs: [{
+                  toAddress: '0x37d7B3bBD88EFdE6a93cF74D2F5b0385D3E3B08A',
+                  amount: 2.5e8,
+                }],
+                from,
+                feePerKb: 100e2,
+              };
+              helpers.createAndPublishTx(server, txOpts, TestData.copayers[0].privKey_1H_0, function(tx) {
+                should.exist(tx);
+                tx.addressType.should.equal('P2PKH');
+                txpid = tx.id;
+                done();
+              });
+            });
+          });
+        });
+      });
+
+      it('should sign a TX and return raw', function(done) {
+        blockchainExplorer.getTransaction = sinon.stub().callsArgWith(1, null, null);
+        server.getPendingTxs({}, function(err, txs) {
+          var tx = txs[0];
+          tx.id.should.equal(txpid);
+          var signatures = helpers.clientSign(tx, TestData.copayers[0].xPrivKey_44H_0H_0H);
+          should.not.exist(tx.raw);
+          server.signTx({
+            txProposalId: txpid,
+            signatures: signatures,
+          }, function(err, txp) {
+            should.not.exist(err);
+            txp.status.should.equal('accepted');
+            // The raw Tx should contain the Signatures.
+            // Raw hash String
+            txp.raw[0].length.should.equal(212);
+            // Array length of 1
+            txp.raw.length.should.equal(1);
+            // this depends on transaction count stub
+            txp.txid.should.equal('0x8d4264bffbc82e09ac3ec53b0f1794f417acbd693696fa355f275e9544d4ba7a');
+
+            // Get pending should also contains the raw TX
+            server.getPendingTxs({}, function(err, txs) {
+              var tx = txs[0];
+              should.not.exist(err);
+              tx.status.should.equal('accepted');
+              // Raw hash String
+              txp.raw[0].length.should.equal(212);
+              // Array length of 1
+              txp.raw.length.should.equal(1);
+              done();
+            });
+          });
+        });
+      });
+      it('should fail sign a TX  with empty signature', function(done) {
+        blockchainExplorer.getTransaction = sinon.stub().callsArgWith(1, null, null);
+        server.getPendingTxs({}, function(err, txs) {
+          var tx = txs[0];
+          tx.id.should.equal(txpid);
+          should.not.exist(tx.raw);
+          server.signTx({
+            txProposalId: txpid,
+            signatures: '',
+          }, function(err, txp) {
+            err.code.should.contain('BAD_SIG');
+            server.getPendingTxs({}, function(err, txs) {
+              var tx = txs[0];
+              should.not.exist(err);
+              tx.status.should.equal('pending');
+              done();
+            });
+          });
+        });
+      });
+      it('should fail sign a TX  with wrong signature', function(done) {
+        blockchainExplorer.getTransaction = sinon.stub().callsArgWith(1, null, null);
+        server.getPendingTxs({}, function(err, txs) {
+          var tx = txs[0];
+          tx.id.should.equal(txpid);
+          should.not.exist(tx.raw);
+          server.signTx({
+            txProposalId: txpid,
+            signatures: 'a bad signature',
+          }, function(err, txp) {
+            err.code.should.contain('BAD_SIG');
+            server.getPendingTxs({}, function(err, txs) {
+              var tx = txs[0];
+              should.not.exist(err);
+              tx.status.should.equal('pending');
+              done();
+            });
+          });
+        });
+      });
+    });
 
     describe('Multisig', function() {
       var server, wallet, txid;
@@ -8373,6 +8865,68 @@ describe('Wallet service', function() {
     var server, wallet, txpid, txid;
     beforeEach(function(done) {
       helpers.createAndJoinWallet(1, 1, { coin: 'eth' }, function(s, w) {
+        server = s;
+        wallet = w;
+        server.createAddress({}, from => {
+          helpers.stubUtxos(server, wallet, [10, 10], function() {
+            var txOpts = {
+              outputs: [{
+                toAddress: '0x37d7B3bBD88EFdE6a93cF74D2F5b0385D3E3B08A',
+                amount: 9e8,
+              }],
+              from,
+              message: 'some message',
+              feePerKb: 100e2,
+            };
+            helpers.createAndPublishTx(server, txOpts, TestData.copayers[0].privKey_1H_0, function(txp) {
+              should.exist(txp);
+              var signatures = helpers.clientSign(txp, TestData.copayers[0].xPrivKey_44H_0H_0H);
+              server.signTx({
+                txProposalId: txp.id,
+                signatures: signatures,
+              }, function(err, txp) {
+                should.not.exist(err);
+                should.exist(txp);
+                txp.isAccepted().should.be.true;
+                txp.isBroadcasted().should.be.false;
+                txid = txp.txid;
+                txpid = txp.id;
+                done();
+              });
+            });
+          });
+        });
+      });
+    });
+
+    it('should broadcast a tx', function(done) {
+      var clock = sinon.useFakeTimers({ now: 1234000, toFake: ['Date'] });
+      helpers.stubBroadcast(txid);
+      server.broadcastTx({
+        txProposalId: txpid
+      }, function(err) {
+        should.not.exist(err);
+        server.getTx({
+          txProposalId: txpid
+        }, function(err, txp) {
+          should.not.exist(err);
+          should.exist(txp.raw);
+          // used to be like this. No sure why we won't like raw to be shown.
+          //should.not.exist(txp.raw);
+          txp.txid.should.equal(txid);
+          txp.isBroadcasted().should.be.true;
+          txp.broadcastedOn.should.equal(1234);
+          clock.restore();
+          done();
+        });
+      });
+    });
+  });
+
+  describe('#broadcastTx DUCX', function() {
+    var server, wallet, txpid, txid;
+    beforeEach(function(done) {
+      helpers.createAndJoinWallet(1, 1, { coin: 'ducx' }, function(s, w) {
         server = s;
         wallet = w;
         server.createAddress({}, from => {
@@ -9717,6 +10271,33 @@ describe('Wallet service', function() {
     });
   });
 
+  describe('#startScan DUCX', function() {
+    var server, wallet;
+    beforeEach(function(done) {
+      this.timeout(5000);
+      Defaults.SCAN_ADDRESS_GAP = 2;
+
+      helpers.createAndJoinWallet(1, 1, {
+        coin: 'ducx',
+      }, function(s, w) {
+        server = s;
+        wallet = w;
+        done();
+      });
+    });
+    afterEach(function() {
+      server.messageBroker.removeAllListeners();
+    });
+
+    it('should start an asynchronous scan', function(done) {
+      server.startScan({}, function(err, ret) {
+        should.not.exist(err);
+        should.not.exist(ret);
+        return done();
+      });
+    });
+  });
+
 
   describe('PayPro', function() {
     var server, wallet;
@@ -10327,7 +10908,7 @@ describe('Wallet service', function() {
       sandbox.restore();
     })
 
-   it('should fail with different error for ERC20 txs with insufficient ETH to cover miner fee', function(done) {
+    it('should fail with different error for ERC20 txs with insufficient ETH to cover miner fee', function(done) {
       const ts = TO_SAT['usdc'];
       server.createAddress({}, from => {
         helpers.stubUtxos(server, wallet, [1, 1], { tokenAddress: TOKENS[0] }, function() {
@@ -10347,6 +10928,45 @@ describe('Wallet service', function() {
             should.exist(err);
             err.code.should.equal('INSUFFICIENT_ETH_FEE');
             err.message.should.equal('Your linked ETH wallet does not have enough ETH for fee. RequiredFee: 3999999999999990000');
+            err.messageData.should.deep.equal({ requiredFee: 3999999999999990000 });
+            server.getBalance({ tokenAddress: txOpts.tokenAddress }, function(err, tokenBalance) {
+              should.not.exist(err);
+              tokenBalance.totalAmount.should.equal(2 * ts);
+              tokenBalance.lockedAmount.should.equal(0);
+              txOpts.outputs[0].amount = 1 * ts;
+              server.getBalance({}, function(err, ethBalance) {
+                should.not.exist(err);
+                ethBalance.should.not.equal(tokenBalance);
+                ethBalance.totalAmount.should.equal(2000000000000000000);
+                ethBalance.lockedAmount.should.equal(0);
+                done();
+              });
+            });
+          });
+        });
+      });
+    });
+
+    it('should fail with different error for DRC20 txs with insufficient DUCX to cover miner fee', function(done) {
+      const ts = TO_SAT['jamasy'];
+      server.createAddress({}, from => {
+        helpers.stubUtxos(server, wallet, [1, 1], { tokenAddress: DUCX_TOKENS[0] }, function() {
+          let txAmount = 1e6;
+          var txOpts = {
+            coin: 'jamasy',
+            outputs: [{
+              toAddress: '0x37d7B3bBD88EFdE6a93cF74D2F5b0385D3E3B08A',
+              amount: txAmount
+            }],
+            from,
+            fee: 4e18,
+            tokenAddress: DUCX_TOKENS[0]
+          };
+          txOpts = Object.assign(txOpts);
+          server.createTx(txOpts, function(err, tx) {
+            should.exist(err);
+            err.code.should.equal('INSUFFICIENT_DUCX_FEE');
+            err.message.should.equal('Your linked DUCX wallet does not have enough DUCX for fee. RequiredFee: 3999999999999990000');
             err.messageData.should.deep.equal({ requiredFee: 3999999999999990000 });
             server.getBalance({ tokenAddress: txOpts.tokenAddress }, function(err, tokenBalance) {
               should.not.exist(err);

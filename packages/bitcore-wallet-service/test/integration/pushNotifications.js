@@ -20,7 +20,7 @@ const ObjectID  = require('mongodb').ObjectID;
 var TestData = require('../testdata');
 var helpers = require('./helpers');
 const TOKENS = ['0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48', '0x8E870D67F660D95d5be530380D0eC0bd388289E1', '0x056Fd409E1d7A124BD7017459dFEa2F387b6d5Cd'];
-
+const DUCX_TOKENS = ['0xa9CB8e18E4C2C0a1C9Bf4367E7115165ed7e41F0', '0xB7A7221E37d12A8Ea92468F283422B16DbC364D9', '0x14460383feFFE73eA1FB4F0F11B941F44c17bDD2'];
 
 describe('Push notifications', function() {
   var server, wallet, requestStub, pushNotificationsService, walletId;
@@ -925,6 +925,192 @@ describe('Push notifications', function() {
               args[1].body.notification.title.should.contain('New payment received');
               args[1].body.notification.body.should.contain('4.00');
               args[1].body.data.tokenAddress.should.equal('0x056Fd409E1d7A124BD7017459dFEa2F387b6d5Cd');
+              done();
+            }, 100);
+          });
+        });
+      });
+    });
+
+    it('should not send notification if the tokenAddress is not supported', (done) => {
+      server.savePreferences({
+        language: 'en',
+        unit: 'bit',
+      }, function(err) {
+        server.createAddress({}, (err, address) => {
+          should.not.exist(err);
+
+          // Simulate incoming tx notification
+          server._notify('NewIncomingTx', {
+            txid: '999',
+            address: address,
+            amount: 1230000000,
+            tokenAddress: 'notSupportedTokenAddress'
+          }, {
+            isGlobal: true
+          }, (err) => {
+            setTimeout(function() {
+              var calls = requestStub.getCalls();
+              calls.length.should.equal(1);
+              done();
+            }, 100);
+          });
+        });
+      });
+    });
+  });
+
+  describe('DRC20 wallet', () => {
+    beforeEach((done) => {
+
+      helpers.beforeEach((res) => {
+        helpers.createAndJoinWallet(1, 1, { coin: 'ducx' }, (s, w) => {
+          server = s;
+          wallet = w;
+
+          var j = 0;
+          async.eachSeries(w.copayers, function(copayer, next) {
+            helpers.getAuthServer(copayer.id, function(server) {
+              async.parallel([
+
+                function(done) {
+                  server.savePreferences({
+                    email: 'copayer' + (++j) + '@domainducx.com',
+                    language: 'en',
+                    unit: 'bit',
+                    tokenAddresses: DUCX_TOKENS,
+                  }, done);
+                },
+                function(done) {
+                  server.pushNotificationsSubscribe({
+                    token: '12345',
+                    packageName: 'com.wallet',
+                    platform: 'Android',
+                    walletId: '1234'
+                  }, done);
+                },
+              ], next);
+
+            });
+          }, function(err) {
+            should.not.exist(err);
+
+            requestStub = sinon.stub();
+            requestStub.yields();
+
+            pushNotificationsService = new PushNotificationsService();
+            pushNotificationsService.start({
+              lockOpts: {},
+              messageBroker: server.messageBroker,
+              storage: helpers.getStorage(),
+              request: requestStub,
+              pushNotificationsOpts: {
+                templatePath: 'templates',
+                defaultLanguage: 'en',
+                defaultUnit: 'ducx',
+                subjectPrefix: '',
+                pushServerUrl: 'http://localhost:8000',
+                authorizationKey: 'secret',
+              },
+            }, function(err) {
+              should.not.exist(err);
+              done();
+            });
+          });
+        });
+      });
+    });
+
+    it('should send notification if the tx is JAMASY', (done) => {
+      server.savePreferences({
+        language: 'en',
+        unit: 'bit',
+      }, function(err) {
+        server.createAddress({}, (err, address) => {
+          should.not.exist(err);
+         
+          // Simulate incoming tx notification
+          server._notify('NewIncomingTx', {
+            txid: '994',
+            address: address,
+            amount: 4e8, // ~ 4.00 USD
+            tokenAddress: DUCX_TOKENS[0]
+          }, {
+            isGlobal: true
+          }, (err) => {
+            setTimeout(function() {
+              var calls = requestStub.getCalls();
+              calls.length.should.equal(2);
+              var args = _.map(_.takeRight(calls, 2), function(c) {
+                return c.args[0];
+              });
+              args[1].body.notification.title.should.contain('New payment received');
+              args[1].body.notification.body.should.contain('4.00');
+              args[1].body.data.tokenAddress.should.equal('0xa9CB8e18E4C2C0a1C9Bf4367E7115165ed7e41F0');
+              done();
+            }, 100);
+          });
+        });
+      });
+    });
+    it('should send notification if the tx is SUNOBA', (done) => {
+      server.savePreferences({
+        language: 'es',
+        unit: 'bit',
+      }, function(err) {
+        server.createAddress({}, (err, address) => {
+          should.not.exist(err);
+         
+          // Simulate incoming tx notification
+          server._notify('NewIncomingTx', {
+            txid: '995',
+            address: address,
+            amount: 4e8, // ~ 4.00 USD
+            tokenAddress: DUCX_TOKENS[1]
+          }, {
+            isGlobal: true
+          }, (err) => {
+            setTimeout(function() {
+              var calls = requestStub.getCalls();
+              calls.length.should.equal(2);
+              var args = _.map(_.takeRight(calls, 2), function(c) {
+                return c.args[0];
+              });
+              args[1].body.notification.title.should.contain('Nuevo pago recibido');
+              args[1].body.notification.body.should.contain('4.00');
+              args[1].body.data.tokenAddress.should.equal('0xB7A7221E37d12A8Ea92468F283422B16DbC364D9');
+              done();
+            }, 100);
+          });
+        });
+      });
+    });
+    it('should send notification if the tx is DSCMED', (done) => {
+      server.savePreferences({
+        language: 'en',
+        unit: 'bit',
+      }, function(err) {
+        server.createAddress({}, (err, address) => {
+          should.not.exist(err);
+
+          // Simulate incoming tx notification
+          server._notify('NewIncomingTx', {
+            txid: '996',
+            address: address,
+            amount: 4e8, // ~ 4.00 USD
+            tokenAddress: DUCX_TOKENS[2]
+          }, {
+            isGlobal: true
+          }, (err) => {
+            setTimeout(function() {
+              var calls = requestStub.getCalls();
+              calls.length.should.equal(2);
+              var args = _.map(_.takeRight(calls, 2), function(c) {
+                return c.args[0];
+              });
+              args[1].body.notification.title.should.contain('New payment received');
+              args[1].body.notification.body.should.contain('4.00');
+              args[1].body.data.tokenAddress.should.equal('0x14460383feFFE73eA1FB4F0F11B941F44c17bDD2');
               done();
             }, 100);
           });

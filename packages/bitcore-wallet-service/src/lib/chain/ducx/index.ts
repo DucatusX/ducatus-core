@@ -194,6 +194,20 @@ export class DucxChain implements IChain {
     const isDRC20 = tokenAddress && !payProUrl && !isTokenSwap;
     const isDUCXMULTISIG = multisigContractAddress;
     const chain = isDUCXMULTISIG ? 'DUCXMULTISIG' : isDRC20 ? 'DRC20' : 'DUCX';
+    // TO DO
+    // const isERC721 = isERC20 && tokenId;
+
+    // let chain = isERC721 ? 'ERC721' : isERC20 ? 'DRC20' : 'DUCX';
+
+    // if (
+    //   [
+    //     '0x1D85186b5d9C12a6707D5fd3ac7133d58F437877',
+    //     '0xd51bd30A91F88Dcf72Acd45c8A1E7aE0066263e8',
+    //     '0xc5228008C89DfB03937Ff5ff9124f0d7bd2028F9'
+    //   ].includes(txp.tokenAddress)
+    // ) {
+    //   chain = 'TOB';
+    // }
     const recipients = outputs.map(output => {
       return {
         amount: output.amount,
@@ -443,7 +457,6 @@ export class DucxChain implements IChain {
   }
 
   onTx(tx) {
-    // TO DO: check tx.abiType
     // TODO: Multisig ERC20 - Internal txs ¿?
     let tokenAddress;
     let multisigContractAddress;
@@ -453,11 +466,11 @@ export class DucxChain implements IChain {
       tokenAddress = tx.to;
       address = Web3.utils.toChecksumAddress(tx.abiType.params[0].value);
       amount = tx.abiType.params[1].value;
-    } else if (tx.abiType && tx.abiType.type === 'MULTISIG' && tx.abiType.name === 'submitTransaction') {
+    } else if (tx.abiType && tx.abiType.type === 'ETHMULTISIG' && tx.abiType.name === 'submitTransaction') {
       multisigContractAddress = tx.to;
       address = Web3.utils.toChecksumAddress(tx.abiType.params[0].value);
       amount = tx.abiType.params[1].value;
-    } else if (tx.abiType && tx.abiType.type === 'MULTISIG' && tx.abiType.name === 'confirmTransaction') {
+    } else if (tx.abiType && tx.abiType.type === 'ETHMULTISIG' && tx.abiType.name === 'confirmTransaction') {
       multisigContractAddress = tx.to;
       address = Web3.utils.toChecksumAddress(tx.internal[0].action.to);
       amount = tx.internal[0].action.value;

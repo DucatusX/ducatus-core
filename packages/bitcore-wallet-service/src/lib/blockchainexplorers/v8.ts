@@ -393,7 +393,7 @@ export class V8 {
         return cb(err);
       });
   }
-  // TO DO DUCX mulisig
+
   getMultisigContractInstantiationInfo(opts, cb) {
     const url = `${this.baseUrl}/ethmultisig/${opts.sender}/instantiation/${opts.txId}`;
     console.log('[v8.js.378:url:] CHECKING CONTRACT INSTANTIATION INFO', url);

@@ -1107,7 +1107,6 @@ export class WalletService {
       });
     });
   }
-  // TO DO: Check DUCX
   /**
    * Save copayer preferences for the current wallet/copayer pair.
    * @param {Object} opts
@@ -1173,8 +1172,11 @@ export class WalletService {
     this.getWallet({}, (err, wallet) => {
       if (err) return cb(err);
 
-      if (wallet.coin != 'eth') {
+      if (wallet.coin != 'eth' && wallet.coin != 'ducx') {
         opts.tokenAddresses = null;
+      }
+      
+      if (wallet.coin != 'eth') {
         opts.multisigEthInfo = null;
       }
 
@@ -2165,8 +2167,8 @@ export class WalletService {
     });
   }
 
-  getTokenContractInfo(opts) {
-    const bc = this._getBlockchainExplorer('eth', opts.network);
+  getTokenContractInfo(opts, chain: 'ducx' | 'eth') {
+    const bc = this._getBlockchainExplorer(chain, opts.network);
     return new Promise((resolve, reject) => {
       if (!bc) return reject(new Error('Could not get blockchain explorer instance'));
       bc.getTokenContractInfo(opts, (err, contractInfo) => {

@@ -83,7 +83,8 @@ describe('CliUtils', function() {
         amount.should.equal(satoshi);
       });
     });
-    // TO DO: This test gives an error in the original version
+    // This test gives an error in the original version
+    // packages/bitcore-wallet/test/cliUtils.js 24 process.exit(1);
     // it('should fail to parse incorrect amounts', function() {
     //   var texts = [
     //     '',
@@ -102,12 +103,16 @@ describe('CliUtils', function() {
     //     '2.000000009btc',
     //   ];
     //   _.each(texts, function(text) {
-    //     var valid = true;
+    //     var valid = false;
+
     //     try {
-    //       CliUtils.parseAmount(text);
+    //       const result = CliUtils.parseAmount(text);
+    //       valid = Boolean(result && true);
     //     } catch (e) {
     //       valid = false;
+    //       valid.should.be.false;
     //     }
+
     //     valid.should.be.false;
     //   });
     // });

@@ -42,7 +42,6 @@ export class Utils {
     let normalizedChain = coin.toUpperCase();
 
     // TODO: If in the future we add a new chain that supports custom tokens, check this condition
-    // TO DO: Check for DUCX
     if (
       Constants.ERC20.includes(coin.toLowerCase()) ||
       !Constants.COINS.includes(coin.toLowerCase())
@@ -456,9 +455,7 @@ export class Utils {
       if (isMULTISIG) {
         if (coin === 'eth') {
           chain = 'ETHMULTISIG';
-        } else {
-          chain = 'DUCXMULTISIG';
-        }
+        } 
       } else if (is20) {
         if (coin === 'eth') {
           chain = 'ERC20';

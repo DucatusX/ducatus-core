@@ -831,7 +831,18 @@ export class ExpressApp {
     router.post('/v1/token/info', (req, res) => {
       getServerWithAuth(req, res, async server => {
         try {
-          const tokenContractInfo = await server.getTokenContractInfo(req.body);
+          const tokenContractInfo = await server.getTokenContractInfo(req.body, 'eth');
+          res.json(tokenContractInfo);
+        } catch (err) {
+          returnError(err, res, req);
+        }
+      });
+    });
+
+    router.post('/v1/ducx-token/info', (req, res) => {
+      getServerWithAuth(req, res, async server => {
+        try {
+          const tokenContractInfo = await server.getTokenContractInfo(req.body, 'ducx');
           res.json(tokenContractInfo);
         } catch (err) {
           returnError(err, res, req);

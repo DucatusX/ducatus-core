@@ -172,6 +172,67 @@ describe('Changelly integration', () => {
     });
   });
 
+  describe('#changellyGetPairsParams(duc to ducx)', () => {
+    beforeEach(() => {
+      req = {
+        headers: {},
+        body: {
+          id: "test",
+          coinFrom: 'duc',
+          coinTo: 'ducx'
+        }
+      }
+    });
+
+    it('should work properly if req is OK(duc to ducx)', () => {
+      server.request = fakeRequest;
+      server.changellyGetPairsParams(req).then(data => {
+        should.exist(data);
+      }).catch(err => {
+        should.not.exist(err);
+      });
+    });
+
+    it('should return error if there is some missing arguments(duc to ducx)', () => {
+      delete req.body.coinFrom;
+
+      server.request = fakeRequest;
+      server.changellyGetPairsParams(req).then(data => {
+        should.not.exist(data);
+      }).catch(err => {
+        should.exist(err);
+        err.message.should.equal('changellyGetPairsParams request missing arguments');
+      });
+    });
+
+    it('should return error if post returns error(duc to ducx)', () => {
+      req.body.coinFrom = 'duc';
+      const fakeRequest2 = {
+        post: (_url, _opts, _cb) => { return _cb(new Error('Error')) },
+      };
+
+      server.request = fakeRequest2;
+      server.changellyGetPairsParams(req).then(data => {
+        should.not.exist(data);
+      }).catch(err => {
+        should.exist(err);
+        err.message.should.equal('Error');
+      });
+    });
+
+    it('should return error if Changelly is commented in config(duc to ducx)', () => {
+      config.changelly = undefined;
+
+      server.request = fakeRequest;
+      server.changellyGetPairsParams(req).then(data => {
+        should.not.exist(data);
+      }).catch(err => {
+        should.exist(err);
+        err.message.should.equal('ClientError: Service not configured.');
+      });
+    });
+  });
+
   describe('#changellyGetFixRateForAmount', () => {
     beforeEach(() => {
       req = {
@@ -222,6 +283,68 @@ describe('Changelly integration', () => {
     });
 
     it('should return error if Changelly is commented in config', () => {
+      config.changelly = undefined;
+
+      server.request = fakeRequest;
+      server.changellyGetFixRateForAmount(req).then(data => {
+        should.not.exist(data);
+      }).catch(err => {
+        should.exist(err);
+        err.message.should.equal('ClientError: Service not configured.');
+      });
+    });
+  });
+
+  describe('#changellyGetFixRateForAmount(duc to ducx)', () => {
+    beforeEach(() => {
+      req = {
+        headers: {},
+        body: {
+          id: "test",
+          coinFrom: 'duc',
+          coinTo: 'ducx',
+          amountFrom: '1.123'
+        }
+      }
+    });
+
+    it('should work properly if req is OK(duc to ducx)', () => {
+      server.request = fakeRequest;
+      server.changellyGetFixRateForAmount(req).then(data => {
+        should.exist(data);
+      }).catch(err => {
+        should.not.exist(err);
+      });
+    });
+
+    it('should return error if there is some missing arguments(duc to ducx)', () => {
+      delete req.body.coinFrom;
+
+      server.request = fakeRequest;
+      server.changellyGetFixRateForAmount(req).then(data => {
+        should.not.exist(data);
+      }).catch(err => {
+        should.exist(err);
+        err.message.should.equal('changellyGetFixRateForAmount request missing arguments');
+      });
+    });
+
+    it('should return error if post returns error(duc to ducx)', () => {
+      req.body.coinFrom = 'duc';
+      const fakeRequest2 = {
+        post: (_url, _opts, _cb) => { return _cb(new Error('Error')) },
+      };
+
+      server.request = fakeRequest2;
+      server.changellyGetFixRateForAmount(req).then(data => {
+        should.not.exist(data);
+      }).catch(err => {
+        should.exist(err);
+        err.message.should.equal('Error');
+      });
+    });
+
+    it('should return error if Changelly is commented in config(duc to ducx)', () => {
       config.changelly = undefined;
 
       server.request = fakeRequest;
@@ -287,6 +410,71 @@ describe('Changelly integration', () => {
     });
 
     it('should return error if Changelly is commented in config', () => {
+      config.changelly = undefined;
+
+      server.request = fakeRequest;
+      server.changellyCreateFixTransaction(req).then(data => {
+        should.not.exist(data);
+      }).catch(err => {
+        should.exist(err);
+        err.message.should.equal('ClientError: Service not configured.');
+      });
+    });
+  });
+
+  describe('#changellyCreateFixTransaction(duc to ducx)', () => {
+    beforeEach(() => {
+      req = {
+        headers: {},
+        body: {
+          id: "test",
+          coinFrom: 'duc',
+          coinTo: 'ducx',
+          amountFrom: '1.123',
+          addressTo: '10.321',
+          fixedRateId: '3.123',
+          refundAddress: 'refundAddress'
+        }
+      }
+    });
+
+    it('should work properly if req is OK(duc to ducx)', () => {
+      server.request = fakeRequest;
+      server.changellyCreateFixTransaction(req).then(data => {
+        should.exist(data);
+      }).catch(err => {
+        should.not.exist(err);
+      });
+    });
+
+    it('should return error if there is some missing arguments(duc to ducx)', () => {
+      delete req.body.coinFrom;
+
+      server.request = fakeRequest;
+      server.changellyCreateFixTransaction(req).then(data => {
+        should.not.exist(data);
+      }).catch(err => {
+        should.exist(err);
+        err.message.should.equal('changellyCreateFixTransaction request missing arguments');
+      });
+    });
+
+    it('should return error if post returns error(duc to ducx)', () => {
+      req.body.coinFrom = 'duc';
+      const fakeRequest2 = {
+        post: (_url, _opts, _cb) => { return _cb(new Error('Error')) },
+      };
+
+      server.request = fakeRequest2;
+      server.changellyCreateFixTransaction(req).then(data => {
+        should.not.exist(data);
+      }).catch(err => {
+        should.exist(err);
+        err.message.should.equal('Error');
+      });
+    });
+
+    it('should return error if Changelly is commented in config(duc to ducx)', () => {
       config.changelly = undefined;
 
       server.request = fakeRequest;
