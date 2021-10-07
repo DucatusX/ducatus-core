@@ -424,7 +424,7 @@ export class Utils {
 
       return t;
     } else {
-      // ETH ERC20 XRP DUCX DRC20
+      // ETH ERC20 XRP DUCX DRC20 ERC721 DRC721
       const {
         data,
         destinationTag,
@@ -432,7 +432,8 @@ export class Utils {
         payProUrl,
         tokenAddress,
         multisigContractAddress,
-        isTokenSwap
+        isTokenSwap,
+        tokenId
       } = txp;
       const recipients = outputs.map(output => {
         return {
@@ -449,19 +450,21 @@ export class Utils {
       const unsignedTxs = [];
       // If it is a token swap its an already created ERC20 transaction so we skip it and go directly to ETH transaction create
       const is20 = tokenAddress && !payProUrl && !isTokenSwap;
+      const is721 = is20 && tokenId;
       const isMULTISIG = multisigContractAddress;
       // TO DO: check coin or this.chain
       let chain = '';
-      if (isMULTISIG) {
-        if (coin === 'eth') {
-          chain = 'ETHMULTISIG';
-        }
-      } else if (is20) {
-        if (coin === 'eth') {
-          chain = 'ERC20';
-        } else {
-          chain = 'DRC20';
-        }
+
+      if (is721 && coin === 'eth') {
+        chain = 'ERC721';
+      } else if (isMULTISIG && coin === 'eth') {
+        chain = 'ETHMULTISIG';
+      } else if (is20 && coin === 'eth') {
+        chain = 'ERC20';
+      } else  if (is721 && coin === 'ducx') {
+        chain = 'DRC721';
+      } else if (is20 && coin === 'ducx') {
+        chain = 'DRC20';
       } else if (txp.chain) {
         chain = txp.chain.toUpperCase();
       } else {

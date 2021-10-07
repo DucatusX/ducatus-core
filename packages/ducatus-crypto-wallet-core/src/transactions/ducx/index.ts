@@ -11,6 +11,7 @@ export class DUCXTxProvider {
     gasLimit: number;
     network: string;
     chainId?: number;
+    tokenId?: number;
   }) {
     const { recipients, nonce, gasPrice, data, gasLimit, network } = params;
     const { address, amount } = recipients[0];

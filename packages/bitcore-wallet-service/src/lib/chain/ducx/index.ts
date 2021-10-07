@@ -190,14 +190,21 @@ export class DucxChain implements IChain {
   }
 
   getBitcoreTx(txp, opts = { signed: true }) {
-    const { data, outputs, payProUrl, tokenAddress, multisigContractAddress, isTokenSwap } = txp;
-    const isDRC20 = tokenAddress && !payProUrl && !isTokenSwap;
-    const isDUCXMULTISIG = multisigContractAddress;
-    const chain = isDUCXMULTISIG ? 'DUCXMULTISIG' : isDRC20 ? 'DRC20' : 'DUCX';
-    // TO DO
-    // const isERC721 = isERC20 && tokenId;
-
-    // let chain = isERC721 ? 'ERC721' : isERC20 ? 'DRC20' : 'DUCX';
+    const { data, outputs, payProUrl, tokenAddress, multisigContractAddress, isTokenSwap, tokenId } = txp;
+    const is20 = tokenAddress && !payProUrl && !isTokenSwap;
+    const is721 = is20 && tokenId;
+    const isMULTISIG = multisigContractAddress;
+    
+    let chain = '';
+    if (is721) {
+      chain = 'DRC721';
+    } else if (isMULTISIG) {
+      chain = 'DUCXMULTISIG';
+    } else if (is20) {
+      chain = 'DRC20';
+    } else {
+      chain = 'DUCX';
+    }
 
     // if (
     //   [

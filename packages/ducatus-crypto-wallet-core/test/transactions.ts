@@ -841,3 +841,99 @@ describe('DUCX Transaction getChainId', () => {
     expect(testId).to.equal(26482);
   });
 });
+
+it('should be able to create a livenet ERC721 tx', () => {
+  const rawEthTx = {
+    network: 'livenet',
+    value: 3896000000000000,
+    to: '0x37d7B3bBD88EFdE6a93cF74D2F5b0385D3E3B08A',
+    gasPrice: 20000000000,
+    tokenAddress: '0x692a70d2e424a56d2c6c27aa97d1a86395877b3a'
+  };
+  const { value, to } = rawEthTx;
+  const recipients = [{ address: to, amount: value }];
+  const cryptoTx = Transactions.create({
+    ...rawEthTx,
+    chain: 'ERC721',
+    recipients,
+    nonce: 0,
+    tokenId: 884034,
+    from: '0x37d7B3bBD88EFdE6a93cF74D2F5b0385D3E3B08A'
+  });
+  const expectedTx =
+    '0xf887808504a817c8008094692a70d2e424a56d2c6c27aa97d1a86395877b3a80b86423b872dd00000000000000000000000037d7b3bbd88efde6a93cf74d2f5b0385d3e3b08a00000000000000000000000037d7b3bbd88efde6a93cf74d2f5b0385d3e3b08a00000000000000000000000000000000000000000000000000000000000d7d42018080';
+
+  expect(cryptoTx).to.equal(expectedTx);
+});
+
+it('should be able to create a livenet DRC721 tx', () => {
+  const rawEthTx = {
+    network: 'livenet',
+    value: 3896000000000000,
+    to: '0x37d7B3bBD88EFdE6a93cF74D2F5b0385D3E3B08A',
+    gasPrice: 20000000000,
+    tokenAddress: '0x692a70d2e424a56d2c6c27aa97d1a86395877b3a'
+  };
+  const { value, to } = rawEthTx;
+  const recipients = [{ address: to, amount: value }];
+  const cryptoTx = Transactions.create({
+    ...rawEthTx,
+    chain: 'DRC721',
+    recipients,
+    nonce: 0,
+    tokenId: 884034,
+    from: '0x37d7B3bBD88EFdE6a93cF74D2F5b0385D3E3B08A'
+  });
+  const expectedTx =
+    '0xf889808504a817c8008094692a70d2e424a56d2c6c27aa97d1a86395877b3a80b86423b872dd00000000000000000000000037d7b3bbd88efde6a93cf74d2f5b0385d3e3b08a00000000000000000000000037d7b3bbd88efde6a93cf74d2f5b0385d3e3b08a00000000000000000000000000000000000000000000000000000000000d7d428267738080';
+
+  expect(cryptoTx).to.equal(expectedTx);
+});
+
+it('should be able to create a testnet ERC721 tx', () => {
+  const rawEthTx = {
+    network: 'testnet',
+    value: 3896000000000000,
+    to: '0x37d7B3bBD88EFdE6a93cF74D2F5b0385D3E3B08A',
+    gasPrice: 20000000000,
+    tokenAddress: '0x692a70d2e424a56d2c6c27aa97d1a86395877b3a'
+  };
+  const { value, to } = rawEthTx;
+  const recipients = [{ address: to, amount: value }];
+  const cryptoTx = Transactions.create({
+    ...rawEthTx,
+    chain: 'ERC721',
+    recipients,
+    nonce: 0,
+    tokenId: 884034,
+    from: '0x37d7B3bBD88EFdE6a93cF74D2F5b0385D3E3B08A'
+  });
+  const expectedTx =
+    '0xf887808504a817c8008094692a70d2e424a56d2c6c27aa97d1a86395877b3a80b86423b872dd00000000000000000000000037d7b3bbd88efde6a93cf74d2f5b0385d3e3b08a00000000000000000000000037d7b3bbd88efde6a93cf74d2f5b0385d3e3b08a00000000000000000000000000000000000000000000000000000000000d7d422a8080';
+
+  expect(cryptoTx).to.equal(expectedTx);
+});
+
+it('should be able to create a testnet DRC721 tx', () => {
+  const rawEthTx = {
+    network: 'testnet',
+    value: 3896000000000000,
+    to: '0x37d7B3bBD88EFdE6a93cF74D2F5b0385D3E3B08A',
+    gasPrice: 20000000000,
+    tokenAddress: '0x692a70d2e424a56d2c6c27aa97d1a86395877b3a'
+  };
+  const { value, to } = rawEthTx;
+  const recipients = [{ address: to, amount: value }];
+  const cryptoTx = Transactions.create({
+    ...rawEthTx,
+    chain: 'DRC721',
+    recipients,
+    nonce: 0,
+    tokenId: 884034,
+    from: '0x37d7B3bBD88EFdE6a93cF74D2F5b0385D3E3B08A'
+  });
+  const expectedTx =
+    '0xf889808504a817c8008094692a70d2e424a56d2c6c27aa97d1a86395877b3a80b86423b872dd00000000000000000000000037d7b3bbd88efde6a93cf74d2f5b0385d3e3b08a00000000000000000000000037d7b3bbd88efde6a93cf74d2f5b0385d3e3b08a00000000000000000000000000000000000000000000000000000000000d7d428267728080';
+
+  expect(cryptoTx).to.equal(expectedTx);
+});
