@@ -194,7 +194,7 @@ export class DucxChain implements IChain {
     const is20 = tokenAddress && !payProUrl && !isTokenSwap;
     const is721 = is20 && tokenId;
     const isMULTISIG = multisigContractAddress;
-    
+
     let chain = '';
     if (is721) {
       chain = 'DRC721';

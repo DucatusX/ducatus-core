@@ -4,10 +4,9 @@ import { ETHTxProvider } from '../eth';
 import { ERC721Abi } from './abi';
 
 export class ERC721TxProvider extends ETHTxProvider {
-
   getERC721Contract(tokenContractAddress: string) {
     const web3 = new Web3();
-    const contract = new web3.eth.Contract(ERC721Abi as AbiItem[] , tokenContractAddress);
+    const contract = new web3.eth.Contract(ERC721Abi as AbiItem[], tokenContractAddress);
     return contract;
   }
 

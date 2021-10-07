@@ -461,7 +461,7 @@ export class Utils {
         chain = 'ETHMULTISIG';
       } else if (is20 && coin === 'eth') {
         chain = 'ERC20';
-      } else  if (is721 && coin === 'ducx') {
+      } else if (is721 && coin === 'ducx') {
         chain = 'DRC721';
       } else if (is20 && coin === 'ducx') {
         chain = 'DRC20';

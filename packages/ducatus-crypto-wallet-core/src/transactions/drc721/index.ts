@@ -4,10 +4,9 @@ import { DUCXTxProvider } from '../ducx';
 import { DRC721Abi } from './abi';
 
 export class DRC721TxProvider extends DUCXTxProvider {
-
   getDRC721Contract(tokenContractAddress: string) {
     const web3 = new Web3();
-    const contract = new web3.eth.Contract(DRC721Abi as AbiItem[] , tokenContractAddress);
+    const contract = new web3.eth.Contract(DRC721Abi as AbiItem[], tokenContractAddress);
     return contract;
   }
 
