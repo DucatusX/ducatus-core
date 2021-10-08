@@ -48,5 +48,6 @@ export const Constants = {
   DRC20: ['jamasy', 'nuyasa', 'sunoba', 'dscmed', 'pog1', 'wde', 'mdxb'],
   UTXO_COINS: ['btc', 'bch', 'doge', 'ltc', 'duc'],
   TOKEN_OPTS: CWC.Constants.TOKEN_OPTS,
-  UNITS: CWC.Constants.UNITS
+  UNITS: CWC.Constants.UNITS,
+  DUCX_TOB_ADDRESSES: CWC.Constants.DUCX_CONSTANTS.DUCX_TOB_ADDRESSES
 };

@@ -11,6 +11,7 @@ import { ERC721TxProvider } from './erc721';
 import { ETHTxProvider } from './eth';
 import { ETHMULTISIGTxProvider } from './eth-multisig';
 import { LTCTxProvider } from './ltc';
+import { TransferDUCXToWDUCXProvider } from './tob';
 import { XRPTxProvider } from './xrp';
 
 const providers = {
@@ -27,7 +28,8 @@ const providers = {
   DRC20: new DRC20TxProvider(),
   DUCXMULTISIG: new DUCXMULTISIGTxProvider(),
   ERC721: new ERC721TxProvider(),
-  DRC721: new DRC721TxProvider()
+  DRC721: new DRC721TxProvider(),
+  TOB: new TransferDUCXToWDUCXProvider()
 };
 
 export class TransactionsProxy {

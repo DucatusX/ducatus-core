@@ -12,6 +12,7 @@ const Common = require('../../common');
 const Constants = Common.Constants;
 const Defaults = Common.Defaults;
 const Errors = require('../../errors/errordefinitions');
+const DUCX_TOB_ADDRESSES: string[] = Constants.DUCX_TOB_ADDRESSES;
 
 function requireUncached(module) {
   delete require.cache[require.resolve(module)];
@@ -196,7 +197,9 @@ export class DucxChain implements IChain {
     const isMULTISIG = multisigContractAddress;
 
     let chain = '';
-    if (is721) {
+    if (DUCX_TOB_ADDRESSES.includes(txp.tokenAddress)) {
+      chain = 'TOB';
+    } else if (is721) {
       chain = 'DRC721';
     } else if (isMULTISIG) {
       chain = 'DUCXMULTISIG';
@@ -206,15 +209,6 @@ export class DucxChain implements IChain {
       chain = 'DUCX';
     }
 
-    // if (
-    //   [
-    //     '0x1D85186b5d9C12a6707D5fd3ac7133d58F437877',
-    //     '0xd51bd30A91F88Dcf72Acd45c8A1E7aE0066263e8',
-    //     '0xc5228008C89DfB03937Ff5ff9124f0d7bd2028F9'
-    //   ].includes(txp.tokenAddress)
-    // ) {
-    //   chain = 'TOB';
-    // }
     const recipients = outputs.map(output => {
       return {
         amount: output.amount,
