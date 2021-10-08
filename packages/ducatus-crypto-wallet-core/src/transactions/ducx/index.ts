@@ -25,7 +25,7 @@ export class DUCXTxProvider {
       data,
       // bn.js error
       // necessary transform 1e21 to 1000000000000000000000
-      value: utils.toHex(Number(amount).toLocaleString('fullwide', {useGrouping: false})),
+      value: utils.toHex(Number(amount).toLocaleString('fullwide', { useGrouping: false })),
       chainId
     };
     return ethers.utils.serializeTransaction(txData);
