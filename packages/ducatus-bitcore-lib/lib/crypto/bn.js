@@ -18,6 +18,13 @@ BN.Minus1 = new BN(-1);
 
 BN.fromNumber = function(n) {
   $.checkArgument(_.isNumber(n));
+  // error if n > 1e15
+  // error if n = '1e16'
+  // only full spelling 
+  // example 1e16 to '1000000000000000'
+  if (n > 1e15) {
+    n = Number(n).toLocaleString('fullwide', {useGrouping: false});
+  }
   return new BN(n);
 };
 

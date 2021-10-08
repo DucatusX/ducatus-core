@@ -1,6 +1,6 @@
 {
   "name": "@ducatus/bitcore-lib",
-  "version": "8.25.12",
+  "version": "8.25.13",
   "description": "Fork Bitcore Lib. A pure and powerful JavaScript Bitcoin library.",
   "author": "Ducatus <contact@ducatus.com>  (https://ducatus.com//)",
   "main": "index.js",
