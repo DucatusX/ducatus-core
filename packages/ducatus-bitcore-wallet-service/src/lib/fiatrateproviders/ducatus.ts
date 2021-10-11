@@ -2,7 +2,7 @@ import _ from 'lodash';
 
 module.exports = {
   name: 'Ducatus',
-  url: process.env.PRODUCTION 
+  url: process.env.PRODUCTION
     ? 'https://rates.ducatuscoins.com/api/v1/rates/'
     : 'https://ducexpl.rocknblock.io/api/v1/rates/',
   parseFn(raw) {
