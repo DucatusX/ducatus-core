@@ -2,7 +2,9 @@ import _ from 'lodash';
 
 module.exports = {
   name: 'Ducatus',
-  url: 'https://rates.ducatuscoins.com/api/v1/rates/',
+  url: process.env.PRODUCTION 
+    ? 'https://rates.ducatuscoins.com/api/v1/rates/'
+    : 'https://ducexpl.rocknblock.io/api/v1/rates/',
   parseFn(raw) {
     const rates = _.compact(
       _.map(raw, d => {

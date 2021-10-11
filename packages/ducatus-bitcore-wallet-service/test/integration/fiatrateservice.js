@@ -436,11 +436,15 @@ describe('Fiat rate service', function() {
         json: true
       }).yields(null, null, ltc);
       request.get.withArgs({
-        url: 'https://rates.ducatuscoins.com/api/v1/rates/',
+        url: process.env.PRODUCTION 
+          ? 'https://rates.ducatuscoins.com/api/v1/rates/'
+          : 'https://ducexpl.rocknblock.io/api/v1/rates/',
         json: true
       }).yields(null, null, ducx);
       request.get.withArgs({
-        url: 'https://rates.ducatuscoins.com/api/v1/rates/',
+        url: process.env.PRODUCTION 
+          ? 'https://rates.ducatuscoins.com/api/v1/rates/'
+          : 'https://ducexpl.rocknblock.io/api/v1/rates/',
         json: true
       }).yields(null, null, duc);
 
