@@ -1,7 +1,7 @@
 version: '3'
 services:
   database:
-    image: mongo:3.4-jessie
+    image: mongo
     ports: 
     - 27017:27017
     volumes: 
