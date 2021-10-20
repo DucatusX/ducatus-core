@@ -1,21 +1,13 @@
 import Web3 from 'web3';
 import { AbiItem } from 'web3-utils';
-import { Constants } from '../../constants';
 import { DUCXTxProvider } from '../ducx';
 import abi from './abi';
 
 export class TransferDUCXToWDUCXProvider extends DUCXTxProvider {
-  getTOBContract(contract: string) {
+  getERC20Contract(tokenAddress: string) {
     const web3 = new Web3();
-    const { DUCX_CONSTANTS } = Constants;
-    const { DUCX_TOB_ADDRESSES } = DUCX_CONSTANTS;
-    const contracts = {};
-
-    DUCX_TOB_ADDRESSES.forEach((address: string) => {
-      contracts[address] = new web3.eth.Contract(abi as AbiItem[], address);
-    });
-
-    return contracts[contract];
+    const contract = new web3.eth.Contract(abi as AbiItem[], tokenAddress);
+    return contract;
   }
 
   create(params) {
@@ -27,8 +19,8 @@ export class TransferDUCXToWDUCXProvider extends DUCXTxProvider {
   }
 
   encodeData(params) {
-    const data = this.getTOBContract(params.tokenAddress)
-      .methods.transferToOtherBlockchain(1, params.recipients[0].address)
+    const data = this.getERC20Contract(params.tokenAddress)
+      .methods.transferToOtherBlockchain(1, params.wDucxAddress)
       .encodeABI();
     return data;
   }

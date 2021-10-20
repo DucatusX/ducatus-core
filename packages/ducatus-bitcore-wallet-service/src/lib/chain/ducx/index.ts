@@ -197,7 +197,7 @@ export class DucxChain implements IChain {
     const isMULTISIG = multisigContractAddress;
 
     let chain = '';
-    if (DUCX_TOB_ADDRESSES.includes(txp.tokenAddress)) {
+    if (txp.wDucxAddress) {
       chain = 'TOB';
     } else if (is721) {
       chain = 'DRC721';

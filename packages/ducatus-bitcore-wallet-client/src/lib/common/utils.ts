@@ -454,10 +454,7 @@ export class Utils {
       const isMULTISIG = multisigContractAddress;
       // TO DO: check coin or this.chain
       let chain = '';
-      if (
-        Constants.DUCX_TOB_ADDRESSES.includes(txp.tokenAddress) &&
-        coin === 'ducx'
-      ) {
+      if (txp.wDucxAddress) {
         chain = 'TOB';
       } else if (is721 && coin === 'eth') {
         chain = 'ERC721';
