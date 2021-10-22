@@ -237,7 +237,7 @@ export class Credentials {
       throw new Error('Bad credentials version');
     }
 
-    _.each(Credentials.FIELDS, function(k) {
+    _.each(Credentials.FIELDS, function (k) {
       x[k] = obj[k];
     });
 
@@ -260,7 +260,7 @@ export class Credentials {
     var self = this;
 
     var x = {};
-    _.each(Credentials.FIELDS, function(k) {
+    _.each(Credentials.FIELDS, function (k) {
       x[k] = self[k];
     });
     return x;
