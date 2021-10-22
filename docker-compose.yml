@@ -2,6 +2,7 @@ version: '3'
 services:
   database:
     image: mongo
+    restart: always
     ports: 
     - 27017:27017
     volumes: 
@@ -10,6 +11,7 @@ services:
   bitcore-node:
     build: .
     image: bitcore-node
+    restart: always
     links:
       - database
     ports:
