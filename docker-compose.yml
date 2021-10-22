@@ -1,7 +1,7 @@
 version: '3'
 services:
   database:
-    image: mongo
+    image: mongo:4.4.10-focal
     restart: always
     ports: 
     - 27017:27017
