@@ -155,15 +155,16 @@ var livenet = get('livenet');
 
 addNetwork({
   name: 'testnet',
-  prefix: 'ducatus',
-  pubkeyhash: 0x31,
-  privatekey: 0xb1,
-  scripthash: 0x33,
+  alias: 'regtest',
+  prefix: 'tducatus',
+  pubkeyhash: 0x70,
+  privatekey: 0xf0,
+  scripthash: 0x3b,
   bech32prefix: 'dc',
-  xpubkey: 0x0488b21e,
-  xprivkey: 0x0488ade4,
-  networkMagic: 0xebd0c6dc,
-  port: 9691,
+  xpubkey: 0x043587cf,
+  xprivkey: 0x04358394,
+  networkMagic: 0xede2d8f2,
+  port: 18335,
   dnsSeeds: []
 });
 

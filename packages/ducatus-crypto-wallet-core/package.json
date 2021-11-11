@@ -1,6 +1,6 @@
 {
   "name": "@ducatus/crypto-wallet-core",
-  "version": "8.25.25",
+  "version": "8.25.26",
   "description": "Fork Bitcore(v.: 8.25.16) for Ducatus-bitcore a multi-currency support library for address derivation, private key creation, and transaction creation",
   "main": "./ts_build/src/index.js",
   "types": "./ts_build/src/index.d.ts",
@@ -31,7 +31,7 @@
     "bitcore-lib-cash": "^8.25.10",
     "bitcore-lib-doge": "^8.25.10",
     "bitcore-lib-ltc": "^8.25.14",
-    "@ducatus/bitcore-lib": "^8.25.13",
+    "@ducatus/bitcore-lib": "^8.25.14",
     "ethers": "^5.0.12",
     "info": "0.0.6-beta.0",
     "ripple-binary-codec": "0.2.6",
