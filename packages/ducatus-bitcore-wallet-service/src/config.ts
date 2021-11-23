@@ -18,7 +18,6 @@ const Config = () => {
     basePath: '/bws/api',
     disableLogs: false,
     port: 3232,
-    productionMode: mode === 'prod',
     nodeUrl: node[mode],
 
     // Uncomment to make BWS a forking server
