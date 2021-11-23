@@ -398,7 +398,8 @@ export class PushNotificationsService {
       dscmed: 'DSCMED',
       pog1: 'POG1',
       wde: 'WDE',
-      mdxb: 'MDXB'
+      mdxb: 'MDXB',
+      'g.o.l.d.': 'G.O.L.D.'
     };
     const data = _.cloneDeep(notification.data);
     data.subjectPrefix = _.trim(this.subjectPrefix + ' ');

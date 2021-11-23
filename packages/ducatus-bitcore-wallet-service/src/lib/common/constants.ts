@@ -23,7 +23,8 @@ module.exports = {
     DSCMED: 'dscmed',
     POG1: 'pog1',
     WDE: 'wde',
-    MDXB: 'mdxb'
+    MDXB: 'mdxb',
+    'G.O.L.D.': 'g.o.l.d.'
   },
 
   ERC20: {
@@ -42,7 +43,8 @@ module.exports = {
     DSCMED: 'dscmed',
     POG1: 'pog1',
     WDE: 'wde',
-    MDXB: 'mdxb'
+    MDXB: 'mdxb',
+    'G.O.L.D.': 'g.o.l.d.'
   },
 
   UTXO_COINS: {

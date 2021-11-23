@@ -240,5 +240,16 @@ export let UNITS = {
       maxDecimals: 8,
       minDecimals: 2
     }
-  }
+  },
+  'g.o.l.d.': {
+    toSatoshis: 1e18,
+    full: {
+      maxDecimals: 8,
+      minDecimals: 8
+    },
+    short: {
+      maxDecimals: 8,
+      minDecimals: 2
+    }
+  },
 };

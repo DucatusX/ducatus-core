@@ -76,5 +76,11 @@ export let TOKEN_OPTS = {
     symbol: 'MDXB',
     decimal: 8,
     address: '0x60DFde24CdE54df342E52a72248B2bD54e0ea4A5'
+  },
+  '0xcDdd562C0cF8c262AD8A5c1A476cdBBE114FcC28': {
+    name: 'G.O.L.D.',
+    symbol: 'G.O.L.D.',
+    decimal: 18,
+    address: '0xcDdd562C0cF8c262AD8A5c1A476cdBBE114FcC28'
   }
 };
