@@ -7,6 +7,8 @@ const requestStream = require('request');
 import { Client } from '../lib//blockchainexplorers/v8/client';
 
 const coin = process.argv[2];
+const config = require('../config');
+const { nodeUrl } = config;
 
 if (!coin) {
   console.log(' Usage: coin authKey (extra: tokenAddress= )');
@@ -36,8 +38,8 @@ const BASE = {
   XRP: `https://api-xrp.bitcore.io/api/${coin}/${network}`,
   DOGE: `https://api.bitcore.io/api/${coin}/${network}`,
   LTC: `https://api.bitcore.io/api/${coin}/${network}`,
-  DUC: `https://ducapi.rocknblock.io/api/${coin}/${network}`,
-  DUCX: `https://ducapi.rocknblock.io/api/${coin}/${network}`
+  DUC: `${nodeUrl}/api/${coin}/${network}`,
+  DUCX: `${nodeUrl}/api/${coin}/${network}`
 };
 
 let baseUrl = BASE[coin];

@@ -5,6 +5,9 @@ import { ChainService } from './chain/index';
 const $ = require('preconditions').singleton();
 const Common = require('./common');
 const Defaults = Common.Defaults;
+const config = require('../config');
+const { nodeUrl } = config;
+
 const PROVIDERS = {
   v8: {
     btc: {
@@ -32,11 +35,12 @@ const PROVIDERS = {
       testnet: 'https://api.bitpay.com'
     },
     duc: {
-      livenet: 'https://ducapi.rocknblock.io'
+      livenet: nodeUrl,
+      testnet: nodeUrl
     },
     ducx: {
-      livenet: 'https://ducapi.rocknblock.io',
-      testnet: 'https://ducapi.rocknblock.io'
+      livenet: nodeUrl,
+      testnet: nodeUrl
     }
   }
 };
