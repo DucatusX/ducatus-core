@@ -72,8 +72,12 @@ export class DucxChain implements IChain {
   getWalletBalance(server, wallet, opts, cb) {
     const bc = server._getBlockchainExplorer(wallet.coin, wallet.network);
 
-    if (opts.tokenAddress) {
-      wallet.tokenAddress = opts.tokenAddress;
+    if ( opts.tokenAddress ) {
+      const isSwapContract = DUCX_TOB_ADDRESSES.includes(opts.tokenAddress);
+
+      if ( !isSwapContract ) {
+        wallet.tokenAddress = opts.tokenAddress;
+      }
     }
 
     if (opts.multisigContractAddress) {
