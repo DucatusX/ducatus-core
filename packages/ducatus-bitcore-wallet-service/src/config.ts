@@ -13,6 +13,8 @@ const node = {
   local: NODE_LOCAL_URL || 'http://localhost:3000'
 };
 
+logger.info(`Mode: ${mode}`);
+
 const Config = () => {
   let defaultConfig = {
     basePath: '/bws/api',
