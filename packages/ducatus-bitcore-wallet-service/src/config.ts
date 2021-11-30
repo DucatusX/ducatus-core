@@ -4,7 +4,9 @@ const {
   MODE,
   NODE_PROD_URL,
   NODE_DEV_URL,
-  NODE_LOCAL_URL
+  NODE_LOCAL_URL,
+  DB_HOST,
+  DB_PORT
 } =  process.env;
 const mode: 'prod'|'dev'|'local' = MODE as 'prod'|'dev'|'local' || 'prod';
 const node = {
@@ -12,8 +14,17 @@ const node = {
   dev: NODE_DEV_URL || 'http://localhost:3000',
   local: NODE_LOCAL_URL || 'http://localhost:3000'
 };
+const dbConfig: { 
+  host: string; 
+  port: string;
+} = {
+  host: DB_HOST || '127.0.0.1',
+  port: DB_PORT || '27017',
+};
 
 logger.info(`Mode: ${mode}`);
+logger.info(`DB host: ${dbConfig.host}`);
+logger.info(`DB host: ${dbConfig.port}`);
 
 const Config = () => {
   let defaultConfig = {
@@ -40,7 +51,7 @@ const Config = () => {
 
     storageOpts: {
       mongoDb: {
-        uri: 'mongodb://localhost:27017/bws',
+        uri: `mongodb://${dbConfig.host}:${dbConfig.port}/bws`,
         dbname: 'bws'
       }
     },
