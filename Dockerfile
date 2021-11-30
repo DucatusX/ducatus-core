@@ -89,4 +89,4 @@ RUN npm run bootstrap
 ADD . .
 RUN npm run compile
 
-CMD npm run bws && npm run node
+CMD npm run node

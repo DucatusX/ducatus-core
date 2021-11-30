@@ -17,7 +17,6 @@ services:
     ports:
       - 8100:8100
       - 3000:3000
-      - 3232:3232
     environment:
       - DB_HOST=database
     env_file: .env
