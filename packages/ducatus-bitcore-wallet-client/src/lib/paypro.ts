@@ -129,7 +129,7 @@ export class PayPro {
   static runRequest(opts, cb) {
     $.checkArgument(opts.network, 'should pass network');
     var r = this.r[opts.method.toLowerCase()](opts.url);
-    _.each(opts.headers, function (v, k) {
+    _.each(opts.headers, function(v, k) {
       if (v) r.set(k, v);
     });
     if (opts.args) {
@@ -223,7 +223,7 @@ export class PayPro {
     opts.method = 'GET';
     opts.network = opts.network || 'livenet';
 
-    PayPro.runRequest(opts, function (err, data) {
+    PayPro.runRequest(opts, function(err, data) {
       if (err) return cb(err);
 
       var ret: any = {};
@@ -303,7 +303,7 @@ export class PayPro {
     opts.noVerify = true;
 
     // verify request
-    PayPro.runRequest(opts, function (err, rawData) {
+    PayPro.runRequest(opts, function(err, rawData) {
       if (err) {
         console.log(
           'Error at verify-payment:',
@@ -333,7 +333,7 @@ export class PayPro {
       // Do not verify payment message's response
       opts.noVerify = true;
 
-      PayPro.runRequest(opts, function (err, rawData) {
+      PayPro.runRequest(opts, function(err, rawData) {
         if (err) {
           console.log(
             'Error at payment:',

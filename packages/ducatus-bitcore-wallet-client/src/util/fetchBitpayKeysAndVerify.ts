@@ -37,7 +37,10 @@ keyRequests.push(
                 'user-agent': 'BitPay Key-Check Utility'
               }
             }).then(body => {
-              let hash = crypto.createHash('sha256').update(body).digest('hex');
+              let hash = crypto
+                .createHash('sha256')
+                .update(body)
+                .digest('hex');
               githubPgpKeys[hash] = body;
               return Promise.resolve();
             });
@@ -60,7 +63,7 @@ keyRequests.push(
       },
       json: true
     }).then(body => {
-      body.pgpKeys.forEach(function (key) {
+      body.pgpKeys.forEach(function(key) {
         let hash = crypto
           .createHash('sha256')
           .update(key.publicKey)
@@ -125,7 +128,10 @@ Promise.all(keyRequests)
                 return reject(err);
               }
               importedPgpKeys[
-                km.pgp.key(km.pgp.primary).get_fingerprint().toString('hex')
+                km.pgp
+                  .key(km.pgp.primary)
+                  .get_fingerprint()
+                  .toString('hex')
               ] = km;
               return resolve();
             }
@@ -201,9 +207,9 @@ Promise.all(keyRequests)
                 }
                 signatureCount++;
                 console.log(
-                  `Good signature from ${signature.identifier} (${pgpKey
-                    .get_userids()[0]
-                    .get_username()})`
+                  `Good signature from ${
+                    signature.identifier
+                  } (${pgpKey.get_userids()[0].get_username()})`
                 );
                 return Promise.resolve();
               }
@@ -229,11 +235,23 @@ Promise.all(keyRequests)
       parsedEccPayload.publicKeys.forEach(pubkey => {
         // Here we are just generating the pubkey hash (btc address) of each of the public keys received for easy lookup later
         // as this is what will be provided by the x-identity header
-        let a = crypto.createHash('sha256').update(pubkey, 'hex').digest();
-        let b = crypto.createHash('rmd160').update(a).digest('hex');
+        let a = crypto
+          .createHash('sha256')
+          .update(pubkey, 'hex')
+          .digest();
+        let b = crypto
+          .createHash('rmd160')
+          .update(a)
+          .digest('hex');
         let c = '00' + b; // This is assuming livenet
-        let d = crypto.createHash('sha256').update(c, 'hex').digest();
-        let e = crypto.createHash('sha256').update(d).digest('hex');
+        let d = crypto
+          .createHash('sha256')
+          .update(c, 'hex')
+          .digest();
+        let e = crypto
+          .createHash('sha256')
+          .update(d)
+          .digest('hex');
 
         let pubKeyHash = bs58.encode(Buffer.from(c + e.substr(0, 8), 'hex'));
 

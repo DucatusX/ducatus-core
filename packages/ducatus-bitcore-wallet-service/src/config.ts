@@ -1,7 +1,18 @@
 import _ from 'lodash';
 import { logger } from './lib/logger';
-const { MODE, NODE_PROD_URL, NODE_DEV_URL, NODE_LOCAL_URL, DB_HOST, DB_PORT } = process.env;
-const mode: 'prod' | 'dev' | 'local' = (MODE as 'prod' | 'dev' | 'local') || 'prod';
+
+const {
+  MODE,
+  NODE_PROD_URL,
+  NODE_DEV_URL,
+  NODE_LOCAL_URL,
+  DB_HOST,
+  DB_PORT,
+  EXCHANGER_LIVENET_URL,
+  EXCHANGER_TESTNET_URL
+} = process.env;
+const defaultMode = 'prod';
+const mode: 'prod' | 'dev' | 'local' = (MODE as 'prod' | 'dev' | 'local') || defaultMode;
 const node = {
   prod: NODE_PROD_URL || 'https://ducapi.rocknblock.io',
   dev: NODE_DEV_URL || 'http://localhost:3000',
@@ -25,7 +36,10 @@ const Config = () => {
     disableLogs: false,
     port: 3232,
     nodeUrl: node[mode],
-
+    exchangerUrl: {
+      livenet: EXCHANGER_LIVENET_URL || 'https://www.ducatuscoins.com',
+      testnet: EXCHANGER_TESTNET_URL || 'https://devducatus.rocknblock.io'
+    },
     // Uncomment to make BWS a forking server
     // cluster: true,
 
