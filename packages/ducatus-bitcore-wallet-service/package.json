@@ -1,8 +1,8 @@
 {
   "name": "@ducatus/bitcore-wallet-service",
-  "description": "A service for Mutisig HD Bitcoin Wallets",
-  "author": "BitPay Inc",
-  "version": "8.25.27",
+  "description": "Fork Bitcore Wallet Service for Ducatus-bitcore. A service for Mutisig HD Ducatus Wallets",
+  "author": "Ducatus",
+  "version": "8.25.28",
   "license": "MIT",
   "main": "ts_build/index.js",
   "types": "./ts_build/index.d.ts",
@@ -12,15 +12,9 @@
     "multisig",
     "wallet",
     "bitcore",
-    "BWS"
+    "BWS",
+    "ducatus"
   ],
-  "repository": {
-    "url": "git@github.com:bitpay/bitcore-wallet-service.git",
-    "type": "git"
-  },
-  "bugs": {
-    "url": "https://github.com/bitpay/bitcore-wallet-service/issues"
-  },
   "dependencies": {
     "@sendgrid/mail": "^6.3.1",
     "abi-decoder": "2.0.1",
@@ -32,7 +26,7 @@
     "@ducatus/bitcore-lib": "^8.25.14",
     "body-parser": "^1.11.0",
     "compression": "^1.6.2",
-    "@ducatus/crypto-wallet-core": "^8.25.27",
+    "@ducatus/crypto-wallet-core": "^8.25.28",
     "email-validator": "^1.0.1",
     "express": "^4.10.0",
     "express-rate-limit": "^2.6.0",
@@ -104,20 +98,5 @@
     "update:stats": "npm run clean && npm run tsc && chmod +x ./ts_build/updatestats/updatestats.js && ./ts_build/updatestats/updatestats.js ",
     "clean:fiatrates": "npm run clean && npm run tsc && chmod +x ./ts_build/cleanfiatrates/cleanfiatrates.js && ./ts_build/cleanfiatrates/cleanfiatrates.js "
   },
-  "bitcoreNode": "./bitcorenode",
-  "contributors": [
-    {
-      "name": "Braydon Fuller",
-      "email": "braydon@bitpay.com"
-    },
-    {
-      "name": "Ivan Socolsky",
-      "email": "ivan@bitpay.com"
-    },
-    {
-      "name": "Matias Alejo Garcia",
-      "email": "ematiu@gmail.com"
-    }
-  ],
-  "gitHead": "012cc0216a9bc6b195035855bd17149bad41acd1"
+  "bitcoreNode": "./bitcorenode"
 }
