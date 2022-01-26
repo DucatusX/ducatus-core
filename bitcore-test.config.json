@@ -1,6 +1,6 @@
 {
   "bitcoreNode": {
-    "modules": ["./bitcoin", "./bitcoin-cash", "./ethereum", "./ripple"],
+    "modules": ["./ducatus", "./ducatusx"], 
     "services": {
       "api": {
         "wallets": {
@@ -10,19 +10,36 @@
     },
     "chains": {
       "BTC": {
-        "regtest": {
+        "mainnet": {
           "chainSource": "p2p",
           "trustedPeers": [
             {
-              "host": "bitcoin",
-              "port": 8332
+              "host": "178.63.46.253",
+              "port": 9831
             }
           ],
           "rpc": {
-            "host": "bitcoin",
-            "port": 8333,
-            "username": "bitcorenodetest",
-            "password": "local321"
+            "host": "178.63.46.253",
+            "port": 9832,
+            "username": "user",
+            "password": "password"
+          }
+        }
+      },
+      "BCH": {
+        "mainnet": {
+          "chainSource": "p2p",
+          "trustedPeers": [
+            {
+              "host": "144.76.34.104",
+              "port": 18332
+            }
+          ],
+          "rpc": {
+            "host": "144.76.34.104",
+            "port": 18333,
+            "username": "btccash",
+            "password": "btccash"
           }
         }
       },
@@ -52,7 +69,68 @@
             "dataHost": "rippled"
           }
         }
+      },
+      "DUC": {
+        "mainnet": {
+          "chainSource": "p2p",
+          "trustedPeers": [
+            {
+              "host": "194.135.84.108",
+              "port": 9691
+            }
+          ],
+          "rpc": {
+            "host": "194.135.84.108",
+            "port": 9690,
+            "username": "node194",
+            "password": "node194"
+          }
+        },
+       "testnet": {
+          "chainSource": "p2p",
+          "trustedPeers": [
+            {
+              "host": "194.135.84.108",
+              "port": 18335
+            }
+          ],
+          "rpc": {
+            "host": "194.135.84.108",
+            "port": 18336,
+            "username": "ducatustest",
+            "password": "ducatuspwd"
+          }
+        }
+      },
+      "DUCX": {
+        "mainnet": {
+          "chainSource": "p2p",
+          "trustedPeers": [
+            {
+              "host": "3.21.90.252",
+              "port": 1003
+            }
+          ],
+          "provider": {
+            "host": "ducx-mainnet-api1-ws.rocknblock.io",
+            "protocol": "wss"
+          }
+        },
+        "testnet": {
+          "chainSource": "p2p",
+          "trustedPeers": [
+            {
+              "host": "18.221.222.77",
+              "port": 1003
+            }
+          ],
+          "provider": {
+            "host": "ducx-testnet-api1-ws.rocknblock.io",
+            "protocol": "wss"
+          }
+        }
       }
     }
   }
 }
+

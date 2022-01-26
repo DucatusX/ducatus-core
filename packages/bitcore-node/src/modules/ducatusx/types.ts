@@ -2,7 +2,7 @@ import BN from 'bn.js';
 
 import { ITransaction } from '../../models/baseTransaction';
 import { IBlock } from '../../types/Block';
-import { ClassifiedTrace, TokenTransferResponse } from '../ethereum/p2p/parityRpc';
+import { ClassifiedTrace, TokenTransferResponse } from '../ducatusx/p2p/parityRpc';
 
 export interface ParityBlock {
   author: string;
@@ -53,15 +53,15 @@ export interface ParityTransaction {
 
 export type Networks = 'mainnet' | 'testnet';
 
-export interface EthereumBlock {
-  header: EthereumHeader;
+export interface DucxBlock {
+  header: DucxHeader;
   transactions: Transaction[];
-  uncleHeaders: EthereumHeader[];
+  uncleHeaders: DucxHeader[];
   raw: Buffer[];
   txTrie: any;
 }
 
-export interface EthereumHeader {
+export interface DucxHeader {
   parentHash: Buffer;
   uncleHash: Buffer;
   coinbase: Buffer;
@@ -95,7 +95,7 @@ export interface Transaction {
   getUpfrontCost: () => BN;
 }
 
-export type IEthBlock = IBlock & {
+export type IDucxBlock = IBlock & {
   coinbase: Buffer;
   nonce: Buffer;
   gasLimit: number;
@@ -110,7 +110,7 @@ export type IEthBlock = IBlock & {
   totalDifficulty: string;
 };
 
-export type IEthTransaction = ITransaction & {
+export type IDucxTransaction = ITransaction & {
   data: Buffer;
   gasLimit: number;
   gasPrice: number;
@@ -156,7 +156,7 @@ export interface AbiDecodedData {
   decodedData: TokenTransferResponse;
 }
 export type DecodedTrace = ClassifiedTrace & AbiDecodedData;
-export interface EthTransactionJSON {
+export interface DucxTransactionJSON {
   txid: string;
   chain: string;
   network: string;
@@ -171,9 +171,9 @@ export interface EthTransactionJSON {
   nonce: number;
   to: string;
   from: string;
-  abiType?: IEthTransaction['abiType'];
+  abiType?: IDucxTransaction['abiType'];
   decodedData?: AbiDecodedData;
   data: string;
   internal: Array<DecodedTrace>;
-  receipt?: IEthTransaction['receipt'];
+  receipt?: IDucxTransaction['receipt'];
 }

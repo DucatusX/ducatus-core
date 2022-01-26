@@ -1,12 +1,15 @@
 import { BaseModule } from '..';
+import { DUCStateProvider } from '../../providers/chain-state/duc/duc';
+import { VerificationPeer } from '../bitcoin/VerificationPeer';
+import { DucP2PWorker } from './p2p';
 
 export default class DucatusModule extends BaseModule {
   constructor(services: BaseModule['bitcoreServices']) {
     super(services);
 
     services.Libs.register('DUC', '@ducatus/bitcore-lib', '@ducatus/bitcore-p2p');
-    services.P2P.register('DUC', services.P2P.get('LTC'));
-    services.CSP.registerService('DUC', services.CSP.get({ chain: 'LTC' }));
-    services.Verification.register('DUC', services.Verification.get('LTC'));
+    services.P2P.register('DUC', DucP2PWorker);
+    services.CSP.registerService('DUC', new DUCStateProvider());
+    services.Verification.register('DUC', VerificationPeer);
   }
 }
