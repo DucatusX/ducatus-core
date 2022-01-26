@@ -1,17 +1,10 @@
-# Bitcore
+# DucatusCore
 
-
-
-  <p align="center">
-  <img alt="npm" src="https://img.shields.io/npm/v/bitcore-lib">
-  <img alt="GitHub commit activity" src="https://img.shields.io/github/commit-activity/m/bitpay/bitcore">
+<p align="center">
+  <img alt="GitHub commit activity" src="https://img.shields.io/github/commit-activity/m/DUCATUS-revival/ducatus-core">
   <a href="https://opensource.org/licenses/MIT/" target="_blank"><img alt="MIT License" src="https://img.shields.io/badge/License-MIT-blue.svg" style="display: inherit;"/></a>
-  <img alt="GitHub contributors" src="https://img.shields.io/github/contributors/bitpay/bitcore">
-  <br>
- <img src="https://circleci.com/gh/bitpay/bitcore.svg?style=shield" alt="master build">
+  <img alt="GitHub contributors" src="https://img.shields.io/github/contributors/DUCATUS-revival/ducatus-core">
 </p>
-  
-  
   
 **Infrastructure to build Bitcoin and blockchain-based applications for the next generation of financial technology.**
 
@@ -22,16 +15,14 @@
 - Trusted P2P Peer
 - MongoDB Server >= v3.4
 - make g++ gcc 
-
+- node.js = v10.24.1
 ### Checkout the repo
 
-
 ```sh
-git clone git@github.com:bitpay/bitcore.git
+git clone git@github.com:DUCATUS-revival/ducatus-core.git
 git checkout master
 npm install
 ```
-
 ## Setup Guide
 
 ### 1. Setup Bitcore config
@@ -158,22 +149,19 @@ rpcpassword=password
 </details>
 
 ### 4. Start Bitcore
-
 ```sh
 npm run node
 ```
 
 ## Applications
-
-- [Bitcore Node](packages/bitcore-node) - A full node with extended capabilities using Bitcoin Core
-- [Bitcore Wallet](packages/bitcore-wallet) - A command-line based wallet client
-- [Bitcore Wallet Client](packages/bitcore-wallet-client) - A client for the wallet service
-- [Bitcore Wallet Service](packages/bitcore-wallet-service) - A multisig HD service for wallets
-- [Bitpay Wallet](https://github.com/bitpay/copay) - An easy-to-use, multiplatform, multisignature, secure bitcoin wallet
+- [DucatusCore Node](packages/bitcore-node) - A full node with extended capabilities using Ducatus Core
+- [DucatusCore Wallet](packages/bitcore-wallet) - A command-line based wallet client
+- [DucatusCore Wallet Client](packages/ducatus-bitcore-wallet-client) - A client for the wallet service
+- [DucatusCore Wallet Service](packages/ducatus-bitcore-wallet-service) - A multisig HD service for wallets
+- [DucatusCore Wallet 3.0](https://github.com/DUCATUS-revival/ducatus-wallet) - An easy-to-use, multiplatform, multisignature, secure bitcoin wallet
 - [Insight](packages/insight) - A blockchain explorer web user interface
 
 ## Libraries
-
 - [Bitcore Channel](https://github.com/bitpay/bitcore-channel) - Micropayment channels for rapidly adjusting bitcoin transactions
 - [Bitcore ECIES](https://github.com/bitpay/bitcore-ecies) - Uses ECIES symmetric key negotiation from public keys to encrypt arbitrarily long data streams
 - [Bitcore Lib](packages/bitcore-lib) - A pure and powerful JavaScript Bitcoin library
@@ -182,19 +170,15 @@ npm run node
 - [Bitcore Mnemonic](packages/bitcore-mnemonic) - Implements mnemonic code for generating deterministic keys
 - [Bitcore P2P](packages/bitcore-p2p) - The peer-to-peer networking protocol for BTC
 - [Bitcore P2P Cash](packages/bitcore-p2p-cash) - The peer-to-peer networking protocol for BCH
-- [Crypto Wallet Core](packages/crypto-wallet-core) - A coin-agnostic wallet library for creating transactions, signing, and address derivation
+- [Crypto Wallet Core](packages/ducatus-crypto-wallet-core) - A coin-agnostic wallet library for creating transactions, signing, and address derivation
+- [DucatusCore Lib](packages/ducatus-bitcore-lib) - A pure and powerful JavaScript Ducatus library
+- [DucatusCore P2P](packages/ducatus-bitcore-p2p) - The peer-to-peer networking protocol for Ducatus
 
 ## Extras
-
 - [Bitcore Build](packages/bitcore-build) - A helper to add tasks to gulp
 - [Bitcore Client](packages/bitcore-client) - A helper to create a wallet using the bitcore-v8 infrastructure
 
-## Contributing
-
-See [CONTRIBUTING.md](https://github.com/bitpay/bitcore/blob/master/Contributing.md) on the main bitcore repo for information about how to contribute.
-
 ## License
+Code released under [the MIT license](https://github.com/DUCATUS-revival/ducatus-core/blob/master/LICENSE).
 
-Code released under [the MIT license](https://github.com/bitpay/bitcore/blob/master/LICENSE).
-
-Copyright 2013-2019 BitPay, Inc. Bitcore is a trademark maintained by BitPay, Inc.
+Copyright 2022 Ducatus.
