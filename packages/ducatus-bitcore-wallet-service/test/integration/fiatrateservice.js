@@ -436,13 +436,13 @@ describe('Fiat rate service', function() {
         json: true
       }).yields(null, null, ltc);
       request.get.withArgs({
-        url: process.env.PRODUCTION 
+        url: process.env.MODE === 'prod'
           ? 'https://rates.ducatuscoins.com/api/v1/rates/'
           : 'https://ducexpl.rocknblock.io/api/v1/rates/',
         json: true
       }).yields(null, null, ducx);
       request.get.withArgs({
-        url: process.env.PRODUCTION 
+        url: process.env.MODE === 'prod'
           ? 'https://rates.ducatuscoins.com/api/v1/rates/'
           : 'https://ducexpl.rocknblock.io/api/v1/rates/',
         json: true
