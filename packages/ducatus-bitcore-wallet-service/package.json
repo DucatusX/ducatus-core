@@ -49,7 +49,8 @@
     "source-map-support": "^0.5.13",
     "sticky-session": "^0.1.0",
     "uuid": "^3.3.2",
-    "winston": "^3.3.3"
+    "winston": "^3.3.3",
+    "big.js": "^6.1.1"
   },
   "devDependencies": {
     "@types/async": "^2.4.1",

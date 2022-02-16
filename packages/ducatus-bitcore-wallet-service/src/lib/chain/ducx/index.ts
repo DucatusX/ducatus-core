@@ -1,5 +1,6 @@
 import { Transactions, Validation } from '@ducatus/crypto-wallet-core';
 import { Web3 } from '@ducatus/crypto-wallet-core';
+import { Big } from 'big.js';
 import _ from 'lodash';
 import { IAddress } from 'src/lib/model/address';
 import { IChain, INotificationData } from '..';
@@ -9,24 +10,28 @@ import { DRC20Abi } from './abi-drc20';
 import { InvoiceAbi } from './abi-invoice';
 
 const Common = require('../../common');
+const Errors = require('../../errors/errordefinitions');
+
 const Constants = Common.Constants;
 const Defaults = Common.Defaults;
-const Errors = require('../../errors/errordefinitions');
 const DUCX_TOB_ADDRESSES: string[] = Constants.DUCX_TOB_ADDRESSES;
 
 function requireUncached(module) {
   delete require.cache[require.resolve(module)];
+
   return require(module);
 }
 
 const Drc20Decoder = requireUncached('abi-decoder');
 Drc20Decoder.addABI(DRC20Abi);
+
 function getDrc20Decoder() {
   return Drc20Decoder;
 }
 
 const InvoiceDecoder = requireUncached('abi-decoder');
 InvoiceDecoder.addABI(InvoiceAbi);
+
 function getInvoiceDecoder() {
   return InvoiceDecoder;
 }
@@ -39,7 +44,10 @@ export class DucxChain implements IChain {
    * @returns {Object} balance - Total amount & locked amount.
    */
   private convertBitcoreBalance(bitcoreBalance, locked) {
-    const { unconfirmed, confirmed, balance } = bitcoreBalance;
+    const { 
+      confirmed, 
+      balance 
+    } = bitcoreBalance;
     // we ASUME all locked as confirmed, for DUCX.
     const convertedBalance = {
       totalAmount: balance,
@@ -50,6 +58,7 @@ export class DucxChain implements IChain {
       availableConfirmedAmount: confirmed - locked,
       byAddress: []
     };
+
     return convertedBalance;
   }
 
@@ -89,13 +98,23 @@ export class DucxChain implements IChain {
       if (err) {
         return cb(err);
       }
+
       server.getPendingTxs(opts, (err, txps) => {
-        if (err) return cb(err);
+        if (err) {
+          return cb(err);
+        }
         // Do not lock ducx multisig amount
-        const lockedSum = opts.multisigContractAddress ? 0 : _.sumBy(txps, 'amount') || 0;
+        const lockedSum = opts.multisigContractAddress 
+          ? 0 
+          : _.sumBy(txps, 'amount') || 0;
+
         const convertedBalance = this.convertBitcoreBalance(balance, lockedSum);
+
         server.storage.fetchAddresses(server.walletId, (err, addresses: IAddress[]) => {
-          if (err) return cb(err);
+          if (err) {
+            return cb(err);
+          }
+
           if (addresses.length > 0) {
             const byAddress = [
               {
@@ -106,6 +125,7 @@ export class DucxChain implements IChain {
             ];
             convertedBalance.byAddress = byAddress;
           }
+
           return cb(null, convertedBalance);
         });
       });
@@ -114,13 +134,22 @@ export class DucxChain implements IChain {
 
   getWalletSendMaxInfo(server, wallet, opts, cb) {
     server.getBalance({}, (err, balance) => {
-      if (err) return cb(err);
-      const { totalAmount, availableAmount } = balance;
-      let fee = opts.feePerKb * Defaults.MIN_DUCX_GAS_LIMIT;
+      if (err) {
+        return cb(err);
+      }
+
+      const { availableAmount } = balance;
+      const fee =  opts.feePerKb
+        .times(Defaults.MIN_DUCX_GAS_LIMIT)
+        .toNumber();
+      const amount = availableAmount
+        .minus(opts.fee)
+        .toNumber();
+
       return cb(null, {
         utxosBelowFee: 0,
         amountBelowFee: 0,
-        amount: availableAmount - fee,
+        amount,
         feePerKb: opts.feePerKb,
         fee
       });
@@ -134,7 +163,10 @@ export class DucxChain implements IChain {
   getTransactionCount(server, wallet, from) {
     return new Promise((resolve, reject) => {
       server._getTransactionCount(wallet, from, (err, nonce) => {
-        if (err) return reject(err);
+        if (err) {
+          return reject(err);
+        }
+
         return resolve(nonce);
       });
     });
@@ -150,21 +182,27 @@ export class DucxChain implements IChain {
         let feePerKb = inFeePerKb;
         let gasPrice = inFeePerKb;
         const { from } = opts;
-        const { coin, network } = wallet;
+        const { 
+          coin, 
+          network 
+        } = wallet;
         let inGasLimit;
         let gasLimit;
-        const defaultGasLimit = opts.tokenAddress ? Defaults.DEFAULT_DRC20_GAS_LIMIT : Defaults.DEFAULT_DUCX_GAS_LIMIT;
+        const defaultGasLimit = opts.tokenAddress 
+          ? Defaults.DEFAULT_DRC20_GAS_LIMIT 
+          : Defaults.DEFAULT_DUCX_GAS_LIMIT;
         let fee = 0;
+
         for (let output of opts.outputs) {
           if (!output.gasLimit) {
             try {
               const to = opts.payProUrl
                 ? output.toAddress
                 : opts.tokenAddress
-                ? opts.tokenAddress
-                : opts.multisigContractAddress
-                ? opts.multisigContractAddress
-                : output.toAddress;
+                  ? opts.tokenAddress
+                  : opts.multisigContractAddress
+                    ? opts.multisigContractAddress
+                    : output.toAddress;
               const value = opts.tokenAddress || opts.multisigContractAddress ? 0 : output.amount;
               inGasLimit = await server.estimateGas({
                 coin,
@@ -182,22 +220,42 @@ export class DucxChain implements IChain {
           } else {
             inGasLimit = output.gasLimit;
           }
+
           if (_.isNumber(opts.fee)) {
             // This is used for sendmax
-            gasPrice = feePerKb = Number((opts.fee / (inGasLimit || defaultGasLimit)).toFixed());
+            const nFee = new Big(opts.fee);
+            gasPrice = feePerKb = nFee
+              .div(inGasLimit || defaultGasLimit)
+              .toNumber();
           }
+          
           gasLimit = inGasLimit || defaultGasLimit;
-          fee += feePerKb * gasLimit;
+          fee += new Big(feePerKb)
+            .times(gasLimit)
+            .toNumber();
         }
+
         return resolve({ feePerKb, gasPrice, gasLimit, fee });
       });
     });
   }
 
   getBitcoreTx(txp, opts = { signed: true }) {
-    const { data, outputs, payProUrl, tokenAddress, multisigContractAddress, isTokenSwap, tokenId } = txp;
-    const is20 = tokenAddress && !payProUrl && !isTokenSwap;
-    const is721 = is20 && tokenId;
+    const { 
+      data, 
+      outputs, 
+      payProUrl, 
+      tokenAddress, 
+      multisigContractAddress, 
+      isTokenSwap, 
+      tokenId 
+    } = txp;
+    const is20 = (
+      tokenAddress 
+      && !payProUrl 
+      && !isTokenSwap
+    );
+    const is721 = (is20 && tokenId);
     const isMULTISIG = multisigContractAddress;
 
     let chain = '';
@@ -225,7 +283,9 @@ export class DucxChain implements IChain {
     if (data) {
       recipients[0].data = data;
     }
+
     const unsignedTxs = [];
+    
     for (let index = 0; index < recipients.length; index++) {
       const rawTx = Transactions.create({
         ...txp,
@@ -243,6 +303,7 @@ export class DucxChain implements IChain {
       toObject: () => {
         let ret = _.clone(txp);
         ret.outputs[0].satoshis = ret.outputs[0].amount;
+        
         return ret;
       },
       getFee: () => {
@@ -253,6 +314,7 @@ export class DucxChain implements IChain {
 
     if (opts.signed) {
       const sigs = txp.getCurrentSignatures();
+
       sigs.forEach(x => {
         this.addSignaturesToBitcoreTx(tx, txp.inputs, txp.inputPaths, x.signatures, x.xpub);
       });
@@ -270,6 +332,7 @@ export class DucxChain implements IChain {
       const tx = this.getBitcoreTx(txp);
     } catch (ex) {
       logger.debug('Error building Bitcore transaction', ex);
+
       return ex;
     }
 
@@ -282,9 +345,15 @@ export class DucxChain implements IChain {
 
   selectTxInputs(server, txp, wallet, opts, cb) {
     server.getBalance(
-      { wallet, tokenAddress: opts.tokenAddress, multisigContractAddress: opts.multisigContractAddress },
+      { 
+        wallet, 
+        tokenAddress: opts.tokenAddress, 
+        multisigContractAddress: opts.multisigContractAddress 
+      },
       (err, balance) => {
-        if (err) return cb(err);
+        if (err) {
+          return cb(err);
+        }
 
         const getInvoiceValue = txp => {
           let totalAmount;
@@ -310,14 +379,19 @@ export class DucxChain implements IChain {
           txp.outputs.forEach(output => {
             // We use a custom contract call (pay) instead of the transfer DRC20 method
             const decodedData = getInvoiceDecoder().decodeMethod(output.data);
+            
             if (decodedData && decodedData.name === 'pay') {
               totalAmount = decodedData.params[0].value;
             }
           });
+
           return totalAmount;
         };
 
-        const { totalAmount, availableAmount } = balance;
+        const { 
+          totalAmount, 
+          availableAmount 
+        } = balance;
 
         /* If its paypro its an already created DRC20 transaction and we need to get the actual invoice value from the data
         invoice outputs example:
@@ -337,7 +411,11 @@ export class DucxChain implements IChain {
         }]
         */
         const txpTotalAmount =
-          (opts.multisigContractAddress || opts.tokenAddress) && txp.payProUrl
+          (
+            opts.multisigContractAddress 
+            || opts.tokenAddress
+          ) 
+          && txp.payProUrl
             ? getInvoiceValue(txp)
             : txp.getTotalAmount(opts);
 
@@ -346,12 +424,24 @@ export class DucxChain implements IChain {
         } else if (availableAmount < txpTotalAmount) {
           return cb(Errors.LOCKED_FUNDS);
         } else {
-          if (opts.tokenAddress || opts.multisigContractAddress) {
+
+          if (
+            opts.tokenAddress 
+            || opts.multisigContractAddress
+          ) {
             // DUCX linked wallet balance
             server.getBalance({}, (err, ducxBalance) => {
-              if (err) return cb(err);
-              const { totalAmount, availableAmount } = ducxBalance;
+              if (err) {
+                return cb(err);
+              }
+
+              const { 
+                totalAmount, 
+                availableAmount 
+              } = ducxBalance;
+
               if (totalAmount < txp.fee) {
+                
                 return cb(
                   new ClientError(
                     Errors.codes.INSUFFICIENT_DUCX_FEE,
@@ -362,6 +452,7 @@ export class DucxChain implements IChain {
                   )
                 );
               } else if (availableAmount < txp.fee) {
+                
                 return cb(
                   new ClientError(
                     Errors.codes.LOCKED_DUCX_FEE,
@@ -372,10 +463,12 @@ export class DucxChain implements IChain {
                   )
                 );
               } else {
+                
                 return cb(this.checkTx(txp));
               }
             });
           } else if (availableAmount - txp.fee < txpTotalAmount) {
+            
             return cb(
               new ClientError(
                 Errors.codes.INSUFFICIENT_FUNDS_FOR_FEE,
@@ -396,7 +489,11 @@ export class DucxChain implements IChain {
   checkUtxos(opts) {}
 
   checkValidTxAmount(output): boolean {
-    if (!_.isNumber(output.amount) || _.isNaN(output.amount) || output.amount < 0) {
+    if (
+      !_.isNumber(output.amount) 
+      || _.isNaN(output.amount) 
+      || output.amount < 0
+    ) {
       return false;
     }
     return true;
@@ -412,6 +509,7 @@ export class DucxChain implements IChain {
   addressFromStorageTransform(network, address): void {
     if (network != 'livenet') {
       const x = address.address.indexOf(':' + network);
+
       if (x >= 0) {
         address.address = address.address.substr(0, x);
       }
@@ -419,7 +517,9 @@ export class DucxChain implements IChain {
   }
 
   addressToStorageTransform(network, address): void {
-    if (network != 'livenet') address.address += ':' + network;
+    if (network != 'livenet') {
+      address.address += ':' + network;
+    }
   }
 
   addSignaturesToBitcoreTx(tx, inputs, inputPaths, signatures, xpub) {
@@ -430,6 +530,7 @@ export class DucxChain implements IChain {
     const chain = 'DUCX';
     const unsignedTxs = tx.uncheckedSerialize();
     const signedTxs = [];
+
     for (let index = 0; index < signatures.length; index++) {
       const signed = Transactions.applySignature({
         chain,
@@ -447,13 +548,17 @@ export class DucxChain implements IChain {
   validateAddress(wallet, inaddr, opts) {
     const chain = 'DUCX';
     const isValidTo = Validation.validateAddress(chain, wallet.network, inaddr);
+    
     if (!isValidTo) {
       throw Errors.INVALID_ADDRESS;
     }
+
     const isValidFrom = Validation.validateAddress(chain, wallet.network, opts.from);
+    
     if (!isValidFrom) {
       throw Errors.INVALID_ADDRESS;
     }
+
     return;
   }
 
@@ -467,15 +572,27 @@ export class DucxChain implements IChain {
     let multisigContractAddress;
     let address;
     let amount;
-    if (tx.abiType && tx.abiType.type === 'ERC20') {
+    
+    if (
+      tx.abiType 
+      && tx.abiType.type === 'ERC20'
+    ) {
       tokenAddress = tx.to;
       address = Web3.utils.toChecksumAddress(tx.abiType.params[0].value);
       amount = tx.abiType.params[1].value;
-    } else if (tx.abiType && tx.abiType.type === 'ETHMULTISIG' && tx.abiType.name === 'submitTransaction') {
+    } else if (
+      tx.abiType 
+      && tx.abiType.type === 'ETHMULTISIG' 
+      && tx.abiType.name === 'submitTransaction'
+    ) {
       multisigContractAddress = tx.to;
       address = Web3.utils.toChecksumAddress(tx.abiType.params[0].value);
       amount = tx.abiType.params[1].value;
-    } else if (tx.abiType && tx.abiType.type === 'ETHMULTISIG' && tx.abiType.name === 'confirmTransaction') {
+    } else if (
+      tx.abiType 
+      && tx.abiType.type === 'ETHMULTISIG' 
+      && tx.abiType.name === 'confirmTransaction'
+    ) {
       multisigContractAddress = tx.to;
       address = Web3.utils.toChecksumAddress(tx.internal[0].action.to);
       amount = tx.internal[0].action.value;
@@ -483,6 +600,7 @@ export class DucxChain implements IChain {
       address = tx.to;
       amount = tx.value;
     }
+
     return {
       txid: tx.txid,
       out: {
