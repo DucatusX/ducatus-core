@@ -2,7 +2,7 @@ import { BaseModule } from '..';
 import { DUCXStateProvider } from './api/csp';
 import { DucxRoutes } from './api/ducx-routes';
 import { DucxVerificationPeer } from './p2p/DucxVerificationPeer';
-import { DucxP2pWorker } from './p2p/p2p'
+import { DucxP2pWorker } from './p2p/p2p';
 
 export default class DUCXModule extends BaseModule {
   constructor(services: BaseModule['bitcoreServices']) {

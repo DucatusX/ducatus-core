@@ -9,7 +9,7 @@ function isTooLong(field, maxLength = 255) {
 }
 
 function isConnectionError(err: any): boolean {
-  return Boolean(err.message && err.message === 'connection not open'); 
+  return Boolean(err.message && err.message === 'connection not open');
 }
 // create wallet
 router.post('/', async function(req, res) {
@@ -167,11 +167,10 @@ router.get('/:pubKey/balance/:time', Auth.authenticateMiddleware, async (req: Au
     });
     return res.send(result || { confirmed: 0, unconfirmed: 0, balance: 0 });
   } catch (err) {
-    
-    if ( isConnectionError(err) ) {
+    if (isConnectionError(err)) {
       return res.status(503).json(err);
     }
-    
+
     return res.status(500).json(err);
   }
 });
