@@ -1,254 +1,157 @@
-import _ from 'lodash';
-import { logger } from './lib/logger';
-
-const {
-  MODE,
-  NODE_PROD_URL,
-  NODE_DEV_URL,
-  NODE_LOCAL_URL,
-  DB_HOST,
-  DB_PORT,
-  EXCHANGER_LIVENET_URL,
-  EXCHANGER_TESTNET_URL
-} = process.env;
+const { MODE, NODE_PROD_URL, NODE_DEV_URL, NODE_LOCAL_URL, EXCHANGER_LIVENET_URL, EXCHANGER_TESTNET_URL } = process.env;
 const defaultMode = 'prod';
 const mode: 'prod' | 'dev' | 'local' = (MODE as 'prod' | 'dev' | 'local') || defaultMode;
 const node = {
-  prod: NODE_PROD_URL || 'https://ducapi.rocknblock.io',
+  prod: NODE_PROD_URL || 'http://ducatus-wallet-node.someworkforrumble.fun',
   dev: NODE_DEV_URL || 'http://localhost:3000',
   local: NODE_LOCAL_URL || 'http://localhost:3000'
 };
-const dbConfig: {
-  host: string;
-  port: string;
-} = {
-  host: DB_HOST || '127.0.0.1',
-  port: DB_PORT || '27017'
-};
 
-logger.info(`Mode: ${mode}`);
-logger.info(`DB host: ${dbConfig.host}`);
-logger.info(`DB host: ${dbConfig.port}`);
+module.exports = {
+  basePath: '/bws/api',
+  disableLogs: false,
+  port: 3232,
+  productionMode: mode === 'prod',
+  nodeUrl: node[mode],
+  exchangerUrl: {
+    livenet: EXCHANGER_LIVENET_URL || 'https://www.ducatuscoins.com',
+    testnet: EXCHANGER_TESTNET_URL || 'https://devducatus.rocknblock.io'
+  },
+  // Uncomment to make BWS a forking server
+  // cluster: true,
 
-const Config = () => {
-  let defaultConfig = {
-    basePath: '/bws/api',
-    disableLogs: false,
-    port: 3232,
-    nodeUrl: node[mode],
-    exchangerUrl: {
-      livenet: EXCHANGER_LIVENET_URL || 'https://www.ducatuscoins.com',
-      testnet: EXCHANGER_TESTNET_URL || 'https://devducatus.rocknblock.io'
-    },
-    // Uncomment to make BWS a forking server
-    // cluster: true,
+  // Uncomment to set the number or process (will use the nr of availalbe CPUs by default)
+  // clusterInstances: 4,
 
-    // Uncomment to set the number or process (will use the nr of availalbe CPUs by default)
-    // clusterInstances: 4,
+  // https: true,
+  // privateKeyFile: 'private.pem',
+  // certificateFile: 'cert.pem',
+  ////// The following is only for certs which are not
+  ////// trusted by nodejs 'https' by default
+  ////// CAs like Verisign do not require this
+  // CAinter1: '', // ex. 'COMODORSADomainValidationSecureServerCA.crt'
+  // CAinter2: '', // ex. 'COMODORSAAddTrustCA.crt'
+  // CAroot: '', // ex. 'AddTrustExternalCARoot.crt'
 
-    // https: true,
-    // privateKeyFile: 'private.pem',
-    // certificateFile: 'cert.pem',
-    ////// The following is only for certs which are not
-    ////// trusted by nodejs 'https' by default
-    ////// CAs like Verisign do not require this
-    // CAinter1: '', // ex. 'COMODORSADomainValidationSecureServerCA.crt'
-    // CAinter2: '', // ex. 'COMODORSAAddTrustCA.crt'
-    // CAroot: '', // ex. 'AddTrustExternalCARoot.crt'
-
-    storageOpts: {
-      mongoDb: {
-        uri: `mongodb://${dbConfig.host}:${dbConfig.port}/bws`,
-        dbname: 'bws'
+  storageOpts: {
+    mongoDb: {
+      uri: 'mongodb://localhost:27017/bws'
+    }
+  },
+  messageBrokerOpts: {
+    //  To use message broker server, uncomment this:
+    messageBrokerServer: {
+      url: 'http://localhost:3380'
+    }
+  },
+  blockchainExplorerOpts: {
+    duc: {
+      livenet: {
+        url: node[mode]
+      },
+      testnet: {
+        url: node[mode],
+        regtestEnabled: false
       }
     },
-    messageBrokerOpts: {
-      //  To use message broker server, uncomment this:
-      messageBrokerServer: {
-        url: 'http://localhost:3380'
+    ducx: {
+      livenet: {
+        url: node[mode]
+      },
+      testnet: {
+        url: node[mode]
       }
     },
-    blockchainExplorerOpts: {
-      btc: {
-        livenet: {
-          url: 'https://api.bitcore.io'
-        },
-        testnet: {
-          url: 'https://api.bitcore.io',
-          regtestEnabled: false
-        }
+    btc: {
+      livenet: {
+        url: 'https://api.bitcore.io'
       },
-      bch: {
-        livenet: {
-          url: 'https://api.bitcore.io'
-        },
-        testnet: {
-          url: 'https://api.bitcore.io'
-        }
-      },
-      eth: {
-        livenet: {
-          url: 'https://api-eth.bitcore.io'
-        },
-        testnet: {
-          url: 'https://api-eth.bitcore.io'
-        }
-      },
-      xrp: {
-        livenet: {
-          url: 'https://api-xrp.bitcore.io'
-        },
-        testnet: {
-          url: 'https://api-xrp.bitcore.io'
-        }
-      },
-      doge: {
-        livenet: {
-          url: 'https://api.bitcore.io'
-        },
-        testnet: {
-          url: 'https://api.bitcore.io'
-        }
-      },
-      ltc: {
-        livenet: {
-          url: 'https://api.bitcore.io'
-        },
-        testnet: {
-          url: 'https://api.bitcore.io'
-        }
-      },
-      duc: {
-        livenet: {
-          url: node[mode]
-        },
-        testnet: {
-          url: node[mode],
-          regtestEnabled: false
-        }
-      },
-      ducx: {
-        livenet: {
-          url: node[mode]
-        },
-        testnet: {
-          url: node[mode]
-        }
-      },
-      socketApiKey: 'socketApiKey'
+      testnet: {
+        url: 'https://api.bitcore.io',
+        regtestEnabled: false
+      }
     },
-    pushNotificationsOpts: {
-      templatePath: 'templates',
-      defaultLanguage: 'en',
-      defaultUnit: 'btc',
-      subjectPrefix: '',
-      pushServerUrl: 'https://fcm.googleapis.com/fcm',
-      authorizationKey: 'You_have_to_put_something_here'
+    bch: {
+      livenet: {
+        url: 'https://api.bitcore.io'
+      },
+      testnet: {
+        url: 'https://api.bitcore.io'
+      }
     },
-    fiatRateServiceOpts: {
-      defaultProvider: 'BitPay',
-      fetchInterval: 5 // in minutes
+    eth: {
+      livenet: {
+        url: 'https://api-eth.bitcore.io'
+      },
+      testnet: {
+        url: 'https://api-eth.bitcore.io'
+      }
     },
-    maintenanceOpts: {
-      maintenanceMode: false
+    xrp: {
+      livenet: {
+        url: 'https://api-xrp.bitcore.io'
+      },
+      testnet: {
+        url: 'https://api-xrp.bitcore.io'
+      }
     },
-    services: {
-      buyCrypto: { simplexPromotion202002: false }
-    },
-    suspendedChains: [],
-    staticRoot: '/tmp/static'
-    // simplex: {
-    //   sandbox: {
-    //     apiKey: 'simplex_sandbox_api_key_here',
-    //     api: 'https://sandbox.test-simplexcc.com',
-    //     appProviderId: 'simplex_provider_id_here'
-    //   },
-    //   production: {
-    //     apiKey: 'simplex_production_api_key_here',
-    //     api: 'https://backend-wallet-api.simplexcc.com',
-    //     appProviderId: 'simplex_provider_id_here'
-    //   }
-    // },
-    // wyre: {
-    //   sandbox: {
-    //     apiKey: 'wyre_sandbox_api_key_here',
-    //     secretApiKey: 'wyre_sandbox_secret_api_key_here',
-    //     api: 'https://api.testwyre.com',
-    //     widgetUrl: 'https://pay.testwyre.com',
-    //     appProviderAccountId: 'wyre_provider_sandbox_account_id_here'
-    //   },
-    //   production: {
-    //     apiKey: 'wyre_production_api_key_here',
-    //     secretApiKey: 'wyre_production_secret_api_key_here',
-    //     api: 'https://api.sendwyre.com',
-    //     widgetUrl: 'https://pay.sendwyre.com/',
-    //     appProviderAccountId: 'wyre_provider_production_account_id_here'
-    //   }
-    // },
-    // changelly: {
-    //   apiKey: 'changelly_api_key',
-    //   secret: 'changelly_secret',
-    //   api: 'https://api.changelly.com'
-    // },
-    // oneInch: {
-    //   api: 'https://bitpay.api.enterprise.1inch.exchange',
-    //   referrerAddress: 'one_inch_referrer_address', // ETH
-    //   referrerFee: 'one_inch_referrer_fee', // min: 0; max: 3; (represents percentage)
-    // },
-    // To use email notifications uncomment this:
-    // emailOpts: {
-    //  host: 'localhost',
-    //  port: 25,
-    //  ignoreTLS: true,
-    //  subjectPrefix: '[Wallet Service]',
-    //  from: 'wallet-service@bitcore.io',
-    //  templatePath: 'templates',
-    //  defaultLanguage: 'en',
-    //  defaultUnit: 'btc',
-    //  publicTxUrlTemplate: {
-    //   btc: {
-    //     livenet: 'https://bitpay.com/insight/#/BTC/mainnet/tx/{{txid}}',
-    //     testnet: 'https://bitpay.com/insight/#/BTC/testnet/tx/{{txid}}',
-    //   },
-    //   bch: {
-    //     livenet: 'https://bitpay.com/insight/#/BCH/mainnet/tx/{{txid}}',
-    //     testnet: 'https://bitpay.com/insight/#/BCH/testnet/tx/{{txid}}',
-    //   },
-    //   eth: {
-    //     livenet: 'https://etherscan.io/tx/{{txid}}',
-    //     testnet: 'https://kovan.etherscan.io/tx/{{txid}}',
-    //   },
-    //   xrp: {
-    //     livenet: 'https://xrpscan.com/tx/{{txid}}',
-    //     testnet: 'https://test.bithomp.com/explorer//tx/{{txid}}',
-    //   },
-    //   doge: {
-    //     livenet: 'https://blockchair.com/dogecoin/transaction/{{txid}}',
-    //     testnet: 'https://sochain.com/tx/DOGETEST/{{txid}}',
-    //  },
-    //   ltc: {
-    //     livenet: 'https://bitpay.com/insight/#/LTC/mainnet/tx/{{txid}}',
-    //     testnet: 'https://bitpay.com/insight/#/LTC/testnet/tx/{{txid}}',
-    //  }
-    // },
-    // },
-    // To use sendgrid:
-    // const sgMail = require('@sendgrid/mail');
-    // sgMail.setApiKey(process.env.SENDGRID_API_KEY);
-    //
-    //
-    // //then add:
-    // mailer: sgMail,
-  };
-
-  // Override default values with bws.config.js' values, if present
-  try {
-    const bwsConfig = require('../bws.config');
-    defaultConfig = _.merge(defaultConfig, bwsConfig);
-  } catch {
-    logger.info('bws.config.js not found, using default configuration values');
-  }
-  return defaultConfig;
+    socketApiKey: 'socketApiKey'
+  },
+  pushNotificationsOpts: {
+    templatePath: 'templates',
+    defaultLanguage: 'en',
+    defaultUnit: 'btc',
+    subjectPrefix: '',
+    pushServerUrl: 'https://fcm.googleapis.com/fcm',
+    authorizationKey: 'You_have_to_put_something_here'
+  },
+  fiatRateServiceOpts: {
+    defaultProvider: 'BitPay',
+    fetchInterval: 60 // in minutes
+  },
+  maintenanceOpts: {
+    maintenanceMode: false
+  },
+  staticRoot: '/tmp/static'
+  // ignoreRateLimiter: true
+  // simplex: {
+  //   sandbox: {
+  //     apiKey: 'simplex_sandbox_api_key_here',
+  //     api: 'https://sandbox.test-simplexcc.com',
+  //     appProviderId: 'simplex_provider_id_here'
+  //   },
+  //   production: {
+  //     apiKey: 'simplex_production_api_key_here',
+  //     api: 'https://backend-wallet-api.simplexcc.com',
+  //     appProviderId: 'simplex_provider_id_here'
+  //   }
+  // },
+  // To use email notifications uncomment this:
+  // emailOpts: {
+  //  host: 'localhost',
+  //  port: 25,
+  //  ignoreTLS: true,
+  //  subjectPrefix: '[Wallet Service]',
+  //  from: 'wallet-service@bitcore.io',
+  //  templatePath: 'templates',
+  //  defaultLanguage: 'en',
+  //  defaultUnit: 'btc',
+  //  publicTxUrlTemplate: {
+  //    btc: {
+  //      livenet: 'https://insight.bitcore.io/#/BTC/mainnet/tx/{{txid}}',
+  //      testnet: 'https://insight.bitcore.io/#/BTC/testnet/tx/{{txid}}',
+  //    },
+  //    bch: {
+  //      livenet: 'https://insight.bitcore.io/#/BCH/mainnet/tx/{{txid}}',
+  //      testnet: 'https://insight.bitcore.io/#/BCH/testnet/tx/{{txid}}',
+  //    }
+  //  },
+  // },
+  // To use sendgrid:
+  // const sgMail = require('@sendgrid/mail');
+  // sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+  //
+  //
+  // //then add:
+  // mailer: sgMail,
 };
-
-module.exports = Config();
